@@ -1,11 +1,9 @@
-import { service } from "../../services";
-
 export const loadAttributeSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
       ctx.set({ ...ctx.get(), loading: true });
 
-      const suggestions = await service.loadAttributes();
+      const suggestions = await toolkit.suggestionService.loadAttributes();
 
       ctx.set({ ...ctx.get(), loading: false, suggestions });
 

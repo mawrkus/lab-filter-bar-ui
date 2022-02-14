@@ -1,1 +1,2 @@
-export { StateMachine } from './StateMachine';
+export * from './StateMachine';
+export * from './StateMachineContext';

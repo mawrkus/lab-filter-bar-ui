@@ -4,10 +4,10 @@ import { Chiclet } from './components/Chiclet';
 import { PartialChiclet } from './components/PartialChiclet';
 import { SuggestionsDropdown } from './components/SuggestionsDropdown';
 import { entityStateMachine } from './entity-state/entityStateMachine';
-import { useMachineContext } from './hooks/useMachineContext';
+import { useStateMachineContext } from './hooks/useStateMachineContext';
 
 function App() {
-  const [props] = useMachineContext(entityStateMachine);
+  const [props] = useStateMachineContext(entityStateMachine);
 
   const onOpenSuggestionsDropdown = () => {
     entityStateMachine.sendEvent("onInputFocus");

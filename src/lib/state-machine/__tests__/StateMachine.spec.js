@@ -1,7 +1,7 @@
-import { StateMachine } from "../StateMachine";
+import { StateMachine, StateMachineContext } from "..";
 
 describe("StateMachine", () => {
-  it("should be a class with the following interface: getCurrentStateId(), getCurrentContext(), sendEvent(eventName, event)", () => {
+  it("should be a class with the following interface: getCurrentStateId(), getContext(), sendEvent(eventName, event)", () => {
     const machine = new StateMachine({
       initialStateId: "idle",
       states: {
@@ -10,7 +10,7 @@ describe("StateMachine", () => {
     });
 
     expect(machine.getCurrentStateId).toBeInstanceOf(Function);
-    expect(machine.getCurrentContext).toBeInstanceOf(Function);
+    expect(machine.getContext).toBeInstanceOf(Function);
     expect(machine.sendEvent).toBeInstanceOf(Function);
   });
 
@@ -93,7 +93,7 @@ describe("StateMachine", () => {
     });
   });
 
-  describe("getCurrentContext()", () => {
+  describe("getContext()", () => {
     it("should return the current context", () => {
       const initialContext = { partialFilter: null };
 
@@ -105,7 +105,7 @@ describe("StateMachine", () => {
         },
       });
 
-      expect(machine.getCurrentContext().get()).toBe(initialContext);
+      expect(machine.getContext().get()).toBe(initialContext);
     });
   });
 
@@ -266,12 +266,12 @@ describe("StateMachine", () => {
 
             expect(cond1).toHaveBeenCalledWith(
               event,
-              machine.getCurrentContext(),
+              machine.getContext(),
               toolkit
             );
             expect(cond2).toHaveBeenCalledWith(
               event,
-              machine.getCurrentContext(),
+              machine.getContext(),
               toolkit
             );
 
@@ -281,10 +281,10 @@ describe("StateMachine", () => {
           });
         });
 
-        it("it should notify the onTransition listener of the transition", () => {
+        it("should notify the onTransition listener of the transition", () => {
           const onTransition = jest.fn();
 
-          const initialContext = { isLoading: false };
+          const initialContext = new StateMachineContext({ isLoading: false });
 
           const machine = new StateMachine({
             initialStateId: "idle",
@@ -358,7 +358,7 @@ describe("StateMachine", () => {
               it("should be properly executed", () => {
                 const onExit = jest.fn();
 
-                const initialContext = { isLoading: false };
+                const initialContext = new StateMachineContext({ isLoading: false });
 
                 const toolkit = { suggestionService: { fetch() {} } };
 
@@ -390,7 +390,7 @@ describe("StateMachine", () => {
 
                 expect(onExit).toHaveBeenCalledWith(
                   focusEvent,
-                  machine.getCurrentContext(),
+                  machine.getContext(),
                   expectedToolkit
                 );
               });
@@ -401,10 +401,10 @@ describe("StateMachine", () => {
 
                   const machine = new StateMachine({
                     initialStateId: "idle",
-                    context: {
+                    context: new StateMachineContext({
                       debug: true,
                       isAboutToFetch: false,
-                    },
+                    }),
                     onUpdateContext,
                     states: {
                       idle: {
@@ -430,7 +430,7 @@ describe("StateMachine", () => {
                     isAboutToFetch: true,
                   };
 
-                  expect(machine.getCurrentContext().get()).toEqual(
+                  expect(machine.getContext().get()).toEqual(
                     expectedContext
                   );
                   expect(onUpdateContext).toHaveBeenCalledWith(expectedContext);
@@ -443,7 +443,7 @@ describe("StateMachine", () => {
                 const onEntryIdle = jest.fn();
                 const onEntryFetch = jest.fn();
 
-                const initialContext = { isLoading: false };
+                const initialContext = new StateMachineContext({ isLoading: false });
 
                 const toolkit = { suggestionService: { fetch() {} } };
 
@@ -482,13 +482,13 @@ describe("StateMachine", () => {
 
                 expect(onEntryIdle).toHaveBeenCalledWith(
                   null,
-                  machine.getCurrentContext(),
+                  machine.getContext(),
                   expectedToolkit
                 );
 
                 expect(onEntryFetch).toHaveBeenCalledWith(
                   focusEvent,
-                  machine.getCurrentContext(),
+                  machine.getContext(),
                   expectedToolkit
                 );
               });
@@ -504,10 +504,10 @@ describe("StateMachine", () => {
 
                   const machine = new StateMachine({
                     initialStateId: "idle",
-                    context: {
+                    context: new StateMachineContext({
                       isLoading: false,
                       list: ["entityType", "accountId"],
-                    },
+                    }),
                     onUpdateContext,
                     states: {
                       idle: {
@@ -526,7 +526,7 @@ describe("StateMachine", () => {
 
                   machine.sendEvent("onInputFocus");
 
-                  expect(machine.getCurrentContext().get()).toEqual(newContext);
+                  expect(machine.getContext().get()).toEqual(newContext);
                   expect(onUpdateContext).toHaveBeenCalledWith(newContext);
                 });
               });
@@ -608,12 +608,12 @@ describe("StateMachine", () => {
 
                 const machine = new StateMachine({
                   initialStateId: "idle",
-                  context: {
+                  context: new StateMachineContext({
                     partialFilter: {
                       attribute: null,
                       operator: null,
                     },
-                  },
+                  }),
                   toolkit,
                   states: {
                     idle: {
@@ -673,13 +673,13 @@ describe("StateMachine", () => {
 
                 expect(setAttribute).toHaveBeenCalledWith(
                   attributeEvent,
-                  machine.getCurrentContext(),
+                  machine.getContext(),
                   toolkit
                 );
 
                 expect(setOperator).toHaveBeenCalledWith(
                   operatorEvent,
-                  machine.getCurrentContext(),
+                  machine.getContext(),
                   toolkit
                 );
               });

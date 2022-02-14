@@ -1,4 +1,6 @@
-import { StateMachine } from "../lib/state-machine/StateMachine";
+import { StateMachine } from "../lib/state-machine";
+import { suggestionService } from "../services";
+import { entityStateMachineContext } from "./entityStateMachineContext";
 
 import {
   idle,
@@ -12,17 +14,9 @@ import {
 
 export const entityStateMachine = new StateMachine({
   initialStateId: "idle",
-  context: {
-    partialFilter: {
-      attribute: null,
-      operator: null,
-    },
-    filterId: 1,
-    filters: [],
-    suggestions: [],
-    loading: false,
-  },
-  onTransition: console.log,
+  onTransition: (...args) => console.log('📟', ...args),
+  context: entityStateMachineContext,
+  toolkit: { suggestionService },
   states: {
     idle,
     loadAttributeSuggestions,

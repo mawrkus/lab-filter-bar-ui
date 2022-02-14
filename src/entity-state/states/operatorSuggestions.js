@@ -1,11 +1,9 @@
-import { service } from "../../services";
-
 export const loadOperatorSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
       ctx.set({ ...ctx.get(), loading: true });
 
-      const suggestions = await service.loadOperators();
+      const suggestions = await toolkit.suggestionService.loadOperators();
 
       ctx.set({ ...ctx.get(), loading: false, suggestions });
 

@@ -1,5 +1,3 @@
-import { service } from "../../services";
-
 export const loadValueSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
@@ -9,7 +7,7 @@ export const loadValueSuggestions = {
 
       const type = currentCtx.partialFilter.attribute.value;
 
-      const suggestions = await service.loadValues({ type });
+      const suggestions = await toolkit.suggestionService.loadValues({ type });
 
       ctx.set({ ...currentCtx, loading: false, suggestions });
 

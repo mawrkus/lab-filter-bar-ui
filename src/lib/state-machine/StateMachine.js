@@ -1,10 +1,8 @@
-import { StateMachineContext } from "./StateMachineContext";
-
 export class StateMachine {
   /**
    * @param {Object} options
    * @param {string} options.initialStateId
-   * @param {Object} options.context
+   * @param {StateMachineContext} options.context
    * @param {Object} options.toolkit
    * @param {Object} options.states
    * @param {Function} options.onTransition
@@ -18,10 +16,7 @@ export class StateMachine {
   } = {}) {
     this._currentStateId = null;
 
-    // TODO: a Proxy is good enough?
-    this._currentContext = new StateMachineContext({
-      initialValue: context,
-    });
+    this._context = context;
 
     this._onEntryToolkit = this._buildOnEntryToolkit(toolkit);
     this._onExitToolkit = this._buildCustomToolkit(toolkit);
@@ -48,7 +43,7 @@ export class StateMachine {
    */
   _buildOnTransitionContext() {
     return {
-      get: this._currentContext.get.bind(this._currentContext),
+      get: this._context.get.bind(this._context),
       set: () => {
         throw new Error(
           "Modifying the context outside of the state machine is prohibited!"
@@ -101,7 +96,7 @@ export class StateMachine {
     if (previousState?.events?.[event?.name]?.action) {
       previousState.events[event.name].action(
         event,
-        this._currentContext,
+        this._context,
         this._transitionActionToolkit
       );
     }
@@ -109,7 +104,7 @@ export class StateMachine {
     if (previousState?.actions?.onExit) {
       previousState?.actions.onExit(
         event,
-        this._currentContext,
+        this._context,
         this._onExitToolkit
       );
     }
@@ -119,7 +114,7 @@ export class StateMachine {
     if (currentState.actions?.onEntry) {
       currentState.actions.onEntry(
         event,
-        this._currentContext,
+        this._context,
         this._onEntryToolkit
       );
     }
@@ -182,7 +177,7 @@ export class StateMachine {
       targetStateId = targetStateDefinition.targetId;
     } else if (Array.isArray(targetStateDefinition)) {
       const match = targetStateDefinition.find(({ cond }) =>
-        cond(event, this._currentContext, this._condToolkit)
+        cond(event, this._context, this._condToolkit)
       );
 
       targetStateId = match ? match.targetId : undefined;
@@ -197,8 +192,8 @@ export class StateMachine {
   /**
    * @return {Object}
    */
-  getCurrentContext() {
-    return this._currentContext;
+  getContext() {
+    return this._context;
   }
 
   /**

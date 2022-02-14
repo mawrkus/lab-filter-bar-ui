@@ -1,12 +1,16 @@
 import { Dropdown } from 'semantic-ui-react'
 
+const loadingSuggestions = [{ key: 'loading', text: 'Loading...', value: 'laoding' }];
+const noop = () => {};
+
 export const SuggestionsDropdown = ({
+  loading,
   suggestions,
   onSelectItem,
   onOpen,
   onClose,
 }) => {
-  const options = suggestions.map(({ id, label, value }) => ({
+  const options = loading ? loadingSuggestions : suggestions.map(({ id, label, value }) => ({
     key: id,
     text: label,
     value,
@@ -19,7 +23,7 @@ export const SuggestionsDropdown = ({
       selectOnBlur={false}
       selectOnNavigation={false}
       options={options}
-      onChange={onSelectItem}
+      onChange={loading ? noop : onSelectItem}
       onOpen={onOpen}
       onClose={onClose}
     />

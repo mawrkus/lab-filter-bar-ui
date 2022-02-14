@@ -1,23 +1,56 @@
-import logo from './logo.svg';
+import { useState } from 'react';
+
 import './App.css';
+import { Chiclet } from './components/Chiclet';
+import { PartialChiclet } from './components/PartialChiclet';
+import { SuggestionsDropdown } from './components/SuggestionsDropdown';
+import { entityStateMachine } from './state-machine/entityStateMachine';
+
+const machineContext = entityStateMachine.getCurrentContext();
 
 function App() {
+  const [props, setProps] = useState(machineContext.get());
+  machineContext.onUpdate(setProps);
+
+  const onOpenSuggestionsDropdown = () => {
+    entityStateMachine.sendEvent("onInputFocus");
+  };
+
+  const onCloseSuggestionsDropdown = () => {
+    entityStateMachine.sendEvent("onDiscardSuggestions");
+  };
+
+  const onSelectSuggestionItem = (event, { value }) => {
+    entityStateMachine.sendEvent("onSelectItem", {
+      value,
+      label: event.target.textContent,
+    });
+  };
+
+  const onRemoveChiclet = (event, filter) => {
+    entityStateMachine.sendEvent("onRemoveFilter", filter);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <form>
+        {props.filters.map((filter) => (
+          <Chiclet
+            key={filter.id}
+            filter={filter}
+            onRemove={onRemoveChiclet}
+          />
+        ))}
+
+        <PartialChiclet filter={props.partialFilter} />
+
+        <SuggestionsDropdown
+          suggestions={props.suggestions}
+          onOpen={onOpenSuggestionsDropdown}
+          onClose={onCloseSuggestionsDropdown}
+          onSelectItem={onSelectSuggestionItem}
+        />
+      </form>
     </div>
   );
 }

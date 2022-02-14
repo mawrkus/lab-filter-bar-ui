@@ -3,7 +3,7 @@ import './App.css';
 import { Chiclet } from './components/Chiclet';
 import { PartialChiclet } from './components/PartialChiclet';
 import { SuggestionsDropdown } from './components/SuggestionsDropdown';
-import { entityStateMachine } from './state-machine/entityStateMachine';
+import { entityStateMachine } from './entity-state/entityStateMachine';
 import { useMachineContext } from './hooks/useMachineContext';
 
 function App() {

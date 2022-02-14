@@ -1,15 +1,13 @@
 export const loadValueSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
-      const currentCtx = ctx.get();
+      const ctxValue = ctx.startLoading();
 
-      ctx.set({ ...currentCtx, loading: true });
-
-      const type = currentCtx.partialFilter.attribute.value;
+      const type = ctxValue.partialFilter.attribute.value;
 
       const suggestions = await toolkit.suggestionService.loadValues({ type });
 
-      ctx.set({ ...currentCtx, loading: false, suggestions });
+      ctx.doneLoading(suggestions);
 
       toolkit.sendEvent("onValueSuggestionsLoaded");
     },

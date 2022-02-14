@@ -42,7 +42,7 @@ function App() {
         <PartialChiclet filter={props.partialFilter} />
 
         <SuggestionsDropdown
-          loading={props.loading}
+          loading={props.isLoading}
           suggestions={props.suggestions}
           onOpen={onOpenSuggestionsDropdown}
           onClose={onCloseSuggestionsDropdown}

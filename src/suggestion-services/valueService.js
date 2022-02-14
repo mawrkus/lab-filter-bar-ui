@@ -2,7 +2,7 @@ import { waitFor } from "./waitFor";
 
 export const valueService = {
   load: async ({ type }) => {
-    await waitFor(1250);
+    await waitFor(950);
 
     if (type === 'entityType') {
       return [{

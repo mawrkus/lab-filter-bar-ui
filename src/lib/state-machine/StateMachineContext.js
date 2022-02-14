@@ -3,7 +3,7 @@ export class StateMachineContext {
    * @param {Object} initialValue
    */
   constructor(initialValue) {
-    this._value = initialValue;
+    this._value = { ...initialValue };
     this._updateHandler = null;
   }
 

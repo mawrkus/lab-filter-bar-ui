@@ -1,35 +1,30 @@
 export const idle = {
   actions: {
     onEntry: (event, ctx) => {
-      ctx.set({ ...ctx.get(), loading: false });
+      ctx.cancelLoading();
     },
   },
   events: {
     onDiscardSuggestions: "idle",
     onInputFocus: [
       {
-        cond: (event, ctx) => ctx.get().partialFilter.attribute === null,
+        cond: (event, ctx) => !ctx.isAttributeSelected() && !ctx.isOperatorSelected(),
         targetId: "loadAttributeSuggestions",
       },
       {
-        cond: (event, ctx) => ctx.get().partialFilter.operator === null,
+        cond: (event, ctx) => ctx.isAttributeSelected() && !ctx.isOperatorSelected(),
         targetId: "loadOperatorSuggestions",
       },
       {
         cond: (event, ctx) =>
-          ctx.get().partialFilter.attribute && ctx.get().partialFilter.operator,
+        ctx.isAttributeSelected() && ctx.isOperatorSelected(),
         targetId: "loadValueSuggestions",
       },
     ],
     onRemoveFilter: {
       targetId: "idle",
       action: (event, ctx) => {
-        const newCtx = ctx.get();
-        const { id } = event.data;
-
-        newCtx.filters = newCtx.filters.filter((f) => f.id !== id);
-
-        ctx.set(newCtx);
+        ctx.removeFilter(event.data.id);
       },
     },
   },

@@ -1,11 +1,11 @@
 export const loadOperatorSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
-      ctx.set({ ...ctx.get(), loading: true });
+      ctx.startLoading();
 
       const suggestions = await toolkit.suggestionService.loadOperators();
 
-      ctx.set({ ...ctx.get(), loading: false, suggestions });
+      ctx.doneLoading(suggestions);
 
       toolkit.sendEvent("onOperatorSuggestionsLoaded");
     },

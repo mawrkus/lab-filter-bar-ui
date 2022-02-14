@@ -6,11 +6,18 @@ import { PartialChiclet } from './components/PartialChiclet';
 import { SuggestionsDropdown } from './components/SuggestionsDropdown';
 import { entityStateMachine } from './state-machine/entityStateMachine';
 
-const machineContext = entityStateMachine.getCurrentContext();
+const useMachineContext = () => {
+  const machineContext = entityStateMachine.getCurrentContext();
+
+  const [props, setProps] = useState(machineContext.get());
+
+  machineContext.onUpdate(setProps);
+
+  return [props];
+};
 
 function App() {
-  const [props, setProps] = useState(machineContext.get());
-  machineContext.onUpdate(setProps);
+  const [props] = useMachineContext();
 
   const onOpenSuggestionsDropdown = () => {
     entityStateMachine.sendEvent("onInputFocus");

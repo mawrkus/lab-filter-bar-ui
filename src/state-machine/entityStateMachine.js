@@ -121,11 +121,15 @@ export const entityStateMachine = new StateMachine({
     loadValueSuggestions: {
       actions: {
         onEntry: async (event, ctx, toolkit) => {
-          ctx.set({ ...ctx.get(), loading: true });
+          const currentCtx = ctx.get();
 
-          const suggestions = await service.loadValues();
+          ctx.set({ ...currentCtx, loading: true });
 
-          ctx.set({ ...ctx.get(), loading: false, suggestions });
+          const type = currentCtx.partialFilter.attribute.value;
+
+          const suggestions = await service.loadValues({ type });
+
+          ctx.set({ ...currentCtx, loading: false, suggestions });
 
           toolkit.sendEvent("onValueSuggestionsLoaded");
         },

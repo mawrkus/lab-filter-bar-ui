@@ -86,20 +86,22 @@ export class StateMachine {
    * @param {string} transition.toStateId
    * @param {boolean} transition.isValid
    */
-  _execActions(event, transition) {
+  _execActions(event, transitionAndAction) {
+    const { action, ...transition } = transitionAndAction;
+
     if (this._onTransition) {
       this._onTransition(transition, this._onTransitionContext);
     }
 
-    const previousState = this._states[transition.fromStateId];
-
-    if (previousState?.events?.[event?.name]?.action) {
-      previousState.events[event.name].action(
+    if (action) {
+      action(
         event,
         this._context,
         this._transitionActionToolkit
       );
     }
+
+    const previousState = this._states[transition.fromStateId];
 
     if (previousState?.actions?.onExit) {
       previousState?.actions.onExit(
@@ -163,6 +165,7 @@ export class StateMachine {
       fromStateId: this._currentStateId,
       event: { ...event },
       toStateId: undefined,
+      action: null,
       isValid: false,
     };
 
@@ -170,20 +173,24 @@ export class StateMachine {
       this._states[this._currentStateId].events?.[event.name];
 
     let targetStateId;
+    let action;
 
     if (typeof targetStateDefinition === "string") {
       targetStateId = targetStateDefinition;
     } else if (typeof targetStateDefinition?.targetId === "string") {
       targetStateId = targetStateDefinition.targetId;
+      action = targetStateDefinition.action;
     } else if (Array.isArray(targetStateDefinition)) {
       const match = targetStateDefinition.find(({ cond }) =>
         cond(event, this._context, this._condToolkit)
       );
 
       targetStateId = match ? match.targetId : undefined;
+      action = match.action;
     }
 
     transition.toStateId = targetStateId;
+    transition.action = action;
     transition.isValid = typeof this._states[targetStateId] !== "undefined";
 
     return transition;

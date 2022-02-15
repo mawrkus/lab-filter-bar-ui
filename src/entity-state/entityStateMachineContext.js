@@ -25,11 +25,11 @@ class EntityStateMachineContext extends StateMachineContext {
     return this.get();
   }
 
-  isAttributeSelected() {
+  isPartialAttributeSelected() {
     return Boolean(this.get().partialFilter.attribute);
   }
 
-  isOperatorSelected() {
+  isPartialOperatorSelected() {
     return Boolean(this.get().partialFilter.operator);
   }
 
@@ -109,6 +109,10 @@ class EntityStateMachineContext extends StateMachineContext {
 
   setEditFilter(editFilter) {
     this.set({ ...this.get(), editFilter })
+  }
+
+  isEditingFilter() {
+    return Boolean(this.get().editFilter);
   }
 };
 

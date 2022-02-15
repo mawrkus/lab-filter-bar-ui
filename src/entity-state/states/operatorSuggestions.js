@@ -19,11 +19,23 @@ export const loadOperatorSuggestions = {
 export const displayOperatorSuggestions = {
   events: {
     discardSuggestions: "idle",
-    selectItem: {
-      targetId: "loadValueSuggestions",
-      action: (event, ctx) => {
-        ctx.setFilterOperator(event.data);
+    selectItem: [
+      // partial filter construction
+      {
+        cond: (event, ctx) => !ctx.isEditingFilter(),
+        targetId: "loadValueSuggestions",
+        action: (event, ctx) => {
+          ctx.setFilterOperator(event.data);
+        },
       },
-    },
+      // filter edition
+      {
+        cond: (event, ctx) => ctx.isEditingFilter(),
+        targetId: "idle",
+        action: (event, ctx) => {
+          ctx.setFilterOperator(event.data);
+        },
+      },
+    ],
   },
 };

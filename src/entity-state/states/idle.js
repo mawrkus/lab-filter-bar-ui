@@ -8,16 +8,16 @@ export const idle = {
     discardSuggestions: "idle",
     startInput: [
       {
-        cond: (event, ctx) => !ctx.isAttributeSelected() && !ctx.isOperatorSelected(),
+        cond: (event, ctx) => !ctx.isPartialAttributeSelected() && !ctx.isPartialOperatorSelected(),
         targetId: "loadAttributeSuggestions",
       },
       {
-        cond: (event, ctx) => ctx.isAttributeSelected() && !ctx.isOperatorSelected(),
+        cond: (event, ctx) => ctx.isPartialAttributeSelected() && !ctx.isPartialOperatorSelected(),
         targetId: "loadOperatorSuggestions",
       },
       {
         cond: (event, ctx) =>
-        ctx.isAttributeSelected() && ctx.isOperatorSelected(),
+        ctx.isPartialAttributeSelected() && ctx.isPartialOperatorSelected(),
         targetId: "loadValueSuggestions",
       },
     ],

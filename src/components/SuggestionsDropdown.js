@@ -16,26 +16,38 @@ export const SuggestionsDropdown = ({
   onOpen,
   onClose,
 }) => {
-  const options = loading ? loadingSuggestions : suggestions.map(({ id, label, value }) => ({
+  const options = loading ? loadingSuggestions : suggestions.map(({ id, value, label }) => ({
     key: id,
     text: label,
-    value,
+    // 1. we do this to ensure a unique value becausewhen onChange is called, the only property
+    // received is value
+    // 2. Using id here creates a UI bug where selecting with the keyboard then pressing enter
+    // does not work when the 2nd dropdown it opened
+    value: `${id}-${value}`,
   }));
+
+  const onCustomSelectItem = (e, { value }) => {
+    if (!loading) {
+      // we don't receive the full item, only its value :/
+      const item = suggestions.find((item) => `${item.id}-${item.value}` === value);
+      onSelectItem(e, item);
+    }
+  };
 
   return (
     <Dropdown
+      closeOnChange={false}
+      loading={loading}
+      onChange={onCustomSelectItem}
+      onClose={onClose}
+      onOpen={onOpen}
+      open={open}
+      openOnFocus={false}
+      options={options}
       search
       selection
-      openOnFocus={false}
-      closeOnChange={false}
-      open={open}
-      loading={loading}
       selectOnBlur={false}
       selectOnNavigation={false}
-      options={options}
-      onChange={loading ? noop : onSelectItem}
-      onOpen={onOpen}
-      onClose={onClose}
     />
   );
 };

@@ -19,11 +19,8 @@ function App() {
     entityStateMachine.sendEvent("discardSuggestions");
   };
 
-  const onSelectSuggestionItem = (event, { value }) => {
-    entityStateMachine.sendEvent("selectItem", {
-      value,
-      label: value || event.target.textContent,
-    });
+  const onSelectSuggestionItem = (event, item) => {
+    entityStateMachine.sendEvent("selectItem", item);
   };
 
   const onRemoveChiclet = (event, filter) => {

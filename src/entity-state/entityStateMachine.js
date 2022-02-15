@@ -14,7 +14,7 @@ import {
 
 export const entityStateMachine = new StateMachine({
   initialStateId: "idle",
-  onTransition: (...args) => console.log('📟', ...args),
+  onTransition: (transition, ctx) => console.log('📟', transition, ctx.get()),
   context: entityStateMachineContext,
   toolkit: { suggestionService },
   states: {

@@ -2,8 +2,11 @@ export const loadValueSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
       const ctxValue = ctx.startLoading();
+      const { partialFilter, editFilter } = ctxValue;
 
-      const type = ctxValue.partialFilter.attribute.value;
+      const type = editFilter
+        ? editFilter.attribute.value
+        : partialFilter.attribute.value;
 
       const suggestions = await toolkit.suggestionService.loadValues({ type });
 
@@ -13,33 +16,24 @@ export const loadValueSuggestions = {
     },
   },
   events: {
-    onDiscardSuggestions: "idle",
+    discardSuggestions: "idle",
     onValueSuggestionsLoaded: "displayValueSuggestions",
   },
 };
 
 export const displayValueSuggestions = {
   events: {
-    onDiscardSuggestions: "idle",
-    onSelectItem: {
+    discardSuggestions: "idle",
+    selectItem: {
       targetId: "idle",
       action: (event, ctx) => {
-        const newCtx = ctx.get();
-        const { partialFilter, filters } = newCtx;
+        const ctxValue = ctx.get();
 
-        const newFilter = {
-          id: newCtx.filterId++,
-          attribute: partialFilter.attribute,
-          operator: partialFilter.operator,
-          operand: event.data,
-        };
-
-        filters.push(newFilter);
-
-        partialFilter.attribute = null;
-        partialFilter.operator = null;
-
-        ctx.set(newCtx);
+        if (ctxValue.editFilter) {
+          ctx.setFilterValue(event.data);
+        } else {
+          ctx.addFilter(event.data);
+        }
       },
     },
   },

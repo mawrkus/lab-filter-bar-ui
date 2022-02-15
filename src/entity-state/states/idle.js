@@ -5,8 +5,8 @@ export const idle = {
     },
   },
   events: {
-    onDiscardSuggestions: "idle",
-    onInputFocus: [
+    discardSuggestions: "idle",
+    startInput: [
       {
         cond: (event, ctx) => !ctx.isAttributeSelected() && !ctx.isOperatorSelected(),
         targetId: "loadAttributeSuggestions",
@@ -21,7 +21,28 @@ export const idle = {
         targetId: "loadValueSuggestions",
       },
     ],
-    onRemoveFilter: {
+    editPartialOperatorSuggestion: {
+      targetId: "loadOperatorSuggestions",
+    },
+    editAttributeSuggestion: {
+      targetId: "loadAttributeSuggestions",
+      action: (event, ctx) => {
+        ctx.setEditFilter(event.data.filter);
+      },
+    },
+    editOperatorSuggestion: {
+      targetId: "loadOperatorSuggestions",
+      action: (event, ctx) => {
+        ctx.setEditFilter(event.data.filter);
+      },
+    },
+    editValueSuggestion: {
+      targetId: "loadValueSuggestions",
+      action: (event, ctx) => {
+        ctx.setEditFilter(event.data.filter);
+      },
+    },
+    removeFilter: {
       targetId: "idle",
       action: (event, ctx) => {
         ctx.removeFilter(event.data.id);

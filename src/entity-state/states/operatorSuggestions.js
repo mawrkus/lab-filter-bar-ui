@@ -11,22 +11,18 @@ export const loadOperatorSuggestions = {
     },
   },
   events: {
-    onDiscardSuggestions: "idle",
+    discardSuggestions: "idle",
     onOperatorSuggestionsLoaded: "displayOperatorSuggestions",
   },
 };
 
 export const displayOperatorSuggestions = {
   events: {
-    onDiscardSuggestions: "idle",
-    onSelectItem: {
+    discardSuggestions: "idle",
+    selectItem: {
       targetId: "idle",
       action: (event, ctx) => {
-        const newCtx = ctx.get();
-
-        newCtx.partialFilter.operator = event.data;
-
-        ctx.set(newCtx);
+        ctx.setFilterOperator(event.data);
       },
     },
   },

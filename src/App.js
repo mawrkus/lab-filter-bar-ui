@@ -1,4 +1,6 @@
 
+import { Form } from 'semantic-ui-react';
+
 import './App.css';
 import { Chiclet } from './components/Chiclet';
 import { PartialChiclet } from './components/PartialChiclet';
@@ -10,45 +12,69 @@ function App() {
   const [props] = useStateMachineContext(entityStateMachine);
 
   const onOpenSuggestionsDropdown = () => {
-    entityStateMachine.sendEvent("onInputFocus");
+    entityStateMachine.sendEvent("startInput");
   };
 
   const onCloseSuggestionsDropdown = () => {
-    entityStateMachine.sendEvent("onDiscardSuggestions");
+    entityStateMachine.sendEvent("discardSuggestions");
   };
 
   const onSelectSuggestionItem = (event, { value }) => {
-    entityStateMachine.sendEvent("onSelectItem", {
+    entityStateMachine.sendEvent("selectItem", {
       value,
       label: event.target.textContent,
     });
   };
 
   const onRemoveChiclet = (event, filter) => {
-    entityStateMachine.sendEvent("onRemoveFilter", filter);
+    entityStateMachine.sendEvent("removeFilter", filter);
+  };
+
+  const onClickChiclet = (event, filter, part) => {
+    if (part === 'operator') {
+      return entityStateMachine.sendEvent("editOperatorSuggestion", { filter });
+    }
+
+    if (part === 'value') {
+      return entityStateMachine.sendEvent("editValueSuggestion", { filter });
+    }
+  };
+
+  const onClickPartialChiclet = (event, filter, part) => {
+    if (part === 'operator') {
+      return entityStateMachine.sendEvent("editPartialOperatorSuggestion", { filter });
+    }
   };
 
   return (
     <div className="container">
-      <form>
-        {props.filters.map((filter) => (
-          <Chiclet
-            key={filter.id}
-            filter={filter}
-            onRemove={onRemoveChiclet}
+      <h1>Filter bar prototype</h1>
+
+      <Form>
+        <Form.Group>
+          {props.filters.map((filter) => (
+            <Chiclet
+              key={filter.id}
+              filter={filter}
+              onClick={onClickChiclet}
+              onRemove={onRemoveChiclet}
+            />
+          ))}
+
+          <PartialChiclet
+            filter={props.partialFilter}
+            onClick={onClickPartialChiclet}
           />
-        ))}
 
-        <PartialChiclet filter={props.partialFilter} />
-
-        <SuggestionsDropdown
-          loading={props.isLoading}
-          suggestions={props.suggestions}
-          onOpen={onOpenSuggestionsDropdown}
-          onClose={onCloseSuggestionsDropdown}
-          onSelectItem={onSelectSuggestionItem}
-        />
-      </form>
+          <SuggestionsDropdown
+            loading={props.isLoading}
+            suggestions={props.suggestions}
+            onOpen={onOpenSuggestionsDropdown}
+            onClose={onCloseSuggestionsDropdown}
+            onSelectItem={onSelectSuggestionItem}
+          />
+        </Form.Group>
+      </Form>
     </div>
   );
 }

@@ -11,22 +11,18 @@ export const loadAttributeSuggestions = {
     },
   },
   events: {
-    onDiscardSuggestions: "idle",
+    discardSuggestions: "idle",
     onAttributeSuggestionsLoaded: "displayAttributeSuggestions",
   },
 };
 
 export const displayAttributeSuggestions = {
   events: {
-    onDiscardSuggestions: "idle",
-    onSelectItem: {
+    discardSuggestions: "idle",
+    selectItem: {
       targetId: "idle",
       action: (event, ctx) => {
-        const newCtx = ctx.get();
-
-        newCtx.partialFilter.attribute = event.data;
-
-        ctx.set(newCtx);
+        ctx.setFilterAttribute(event.data);
       },
     },
   },

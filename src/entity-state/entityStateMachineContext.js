@@ -3,7 +3,14 @@ import { StateMachineContext } from "../lib/state-machine";
 class EntityStateMachineContext extends StateMachineContext {
   cancelLoading() {
     // TODO: abort signal
-    this.set({ ...this.get(), isLoading: false, suggestions: [] });
+
+    this.set({
+      ...this.get(),
+      isLoading: false,
+      suggestions: [],
+      editFilter: null,
+    });
+
     return this.get();
   }
 
@@ -25,6 +32,49 @@ class EntityStateMachineContext extends StateMachineContext {
     return Boolean(this.get().partialFilter.operator);
   }
 
+  setFilterAttribute(filterAttribute) {
+    const ctxValue = this.get();
+    const { partialFilter } = ctxValue;
+
+    partialFilter.attribute = filterAttribute;
+
+    this.set(ctxValue);
+
+    return this.get();
+  }
+
+  setFilterOperator(filterOperator) {
+    const ctxValue = this.get();
+    const { partialFilter, editFilter } = ctxValue;
+
+    if (editFilter) {
+      const filter = ctxValue.filters.find((f) => f.id === editFilter.id);
+      filter.operator = filterOperator;
+    } else {
+      partialFilter.operator = filterOperator;
+    }
+
+    this.set(ctxValue);
+
+    return this.get();
+  }
+
+  setFilterValue(filterValue) {
+    const ctxValue = this.get();
+    const { partialFilter, editFilter } = ctxValue;
+
+    if (editFilter) {
+      const filter = ctxValue.filters.find((f) => f.id === editFilter.id);
+      filter.value = filterValue;
+    } else {
+      partialFilter.value = filterValue;
+    }
+
+    this.set(ctxValue);
+
+    return this.get();
+  }
+
   removeFilter(filterId) {
     const ctxValue = this.get();
 
@@ -34,6 +84,31 @@ class EntityStateMachineContext extends StateMachineContext {
 
     return this.get();
   }
+
+  addFilter(filterValue) {
+    const ctxValue = this.get();
+    const { partialFilter, filters } = ctxValue;
+
+    filters.push({
+      id: ctxValue.filterId,
+      attribute: partialFilter.attribute,
+      operator: partialFilter.operator,
+      value: filterValue,
+    });
+
+    ctxValue.filterId += 1;
+
+    partialFilter.attribute = null;
+    partialFilter.operator = null;
+
+    this.set(ctxValue);
+
+    return this.get();
+  }
+
+  setEditFilter(editFilter) {
+    this.set({ ...this.get(), editFilter })
+  }
 };
 
 export const entityStateMachineContext = new EntityStateMachineContext({
@@ -41,9 +116,10 @@ export const entityStateMachineContext = new EntityStateMachineContext({
     attribute: null,
     operator: null,
   },
-  filterId: 1,
   filters: [],
-  suggestions: [],
+  filterId: 1,
   isLoading: false,
+  suggestions: [],
+  editFilter: null,
   // TODO: abort signal
 });

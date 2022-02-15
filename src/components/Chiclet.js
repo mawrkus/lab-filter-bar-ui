@@ -1,20 +1,38 @@
 import { Icon, Label } from 'semantic-ui-react'
 
-export const Chiclet = ({ filter, onRemove }) => {
-  const { attribute, operator, operand } = filter;
+export const Chiclet = ({ filter, onClick, onRemove }) => {
+  const { attribute, operator, value } = filter;
 
   return (
     <div>
-      <Label as='a'>
+      <Label
+        as='a'
+        onClick={(e) => onClick(e, filter, 'attribute')}
+      >
         {attribute.label}
       </Label>
-      <Label as='a'>
+
+      <Label
+        as='a'
+        title="Click to edit"
+        onClick={(e) => onClick(e, filter, 'operator')}
+      >
         {operator.label}
       </Label>
-      <Label as='a'>
-        {operand.label}
+
+      <Label
+        as='a'
+        title="Click to edit"
+        onClick={(e) => onClick(e, filter, 'value')}
+      >
+        {value.label}
       </Label>
-      <Label as='a' onClick={(e) => onRemove(e, filter)}>
+
+      <Label
+        as='a'
+        title="Remove filter"
+        onClick={(e) => onRemove(e, filter)}
+      >
         <Icon name='delete' />
       </Label>
     </div>

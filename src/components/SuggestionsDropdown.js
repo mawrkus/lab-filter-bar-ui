@@ -20,6 +20,7 @@ export const SuggestionsDropdown = ({
     <Dropdown
       search
       selection
+      loading={loading}
       selectOnBlur={false}
       selectOnNavigation={false}
       options={options}

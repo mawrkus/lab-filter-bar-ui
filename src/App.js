@@ -48,7 +48,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Filter bar prototype</h1>
+      <h1>🧪 Rick &amp; Morty filter bar 🧪</h1>
 
       <Form>
         <Form.Group>

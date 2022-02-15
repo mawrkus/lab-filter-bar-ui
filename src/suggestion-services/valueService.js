@@ -1,47 +1,33 @@
-import { waitFor } from "./waitFor";
-
 export const valueService = {
   load: async ({ type }) => {
-    await waitFor(450);
-
-    if (type === 'entityType') {
-      return [{
-        id: 1,
-        value: 'EXT-SYNTH',
-        label: 'Synthetics',
-      }, {
-        id: 2,
-        value: 'APP-DASHBOARD',
-        label: 'Dashboards',
-      }, {
-        id: 3,
-        value: 'APM-BROWSER',
-        label: 'Browsers',
-      }];
+    if (type === 'character') {
+      const response = await fetch('https://api.tvmaze.com/shows/216/cast');
+      const json = await response.json();
+      return json.map(({ person, character }) => ({
+        id: character.id,
+        value: character.name,
+        label: `${character.name} (${person.name})`,
+      }));
     }
 
-    if (type === 'environment') {
-      return [{
-        id: 1,
-        value: 'staging',
-        label: 'Staging',
-      }, {
-        id: 2,
-        value: 'production',
-        label: 'Production',
-      }];
+    if (type === 'season') {
+      const response = await fetch('https://api.tvmaze.com/shows/216/seasons');
+      const json = await response.json();
+      return json.map(({ id, number, episodeOrder }) => ({
+        id,
+        value: number,
+        label: `${number} (${episodeOrder} episodes)`,
+      }));
     }
 
-    if (type === 'account') {
-      return [{
-        id: 1,
-        value: 'mawrkus',
-        label: 'Mawrkus',
-      }, {
-        id: 2,
-        value: 'mario',
-        label: 'Mario',
-      }];
+    if (type === 'episode') {
+      const response = await fetch('https://api.tvmaze.com/shows/216/episodes');
+      const json = await response.json();
+      return json.map(({ id, name, season, number }) => ({
+        id,
+        value: name,
+        label: `${name} (S${season}E${number})`,
+      }));
     }
   },
 };

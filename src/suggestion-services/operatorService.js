@@ -1,9 +1,5 @@
-import { waitFor } from "./waitFor";
-
 export const operatorService = {
   load: async () => {
-    await waitFor(250);
-
     return [{
       id: 1,
       value: '=',

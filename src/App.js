@@ -22,7 +22,7 @@ function App() {
   const onSelectSuggestionItem = (event, { value }) => {
     entityStateMachine.sendEvent("selectItem", {
       value,
-      label: event.target.textContent,
+      label: value || event.target.textContent,
     });
   };
 

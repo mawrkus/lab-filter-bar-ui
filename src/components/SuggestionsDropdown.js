@@ -1,6 +1,5 @@
 import { Dropdown } from 'semantic-ui-react'
 
-const noop = () => {};
 const loadingSuggestions = [
   { key: 'loading', text: 'Loading...', value: 'loading' },
   { key: 'empty-1', text: '', value: '' },

@@ -67,6 +67,7 @@ function App() {
           />
 
           <SuggestionsDropdown
+            open={props.isDisplayed}
             loading={props.isLoading}
             suggestions={props.suggestions}
             onOpen={onOpenSuggestionsDropdown}

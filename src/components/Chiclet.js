@@ -7,6 +7,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
     <div>
       <Label
         as='a'
+        color="blue"
         onClick={(e) => onClick(e, filter, 'attribute')}
       >
         {attribute.label}
@@ -14,6 +15,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
 
       <Label
         as='a'
+        color="blue"
         title="Click to edit"
         onClick={(e) => onClick(e, filter, 'operator')}
       >
@@ -22,6 +24,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
 
       <Label
         as='a'
+        color="blue"
         title="Click to edit"
         onClick={(e) => onClick(e, filter, 'value')}
       >
@@ -30,6 +33,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
 
       <Label
         as='a'
+        color="blue"
         title="Remove filter"
         onClick={(e) => onRemove(e, filter)}
       >

@@ -27,6 +27,7 @@ export const SuggestionsDropdown = ({
       search
       selection
       openOnFocus={false}
+      closeOnChange={false}
       open={open}
       loading={loading}
       selectOnBlur={false}

@@ -20,7 +20,7 @@ export const displayAttributeSuggestions = {
   events: {
     discardSuggestions: "idle",
     selectItem: {
-      targetId: "idle",
+      targetId: "loadOperatorSuggestions",
       action: (event, ctx) => {
         ctx.setFilterAttribute(event.data);
       },

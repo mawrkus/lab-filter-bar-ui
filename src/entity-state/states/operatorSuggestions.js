@@ -20,7 +20,7 @@ export const displayOperatorSuggestions = {
   events: {
     discardSuggestions: "idle",
     selectItem: {
-      targetId: "idle",
+      targetId: "loadValueSuggestions",
       action: (event, ctx) => {
         ctx.setFilterOperator(event.data);
       },

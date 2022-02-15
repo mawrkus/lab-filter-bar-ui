@@ -22,8 +22,6 @@ export const SuggestionsDropdown = ({
     value,
   }));
 
-  console.log('open=', open);
-
   return (
     <Dropdown
       search

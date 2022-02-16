@@ -35,6 +35,10 @@ function App() {
     if (part === 'value') {
       return entityStateMachine.sendEvent("editValueSuggestion", { filter });
     }
+
+    if (part === 'logical-operator') {
+      return entityStateMachine.sendEvent("editLogicalOperatorSuggestion", { filter });
+    }
   };
 
   const onClickPartialChiclet = (event, filter, part) => {

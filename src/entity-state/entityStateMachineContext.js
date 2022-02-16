@@ -15,6 +15,7 @@ class EntityStateMachineContext extends StateMachineContext {
     return this.get();
   }
 
+  // loading states
   startLoading() {
     this.set({ ...this.get(), isLoading: true, isDisplayed: true });
     return this.get();
@@ -25,6 +26,7 @@ class EntityStateMachineContext extends StateMachineContext {
     return this.get();
   }
 
+  // partial filters
   isPartialAttributeSelected() {
     return Boolean(this.get().partialFilter.attribute);
   }
@@ -33,6 +35,7 @@ class EntityStateMachineContext extends StateMachineContext {
     return Boolean(this.get().partialFilter.operator);
   }
 
+  // filter creation/edition
   setFilterAttribute(filterAttribute) {
     const ctxValue = this.get();
     const { partialFilter } = ctxValue;
@@ -76,17 +79,7 @@ class EntityStateMachineContext extends StateMachineContext {
     return this.get();
   }
 
-  removeFilter(filterId) {
-    const ctxValue = this.get();
-
-    ctxValue.filters = ctxValue.filters.filter((f) => f.id !== filterId);
-
-    this.set({ ...ctxValue });
-
-    return this.get();
-  }
-
-  addFilter(filterValue) {
+  addFilter(filterValue, type='attribute-operator-value') {
     const ctxValue = this.get();
     const { partialFilter, filters } = ctxValue;
 
@@ -95,6 +88,7 @@ class EntityStateMachineContext extends StateMachineContext {
       attribute: partialFilter.attribute,
       operator: partialFilter.operator,
       value: filterValue,
+      type,
     });
 
     ctxValue.filterId += 1;
@@ -113,6 +107,22 @@ class EntityStateMachineContext extends StateMachineContext {
 
   isEditingFilter() {
     return Boolean(this.get().editFilter);
+  }
+
+  // filter deletion
+  removeFilter(filterId) {
+    const ctxValue = this.get();
+
+    ctxValue.filters = ctxValue.filters.filter((f) => f.id !== filterId);
+
+    this.set({ ...ctxValue });
+
+    return this.get();
+  }
+
+  lastFilter() {
+    const { filters } = this.get();
+    return filters[filters.length - 1];
   }
 };
 

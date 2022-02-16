@@ -10,11 +10,11 @@ export const operatorService = {
       label: '!=',
     }, {
       id: 3,
-      value: 'LIKE',
+      value: 'like',
       label: 'LIKE',
     }, {
       id: 4,
-      value: 'NOT_LIKE',
+      value: 'not-like',
       label: 'NOT LIKE',
     }];
   }

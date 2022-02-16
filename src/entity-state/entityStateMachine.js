@@ -10,6 +10,8 @@ import {
   displayOperatorSuggestions,
   loadValueSuggestions,
   displayValueSuggestions,
+  loadLogicalSuggestions,
+  displayLogicalSuggestions,
 } from "./states";
 
 export const entityStateMachine = new StateMachine({
@@ -28,5 +30,7 @@ export const entityStateMachine = new StateMachine({
     displayOperatorSuggestions,
     loadValueSuggestions,
     displayValueSuggestions,
+    loadLogicalSuggestions,
+    displayLogicalSuggestions,
   },
 });

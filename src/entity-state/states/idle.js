@@ -30,12 +30,6 @@ export const idle = {
     editPartialOperator: {
       targetId: "loadOperatorSuggestions",
     },
-    editAttribute: {
-      targetId: "loadAttributeSuggestions",
-      action: (event, ctx) => {
-        ctx.setEditFilter(event.data.filter);
-      },
-    },
     editOperator: {
       targetId: "loadOperatorSuggestions",
       action: (event, ctx) => {

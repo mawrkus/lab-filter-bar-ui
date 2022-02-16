@@ -43,7 +43,7 @@ export const SuggestionsDropdown = ({
 
   return (
     <Dropdown
-      additionLabel="Search text: "
+      additionLabel="Search for: "
       allowAdditions
       closeOnChange={false}
       error={Boolean(error)}

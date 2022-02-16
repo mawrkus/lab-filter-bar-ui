@@ -11,6 +11,7 @@
 ### Features
 
 - Contextual: if season selected -> reduce episodes list
+- Contextual: remove selected items from suggestions
 - FilterBar onChange
 - Support delete key
 - "EXISTS" operator

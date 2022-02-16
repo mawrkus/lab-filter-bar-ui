@@ -21,8 +21,8 @@
 
 ## Architecture
 
-- State machine with context (the state)
-- Suggestion services
-- Data structure contract (suggestion item -> filter)
+- State machine with domain context (the app state)
+- Suggestion services (API requests via HTTP)
+- Contract on the data structure (suggestion item -> filter)
 - React Hooks
 - Dumb components

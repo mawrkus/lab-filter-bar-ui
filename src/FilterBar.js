@@ -33,21 +33,21 @@ export const FilterBar = () => {
 
   const onClickPartialChiclet = (event, filter, part) => {
     if (part === 'operator') {
-      return entityStateMachine.sendEvent("editPartialOperatorSuggestion", { filter });
+      return entityStateMachine.sendEvent("editPartialOperator", { filter });
     }
   };
 
   const onClickChiclet = (event, filter, part) => {
     if (part === 'operator') {
-      return entityStateMachine.sendEvent("editOperatorSuggestion", { filter });
+      return entityStateMachine.sendEvent("editOperator", { filter });
     }
 
     if (part === 'value') {
-      return entityStateMachine.sendEvent("editValueSuggestion", { filter });
+      return entityStateMachine.sendEvent("editValue", { filter });
     }
 
     if (part === 'logical-operator') {
-      return entityStateMachine.sendEvent("editLogicalOperatorSuggestion", { filter });
+      return entityStateMachine.sendEvent("editLogicalOperator", { filter });
     }
   };
 

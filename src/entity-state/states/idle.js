@@ -27,28 +27,28 @@ export const idle = {
         targetId: "loadValueSuggestions",
       },
     ],
-    editPartialOperatorSuggestion: {
+    editPartialOperator: {
       targetId: "loadOperatorSuggestions",
     },
-    editAttributeSuggestion: {
+    editAttribute: {
       targetId: "loadAttributeSuggestions",
       action: (event, ctx) => {
         ctx.setEditFilter(event.data.filter);
       },
     },
-    editOperatorSuggestion: {
+    editOperator: {
       targetId: "loadOperatorSuggestions",
       action: (event, ctx) => {
         ctx.setEditFilter(event.data.filter);
       },
     },
-    editValueSuggestion: {
+    editValue: {
       targetId: "loadValueSuggestions",
       action: (event, ctx) => {
         ctx.setEditFilter(event.data.filter);
       },
     },
-    editLogicalOperatorSuggestion: {
+    editLogicalOperator: {
       targetId: "loadLogicalSuggestions",
       action: (event, ctx) => {
         ctx.setEditFilter(event.data.filter);

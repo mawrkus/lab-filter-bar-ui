@@ -1,5 +1,5 @@
-import { StateMachine } from "../lib/state-machine";
-import { suggestionService } from "../suggestion-services";
+import { StateMachine } from "./lib/state-machine";
+import { suggestionService } from "./suggestion-services";
 import { entityStateMachineContext } from "./entityStateMachineContext";
 
 import {

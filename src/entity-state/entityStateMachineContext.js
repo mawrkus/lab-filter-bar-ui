@@ -1,4 +1,4 @@
-import { StateMachineContext } from "../lib/state-machine";
+import { StateMachineContext } from "./lib/state-machine";
 
 class EntityStateMachineContext extends StateMachineContext {
   cancelLoading() {

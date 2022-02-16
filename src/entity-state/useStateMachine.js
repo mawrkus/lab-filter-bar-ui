@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const useStateMachineContext = (stateMachine) => {
+export const useStateMachine = (stateMachine) => {
   const machineContext = stateMachine.getContext();
 
   const [props, setProps] = useState(machineContext.get());

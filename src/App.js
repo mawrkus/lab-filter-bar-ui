@@ -2,14 +2,16 @@
 import { Form } from 'semantic-ui-react';
 
 import './App.css';
+
 import { Chiclet } from './components/Chiclet';
 import { PartialChiclet } from './components/PartialChiclet';
 import { SuggestionsDropdown } from './components/SuggestionsDropdown';
+
 import { entityStateMachine } from './entity-state/entityStateMachine';
-import { useStateMachineContext } from './hooks/useStateMachineContext';
+import { useStateMachine } from './entity-state/useStateMachine';
 
 function App() {
-  const [props] = useStateMachineContext(entityStateMachine);
+  const [props] = useStateMachine(entityStateMachine);
 
   const onOpenSuggestionsDropdown = () => {
     entityStateMachine.sendEvent("startInput");

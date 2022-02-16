@@ -14,7 +14,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         className="left"
         onClick={(e) => onClick(e, filter, 'value')}
       >
-        {value.label}
+        "{value.label}"
       </Label>
 
       <Label

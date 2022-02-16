@@ -13,6 +13,7 @@
 ### Features
 
 - Contextual: if season selected -> reduce episodes list
+- FilterBar onChange
 - Support delete key
 - "EXISTS" operator
 - AbortController

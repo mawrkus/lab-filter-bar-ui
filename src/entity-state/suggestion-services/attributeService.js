@@ -16,6 +16,11 @@ export const attributeService = {
         value: 'episode',
         label: 'Episode',
       },
+      {
+        id: 4,
+        value: 'crew',
+        label: 'Crew',
+      },
     ];
   },
 };

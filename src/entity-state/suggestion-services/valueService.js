@@ -2,7 +2,9 @@ export const valueService = {
   load: async ({ type }) => {
     if (type === 'character') {
       const response = await fetch('https://api.tvmaze.com/shows/216/cast');
+
       const json = await response.json();
+
       return json.map(({ person, character }) => ({
         id: character.id,
         value: character.name,
@@ -12,7 +14,9 @@ export const valueService = {
 
     if (type === 'season') {
       const response = await fetch('https://api.tvmaze.com/shows/216/seasons');
+
       const json = await response.json();
+
       return json.map(({ id, number, episodeOrder }) => ({
         id,
         value: number,
@@ -22,11 +26,25 @@ export const valueService = {
 
     if (type === 'episode') {
       const response = await fetch('https://api.tvmaze.com/shows/216/episodes');
+
       const json = await response.json();
+
       return json.map(({ id, name, season, number }) => ({
         id,
         value: name,
         label: `${name} (S${season}E${number})`,
+      }));
+    }
+
+    if (type === 'crew') {
+      const response = await fetch('https://api.tvmaze.com/shows/216/crew');
+
+      const json = await response.json();
+
+      return json.map(({ type, person }) => ({
+        id: `${person.id}-${type}`,
+        value: person.name,
+        label: `${person.name} (${type})`,
       }));
     }
   },

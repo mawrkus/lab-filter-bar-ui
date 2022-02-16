@@ -25,5 +25,11 @@ export const displayAttributeSuggestions = {
         ctx.setFilterAttribute(event.data);
       },
     },
+    createItem: {
+      targetId: "idle",
+      action: (event, ctx) => {
+        ctx.createFreeTextFilter(event.data);
+      },
+    },
   },
 };

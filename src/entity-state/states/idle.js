@@ -8,14 +8,14 @@ export const idle = {
     discardSuggestions: "idle",
     startInput: [
       {
-        cond: (event, ctx) => (!ctx.lastFilter() || ctx.lastFilter().type === 'logical-operator')
-          && !ctx.isPartialAttributeSelected() && !ctx.isPartialOperatorSelected(),
-        targetId: "loadAttributeSuggestions",
-      },
-      {
         cond: (event, ctx) => (ctx.lastFilter() && ctx.lastFilter().type !== 'logical-operator')
           && !ctx.isPartialAttributeSelected() && !ctx.isPartialOperatorSelected(),
         targetId: "loadLogicalSuggestions",
+      },
+      {
+        cond: (event, ctx) => (!ctx.lastFilter() || ctx.lastFilter().type === 'logical-operator')
+          && !ctx.isPartialAttributeSelected() && !ctx.isPartialOperatorSelected(),
+        targetId: "loadAttributeSuggestions",
       },
       {
         cond: (event, ctx) => ctx.isPartialAttributeSelected() && !ctx.isPartialOperatorSelected(),
@@ -57,7 +57,7 @@ export const idle = {
     removeFilter: {
       targetId: "idle",
       action: (event, ctx) => {
-        ctx.removeFilter(event.data.id);
+        ctx.removeFilter(event.data);
       },
     },
   },

@@ -11,9 +11,10 @@ export const SuggestionsDropdown = ({
   loading,
   suggestions,
   error,
-  onSelectItem,
   onOpen,
   onClose,
+  onSelectItem,
+  onCreateItem,
 }) => {
   const options = loading ? loadingSuggestions : suggestions.map(({ id, value, label }) => ({
     key: id,
@@ -26,15 +27,24 @@ export const SuggestionsDropdown = ({
   }));
 
   const onCustomSelectItem = (e, { value }) => {
-    if (!loading) {
-      // we don't receive the full item, only its value :/
-      const item = suggestions.find((item) => `${item.id}-${item.value}` === value);
+    if (loading) {
+      return;
+    }
+
+    // we don't receive the full item, only its value :/
+    const item = suggestions.find((item) => `${item.id}-${item.value}` === value);
+
+    if (item) {
       onSelectItem(e, item);
+    } else {
+      onCreateItem(e, { id: null, value, label: value });
     }
   };
 
   return (
     <Dropdown
+      additionLabel="Search text: "
+      allowAdditions
       closeOnChange={false}
       error={Boolean(error)}
       loading={loading}

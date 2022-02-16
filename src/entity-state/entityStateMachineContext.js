@@ -79,7 +79,7 @@ class EntityStateMachineContext extends StateMachineContext {
     return this.get();
   }
 
-  addFilter(filterValue, type='attribute-operator-value') {
+  completePartialFilter(filterValue, type='attribute-operator-value') {
     const ctxValue = this.get();
     const { partialFilter, filters } = ctxValue;
 
@@ -101,6 +101,44 @@ class EntityStateMachineContext extends StateMachineContext {
     return this.get();
   }
 
+  createFreeTextFilter(filterValue) {
+    const ctxValue = this.get();
+    const { filters } = ctxValue;
+
+    filters.push({
+      id: ctxValue.filterId,
+      attribute: null,
+      operator: null,
+      value: filterValue,
+      type: 'free-text',
+    });
+
+    ctxValue.filterId += 1;
+
+    this.set(ctxValue);
+
+    return this.get();
+  }
+
+  createLogicalOperator(filterOperator) {
+    const ctxValue = this.get();
+    const { filters } = ctxValue;
+
+    filters.push({
+      id: ctxValue.filterId,
+      attribute: null,
+      operator: filterOperator,
+      value: null,
+      type: 'logical-operator',
+    });
+
+    ctxValue.filterId += 1;
+
+    this.set(ctxValue);
+
+    return this.get();
+  }
+
   setEditFilter(editFilter) {
     this.set({ ...this.get(), editFilter })
   }
@@ -110,12 +148,14 @@ class EntityStateMachineContext extends StateMachineContext {
   }
 
   // filter deletion
-  removeFilter(filterId) {
+  removeFilter(filter) {
     const ctxValue = this.get();
 
+    const filterId = filter.id;
     const filterIndex = ctxValue.filters.findIndex((f) => f.id === filterId);
 
-    ctxValue.filters.splice(filterIndex - 1); // -1 for the logical operator to the left
+    // -1 for the logical operator to the left
+    ctxValue.filters.splice(filterIndex > 0 ? filterIndex - 1 : 0);
 
     this.set({ ...ctxValue });
 

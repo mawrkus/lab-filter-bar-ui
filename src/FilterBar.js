@@ -23,6 +23,10 @@ export const FilterBar = () => {
     entityStateMachine.sendEvent("selectItem", item);
   };
 
+  const onCreateSuggestionItem = (event, item) => {
+    entityStateMachine.sendEvent("createItem", item);
+  };
+
   const onRemoveChiclet = (event, filter) => {
     entityStateMachine.sendEvent("removeFilter", filter);
   };
@@ -72,6 +76,7 @@ export const FilterBar = () => {
           onOpen={onOpenSuggestionsDropdown}
           onClose={onCloseSuggestionsDropdown}
           onSelectItem={onSelectSuggestionItem}
+          onCreateItem={onCreateSuggestionItem}
         />
       </Form.Group>
     </Form>

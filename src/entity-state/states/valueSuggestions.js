@@ -1,8 +1,13 @@
 export const loadValueSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
-      const ctxValue = ctx.startLoading();
+      const ctxValue = ctx.get();
       const { partialFilter, editFilter } = ctxValue;
+
+      if (editFilter && editFilter.type === 'free-text') {
+        ctx.doneLoading([editFilter.value], null);
+        return toolkit.sendEvent("onValueSuggestionsLoaded");
+      }
 
       const type = editFilter
         ? editFilter.attribute.value
@@ -10,6 +15,8 @@ export const loadValueSuggestions = {
 
       let suggestions = [];
       let error = null;
+
+      ctx.startLoading();
 
       try {
         suggestions = await toolkit.suggestionService.loadValues({ type });
@@ -44,7 +51,19 @@ export const displayValueSuggestions = {
         if (ctxValue.editFilter) {
           ctx.setFilterValue(event.data);
         } else {
-          ctx.addFilter(event.data);
+          ctx.completePartialFilter(event.data);
+        }
+      },
+    },
+    createItem: {
+      targetId: "idle",
+      action: (event, ctx) => {
+        const ctxValue = ctx.get();
+
+        if (ctxValue.editFilter) {
+          ctx.setFilterValue(event.data);
+        } else {
+          ctx.completePartialFilter(event.data);
         }
       },
     },

@@ -25,8 +25,7 @@ export const displayLogicalSuggestions = {
         cond: (event, ctx) => !ctx.isEditingFilter(),
         targetId: "idle",
         action:(event, ctx) => {
-          ctx.setFilterOperator(event.data);
-          ctx.addFilter(null, 'logical-operator');
+          ctx.createLogicalOperator(event.data);
         },
       },
       // filter edition
@@ -38,5 +37,12 @@ export const displayLogicalSuggestions = {
         },
       },
     ],
+    createItem: {
+      targetId: "idle",
+      action: (event, ctx) => {
+        ctx.createLogicalOperator({ value: 'and', label: 'AND' });
+        ctx.createFreeTextFilter(event.data);
+      },
+    },
   },
 };

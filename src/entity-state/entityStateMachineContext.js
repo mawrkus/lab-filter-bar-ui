@@ -113,7 +113,9 @@ class EntityStateMachineContext extends StateMachineContext {
   removeFilter(filterId) {
     const ctxValue = this.get();
 
-    ctxValue.filters = ctxValue.filters.filter((f) => f.id !== filterId);
+    const filterIndex = ctxValue.filters.findIndex((f) => f.id === filterId);
+
+    ctxValue.filters.splice(filterIndex - 1); // -1 for the logical operator to the left
 
     this.set({ ...ctxValue });
 

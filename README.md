@@ -18,3 +18,11 @@
 - "EXISTS" operator
 - AbortController
 - HTTP cache
+
+## Architecture
+
+- State machine with context (the state)
+- Suggestion services
+- Data structure contract (suggestion item -> filter)
+- React Hooks
+- Dumb components

@@ -6,7 +6,7 @@ import { PartialChiclet } from './components/PartialChiclet';
 import { SuggestionsDropdown } from './components/SuggestionsDropdown';
 
 import { entityStateMachine } from './entity-state/entityStateMachine';
-import { useStateMachine } from './entity-state/useStateMachine';
+import { useStateMachine } from './hooks/useStateMachine';
 
 export const FilterBar = () => {
   const [props] = useStateMachine(entityStateMachine);

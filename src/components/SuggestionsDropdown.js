@@ -37,7 +37,7 @@ export const SuggestionsDropdown = ({
     if (item) {
       onSelectItem(e, item);
     } else {
-      onCreateItem(e, { id: null, value, label: value });
+      onCreateItem(e, { id: null, value, label: `"${value}"` });
     }
   };
 

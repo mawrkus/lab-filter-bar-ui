@@ -27,6 +27,12 @@ export const FilterBar = () => {
     entityStateMachine.sendEvent("removeFilter", filter);
   };
 
+  const onClickPartialChiclet = (event, filter, part) => {
+    if (part === 'operator') {
+      return entityStateMachine.sendEvent("editPartialOperatorSuggestion", { filter });
+    }
+  };
+
   const onClickChiclet = (event, filter, part) => {
     if (part === 'operator') {
       return entityStateMachine.sendEvent("editOperatorSuggestion", { filter });
@@ -38,12 +44,6 @@ export const FilterBar = () => {
 
     if (part === 'logical-operator') {
       return entityStateMachine.sendEvent("editLogicalOperatorSuggestion", { filter });
-    }
-  };
-
-  const onClickPartialChiclet = (event, filter, part) => {
-    if (part === 'operator') {
-      return entityStateMachine.sendEvent("editPartialOperatorSuggestion", { filter });
     }
   };
 

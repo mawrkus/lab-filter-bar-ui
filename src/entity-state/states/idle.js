@@ -13,7 +13,7 @@ export const idle = {
         targetId: "loadAttributeSuggestions",
       },
       {
-        cond: (event, ctx) => (ctx.lastFilter().type !== 'logical-operator')
+        cond: (event, ctx) => (ctx.lastFilter() && ctx.lastFilter().type !== 'logical-operator')
           && !ctx.isPartialAttributeSelected() && !ctx.isPartialOperatorSelected(),
         targetId: "loadLogicalSuggestions",
       },

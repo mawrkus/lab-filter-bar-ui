@@ -69,7 +69,7 @@ export const FilterBar = () => {
         />
 
         <SuggestionsDropdown
-          open={props.isDisplayed}
+          open={props.showSuggestions}
           loading={props.isLoading}
           suggestions={props.suggestions}
           error={props.error}

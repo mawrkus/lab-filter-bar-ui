@@ -7,7 +7,7 @@ class EntityStateMachineContext extends StateMachineContext {
     this.set({
       ...this.get(),
       isLoading: false,
-      isDisplayed: false,
+      showSuggestions: false,
       suggestions: [],
       editFilter: null,
     });
@@ -17,12 +17,12 @@ class EntityStateMachineContext extends StateMachineContext {
 
   // loading states
   startLoading() {
-    this.set({ ...this.get(), isLoading: true, isDisplayed: true, error: null });
+    this.set({ ...this.get(), isLoading: true, showSuggestions: true, error: null });
     return this.get();
   }
 
   doneLoading(suggestions, error = null) {
-    this.set({ ...this.get(), isLoading: false, isDisplayed: true, suggestions, error });
+    this.set({ ...this.get(), isLoading: false, showSuggestions: true, suggestions, error });
     return this.get();
   }
 
@@ -176,7 +176,7 @@ export const entityStateMachineContext = new EntityStateMachineContext({
   filters: [],
   filterId: 1,
   isLoading: false,
-  isDisplayed: false,
+  showSuggestions: false,
   suggestions: [],
   error: null,
   editFilter: null,

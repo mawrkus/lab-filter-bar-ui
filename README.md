@@ -9,3 +9,11 @@
 ### Bugs
 
 - Free text after free text not working
+
+### Features
+
+- Contextual: if season selected -> reduce episodes list
+- Support delete key
+- "EXISTS" operator
+- AbortController
+- HTTP cache

@@ -5,11 +5,12 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
 
   if (type === 'logical-operator') {
     return (
-      <div>
+      <div className="chiclet">
         <Label
           as='a'
           color="blue"
-          title="Click to edit"
+          size="small"
+          title="Edit"
           onClick={(e) => onClick(e, filter, 'logical-operator')}
         >
           {operator.label}
@@ -19,11 +20,12 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
   }
 
   return (
-    <div>
+    <div className="chiclet">
       <Label
-        as='a'
+        as='span'
         color="blue"
-        onClick={(e) => onClick(e, filter, 'attribute')}
+        size="small"
+        className="left"
       >
         {attribute.label}
       </Label>
@@ -31,7 +33,9 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
       <Label
         as='a'
         color="blue"
-        title="Click to edit"
+        size="small"
+        title="Edit"
+        className="middle"
         onClick={(e) => onClick(e, filter, 'operator')}
       >
         {operator.label}
@@ -40,7 +44,9 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
       <Label
         as='a'
         color="blue"
-        title="Click to edit"
+        size="small"
+        title="Edit"
+        className="middle"
         onClick={(e) => onClick(e, filter, 'value')}
       >
         {value.label}
@@ -49,7 +55,9 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
       <Label
         as='a'
         color="blue"
-        title="Remove filter"
+        size="small"
+        title="Remove"
+        className="right"
         onClick={(e) => onRemove(e, filter)}
       >
         <Icon name='delete' />

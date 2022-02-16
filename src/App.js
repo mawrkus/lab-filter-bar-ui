@@ -49,7 +49,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>🧪 Rick &amp; Morty filter bar 🧪</h1>
+      <h2 className="title">🧪 Rick &amp; Morty filter bar 🧪</h2>
 
       <Form>
         <Form.Group>

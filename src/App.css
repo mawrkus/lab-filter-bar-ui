@@ -51,7 +51,8 @@
 }
 
 .ui.search.dropdown > input.search {
-  top: -7px;
+  font-size: 11px;
+  top: -2px;
 }
 
 .ui.dropdown .menu .item, .ui.dropdown .menu .message {

@@ -1,4 +1,4 @@
-import { StateMachine } from "./lib/state-machine";
+import { StateMachine, transitionLogger } from "./lib/state-machine";
 import { suggestionService } from "./suggestion-services";
 import { entityStateMachineContext } from "./entityStateMachineContext";
 
@@ -16,10 +16,7 @@ import {
 
 export const entityStateMachine = new StateMachine({
   initialStateId: "idle",
-  onTransition: (transition, ctx) => {
-    console.log('📟', transition);
-    console.log(' ctx=', ctx.get());
-  },
+  onTransition: transitionLogger,
   context: entityStateMachineContext,
   toolkit: { suggestionService },
   states: {

@@ -8,11 +8,23 @@ export const loadValueSuggestions = {
         ? editFilter.attribute.value
         : partialFilter.attribute.value;
 
-      const suggestions = await toolkit.suggestionService.loadValues({ type });
+      let suggestions = [];
+      let error = null;
 
-      ctx.doneLoading(suggestions);
+      try {
+        suggestions = await toolkit.suggestionService.loadValues({ type });
+      } catch (e) {
+        console.error('💥 Ooops!', e);
+        error = e;
+      }
 
-      toolkit.sendEvent("onValueSuggestionsLoaded");
+      ctx.doneLoading(suggestions, error);
+
+      if (!error) {
+        toolkit.sendEvent("onValueSuggestionsLoaded");
+      } else {
+        toolkit.sendEvent("idle");
+      }
     },
   },
   events: {

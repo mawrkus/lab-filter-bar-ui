@@ -17,12 +17,12 @@ class EntityStateMachineContext extends StateMachineContext {
 
   // loading states
   startLoading() {
-    this.set({ ...this.get(), isLoading: true, isDisplayed: true });
+    this.set({ ...this.get(), isLoading: true, isDisplayed: true, error: null });
     return this.get();
   }
 
-  doneLoading(suggestions) {
-    this.set({ ...this.get(), isLoading: false, isDisplayed: true, suggestions });
+  doneLoading(suggestions, error = null) {
+    this.set({ ...this.get(), isLoading: false, isDisplayed: true, suggestions, error });
     return this.get();
   }
 
@@ -136,6 +136,7 @@ export const entityStateMachineContext = new EntityStateMachineContext({
   isLoading: false,
   isDisplayed: false,
   suggestions: [],
+  error: null,
   editFilter: null,
   // TODO: abort signal
 });

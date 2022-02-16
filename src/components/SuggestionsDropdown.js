@@ -4,13 +4,13 @@ const loadingSuggestions = [
   { key: 'loading', text: 'Loading...', value: 'loading' },
   { key: 'empty-1', text: '', value: '' },
   { key: 'empty-2', text: '', value: '' },
-  { key: 'empty-3', text: '', value: '' },
 ];
 
 export const SuggestionsDropdown = ({
   open,
   loading,
   suggestions,
+  error,
   onSelectItem,
   onOpen,
   onClose,
@@ -36,7 +36,9 @@ export const SuggestionsDropdown = ({
   return (
     <Dropdown
       closeOnChange={false}
+      error={Boolean(error)}
       loading={loading}
+      noResultsMessage={error ? "Ooops! Fetch error." : "No results found."}
       onChange={onCustomSelectItem}
       onClose={onClose}
       onOpen={onOpen}

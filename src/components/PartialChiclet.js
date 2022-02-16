@@ -7,7 +7,7 @@ export const PartialChiclet = ({ filter, onClick }) => {
     return (
       <div className="partial-chiclet">
         <Label
-          as='a'
+          as='span'
           size="small"
           className="left"
         >
@@ -31,7 +31,7 @@ export const PartialChiclet = ({ filter, onClick }) => {
     return (
       <div className="partial-chiclet">
         <Label
-          as='a'
+          as='span'
           size="small"
           className="left"
         >

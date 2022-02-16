@@ -10,7 +10,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         as='a'
         color="blue"
         size="small"
-        title="Edit value"
+        title="Change value"
         className="left"
         onClick={(e) => onClick(e, filter, 'value')}
       >
@@ -38,7 +38,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
           as='a'
           color="blue"
           size="small"
-          title="Edit logical operator"
+          title="Change logical operator"
           onClick={(e) => onClick(e, filter, 'logical-operator')}
         >
           {operator.label}
@@ -62,7 +62,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         as='a'
         color="blue"
         size="small"
-        title="Edit operator"
+        title="Change operator"
         className="middle"
         onClick={(e) => onClick(e, filter, 'operator')}
       >
@@ -73,7 +73,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         as='a'
         color="blue"
         size="small"
-        title="Edit value"
+        title="Change value"
         className="middle"
         onClick={(e) => onClick(e, filter, 'value')}
       >

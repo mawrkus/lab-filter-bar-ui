@@ -1,6 +1,3 @@
-
-import { Form } from 'semantic-ui-react';
-
 import './App.css';
 import { FilterBar } from './FilterBar';
 

@@ -42,19 +42,23 @@
   max-height: 24px;
 }
 
-.ui.dropdown .menu {
-  padding-top: 7px;
+.ui.selection.dropdown > .dropdown.icon {
+  display: none;
 }
 
-.ui.dropdown .menu .item, .ui.search.dropdown.active > .text {
-  font-size: 11px;
-  top: -7px;
+.ui.dropdown .menu {
+  padding-top: 12px;
 }
 
 .ui.search.dropdown > input.search {
   top: -7px;
 }
 
-.ui.selection.dropdown > .dropdown.icon {
-  display: none;
+.ui.dropdown .menu .item {
+  font-size: 11px;
+}
+
+.ui.dropdown .menu .item, .ui.search.dropdown.active > .text {
+  font-size: 11px;
+  top: -7px;
 }

@@ -10,12 +10,13 @@
 
 ### Features
 
+- Position dropdown
+- "IN" operator + multi-select
+- Support delete key
+- FilterBar onChange
+- AbortController
 - Contextual: if season selected -> reduce episodes list
 - Contextual: remove selected items from suggestions
-- FilterBar onChange
-- Support delete key
-- "EXISTS" operator
-- AbortController
 - HTTP cache
 
 ## Architecture

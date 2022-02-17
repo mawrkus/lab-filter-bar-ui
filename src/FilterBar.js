@@ -41,23 +41,23 @@ export const FilterBar = () => {
   const onClickPartialChiclet = (event, filter, part) => {
     if (part === 'operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-
       return entityStateMachine.sendEvent("editPartialOperator", { filter });
     }
   };
 
   const onClickChiclet = (event, filter, part) => {
-    setDropdownPos(getDropdownPosition(event.currentTarget));
-
     if (part === 'operator') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
       return entityStateMachine.sendEvent("editOperator", { filter });
     }
 
     if (part === 'value') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
       return entityStateMachine.sendEvent("editValue", { filter });
     }
 
     if (part === 'logical-operator') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
       return entityStateMachine.sendEvent("editLogicalOperator", { filter });
     }
   };

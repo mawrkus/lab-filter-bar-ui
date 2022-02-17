@@ -6,28 +6,28 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
   if (type === 'free-text') {
     return (
       <div className="chiclet">
-      <Label
-        as='a'
-        color="blue"
-        size="small"
-        title="Change value"
-        className="left"
-        onClick={(e) => onClick(e, filter, 'value')}
-      >
-        "{value.label}"
-      </Label>
+        <Label
+          as='a'
+          color="blue"
+          size="small"
+          title="Change value"
+          className="left"
+          onClick={(e) => onClick(e, filter, 'value')}
+        >
+          "{value.label}"
+        </Label>
 
-      <Label
-        as='a'
-        color="blue"
-        size="small"
-        title="Remove filter"
-        className="right"
-        onClick={(e) => onRemove(e, filter)}
-      >
-        <Icon name='delete' />
-      </Label>
-    </div>
+        <Label
+          as='a'
+          color="blue"
+          size="small"
+          title="Remove filter"
+          className="right"
+          onClick={(e) => onRemove(e, filter)}
+        >
+          <Icon name='delete' />
+        </Label>
+      </div>
     );
   }
 

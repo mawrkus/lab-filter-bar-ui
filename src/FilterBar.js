@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 
 import { Chiclet } from './components/Chiclet';
@@ -8,8 +9,14 @@ import { SuggestionsDropdown } from './components/SuggestionsDropdown';
 import { entityStateMachine } from './entity-state/entityStateMachine';
 import { useStateMachine } from './hooks/useStateMachine';
 
+const getDropdownPosition = (chicletElement) => {
+  const { top, bottom, left } = chicletElement.getBoundingClientRect();
+  return { top: bottom - top, left: left - 27 };
+}
+
 export const FilterBar = () => {
   const [props] = useStateMachine(entityStateMachine);
+  const [dropdownPos, setDropdownPos] = useState(null);
 
   const onOpenSuggestionsDropdown = () => {
     entityStateMachine.sendEvent("startInput");
@@ -33,11 +40,15 @@ export const FilterBar = () => {
 
   const onClickPartialChiclet = (event, filter, part) => {
     if (part === 'operator') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
+
       return entityStateMachine.sendEvent("editPartialOperator", { filter });
     }
   };
 
   const onClickChiclet = (event, filter, part) => {
+    setDropdownPos(getDropdownPosition(event.currentTarget));
+
     if (part === 'operator') {
       return entityStateMachine.sendEvent("editOperator", { filter });
     }
@@ -70,6 +81,7 @@ export const FilterBar = () => {
 
         <SuggestionsDropdown
           open={props.showSuggestions}
+          position={dropdownPos}
           loading={props.isLoading}
           editing={Boolean(props.editFilter)}
           suggestions={props.suggestions}

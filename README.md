@@ -10,7 +10,6 @@
 
 ### Features
 
-- Position dropdown
 - "IN" operator + multi-select
 - Support delete key
 - FilterBar onChange

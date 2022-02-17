@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Dropdown } from 'semantic-ui-react'
 
 const loadingSuggestions = [
@@ -9,6 +10,7 @@ const loadingSuggestions = [
 export const SuggestionsDropdown = ({
   open,
   loading,
+  editing,
   suggestions,
   error,
   onOpen,
@@ -19,10 +21,10 @@ export const SuggestionsDropdown = ({
   const options = loading ? loadingSuggestions : suggestions.map(({ id, value, label }) => ({
     key: id,
     text: label,
-    // 1. we do this to ensure a unique value becausewhen onChange is called, the only property
+    // 1. we do this to ensure a unique value because when onChange is called, the only property
     // received is value
     // 2. Using id here creates a UI bug where selecting with the keyboard then pressing enter
-    // does not work when the 2nd dropdown it opened
+    // does not work when the 2nd dropdown is opened
     value: `${id}-${value}`,
   }));
 
@@ -31,7 +33,7 @@ export const SuggestionsDropdown = ({
       return;
     }
 
-    // we don't receive the full item, only its value :/
+    // we don't receive the full item, only its value
     const item = suggestions.find((item) => `${item.id}-${item.value}` === value);
 
     if (item) {
@@ -40,6 +42,12 @@ export const SuggestionsDropdown = ({
       onCreateItem(e, { id: null, value, label: value });
     }
   };
+
+  useEffect(() => {
+    if (editing) {
+      document.querySelector('input.search').click();
+    }
+  }, [editing]);
 
   return (
     <Dropdown

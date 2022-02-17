@@ -71,6 +71,7 @@ export const FilterBar = () => {
         <SuggestionsDropdown
           open={props.showSuggestions}
           loading={props.isLoading}
+          editing={Boolean(props.editFilter)}
           suggestions={props.suggestions}
           error={props.error}
           onOpen={onOpenSuggestionsDropdown}

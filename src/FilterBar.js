@@ -39,6 +39,11 @@ export const FilterBar = () => {
   };
 
   const onClickPartialChiclet = (event, filter, part) => {
+    if (part === 'attribute') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
+      return entityStateMachine.sendEvent("editPartialAttribute", { filter });
+    }
+
     if (part === 'operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
       return entityStateMachine.sendEvent("editPartialOperator", { filter });
@@ -83,7 +88,7 @@ export const FilterBar = () => {
           open={props.showSuggestions}
           position={dropdownPos}
           loading={props.isLoading}
-          editing={Boolean(props.editFilter)}
+          editing={props.isEditing}
           suggestions={props.suggestions}
           error={props.error}
           onOpen={onOpenSuggestionsDropdown}

@@ -22,7 +22,7 @@ export const displayLogicalSuggestions = {
     selectItem: [
       // filter creation
       {
-        cond: (event, ctx) => !ctx.isEditingFilter(),
+        cond: (event, ctx) => !ctx.isEditing(),
         targetId: "idle",
         action:(event, ctx) => {
           ctx.createLogicalOperator(event.data);
@@ -30,10 +30,27 @@ export const displayLogicalSuggestions = {
       },
       // filter edition
       {
-        cond: (event, ctx) => ctx.isEditingFilter(),
+        cond: (event, ctx) => ctx.isEditing() && (!ctx.hasPartialAttribute() && !ctx.hasPartialOperator()),
         targetId: "idle",
+        action:(event, ctx) => {
+          ctx.setFilterOperator(event.data);
+          ctx.stopEditing();
+        },
+      },
+      {
+        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        targetId: "loadOperatorSuggestions",
         action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
+          ctx.stopEditing();
+        },
+      },
+      {
+        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        targetId: "loadValueSuggestions",
+        action: (event, ctx) => {
+          ctx.setFilterOperator(event.data);
+          ctx.stopEditing();
         },
       },
     ],

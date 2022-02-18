@@ -2,15 +2,15 @@ export const loadValueSuggestions = {
   actions: {
     onEntry: async (event, ctx, toolkit) => {
       const ctxValue = ctx.get();
-      const { partialFilter, editFilter } = ctxValue;
+      const { partialFilter, filterUnderEdition } = ctxValue;
 
-      if (editFilter && editFilter.type === 'free-text') {
-        ctx.doneLoading([editFilter.value], null);
+      if (filterUnderEdition?.type === 'free-text') {
+        ctx.doneLoading([filterUnderEdition.value], null);
         return toolkit.sendEvent("onValueSuggestionsLoaded");
       }
 
-      const type = editFilter
-        ? editFilter.attribute.value
+      const type = filterUnderEdition
+        ? filterUnderEdition.attribute.value
         : partialFilter.attribute.value;
 
       let suggestions = [];
@@ -48,7 +48,7 @@ export const displayValueSuggestions = {
       action: (event, ctx) => {
         const ctxValue = ctx.get();
 
-        if (ctxValue.editFilter) {
+        if (ctxValue.filterUnderEdition) {
           ctx.setFilterValue(event.data);
         } else {
           ctx.completePartialFilter(event.data);
@@ -60,7 +60,7 @@ export const displayValueSuggestions = {
       action: (event, ctx) => {
         const ctxValue = ctx.get();
 
-        if (ctxValue.editFilter) {
+        if (ctxValue.filterUnderEdition) {
           ctx.setFilterValue(event.data);
         } else {
           ctx.completePartialFilter(event.data);

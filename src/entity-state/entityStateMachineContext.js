@@ -1,15 +1,15 @@
 import { StateMachineContext } from "./lib/state-machine";
 
 class EntityStateMachineContext extends StateMachineContext {
-  cancelLoading() {
-    // TODO: abort signal
-
+  reset() {
+    // TODO: cancel loading with abort signal
     this.set({
       ...this.get(),
       isLoading: false,
       showSuggestions: false,
       suggestions: [],
-      editFilter: null,
+      filterUnderEdition: null,
+      isEditing: false,
     });
 
     return this.get();
@@ -27,11 +27,11 @@ class EntityStateMachineContext extends StateMachineContext {
   }
 
   // partial filters
-  isPartialAttributeSelected() {
+  hasPartialAttribute() {
     return Boolean(this.get().partialFilter.attribute);
   }
 
-  isPartialOperatorSelected() {
+  hasPartialOperator() {
     return Boolean(this.get().partialFilter.operator);
   }
 
@@ -49,10 +49,10 @@ class EntityStateMachineContext extends StateMachineContext {
 
   setFilterOperator(filterOperator) {
     const ctxValue = this.get();
-    const { partialFilter, editFilter } = ctxValue;
+    const { partialFilter, filterUnderEdition } = ctxValue;
 
-    if (editFilter) {
-      const filter = ctxValue.filters.find((f) => f.id === editFilter.id);
+    if (filterUnderEdition) {
+      const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
       filter.operator = filterOperator;
     } else {
       partialFilter.operator = filterOperator;
@@ -65,10 +65,10 @@ class EntityStateMachineContext extends StateMachineContext {
 
   setFilterValue(filterValue) {
     const ctxValue = this.get();
-    const { partialFilter, editFilter } = ctxValue;
+    const { partialFilter, filterUnderEdition } = ctxValue;
 
-    if (editFilter) {
-      const filter = ctxValue.filters.find((f) => f.id === editFilter.id);
+    if (filterUnderEdition) {
+      const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
       filter.value = filterValue;
     } else {
       partialFilter.value = filterValue;
@@ -139,12 +139,16 @@ class EntityStateMachineContext extends StateMachineContext {
     return this.get();
   }
 
-  setEditFilter(editFilter) {
-    this.set({ ...this.get(), editFilter })
+  startEditing(completedFilter) {
+    this.set({ ...this.get(), isEditing: true, filterUnderEdition: completedFilter });
   }
 
-  isEditingFilter() {
-    return Boolean(this.get().editFilter);
+  stopEditing() {
+    this.set({ ...this.get(), isEditing: false });
+  }
+
+  isEditing() {
+    return this.get().isEditing;
   }
 
   // filter deletion
@@ -179,6 +183,6 @@ export const entityStateMachineContext = new EntityStateMachineContext({
   showSuggestions: false,
   suggestions: [],
   error: null,
-  editFilter: null,
-  // TODO: abort signal
+  filterUnderEdition: null,
+  isEditing: false,
 });

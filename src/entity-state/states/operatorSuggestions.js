@@ -20,17 +20,15 @@ export const displayOperatorSuggestions = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
-      // partial filter construction
       {
-        cond: (event, ctx) => !ctx.isEditingFilter(),
+        cond: (event, ctx) => !ctx.isEditing() || (ctx.isEditing() && ctx.hasPartialOperator()),
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
         },
       },
-      // filter edition
       {
-        cond: (event, ctx) => ctx.isEditingFilter(),
+        cond: (event, ctx) => ctx.isEditing(),
         targetId: "idle",
         action: (event, ctx) => {
           ctx.setFilterOperator(event.data);

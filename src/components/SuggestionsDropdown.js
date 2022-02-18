@@ -46,16 +46,16 @@ export const SuggestionsDropdown = ({
 
   useEffect(() => {
     if (editing) {
-      document.querySelector('input.search').click();
       document.querySelector('.ui.search.dropdown').style.position = 'absolute';
       document.querySelector('.ui.search.dropdown').style.top = `${position.top}px`;
       document.querySelector('.ui.search.dropdown').style.left = `${position.left}px`;
+      document.querySelector('input.search').click();
     } else {
       document.querySelector('.ui.search.dropdown').style.position = null;
       document.querySelector('.ui.search.dropdown').style.top = null;
       document.querySelector('.ui.search.dropdown').style.left = null;
     }
-  }, [editing]);
+  }, [editing, position]);
 
   return (
     <Dropdown

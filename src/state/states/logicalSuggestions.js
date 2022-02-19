@@ -30,7 +30,7 @@ export const displayLogicalSuggestions = {
       },
       // filter edition
       {
-        cond: (event, ctx) => ctx.isEditing() && (!ctx.hasPartialAttribute() && !ctx.hasPartialOperator()),
+        cond: (event, ctx) => ctx.isEditing() && !ctx.hasPartialFilter(),
         targetId: "idle",
         action:(event, ctx) => {
           ctx.setFilterOperator(event.data);

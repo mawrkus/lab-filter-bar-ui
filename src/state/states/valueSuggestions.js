@@ -51,9 +51,8 @@ export const displayValueSuggestions = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
-      // TODO: if isEditing and no partial and last filter is logical -> load value suggestions
       {
-        cond: (event, ctx) => !ctx.isEditing() || (ctx.isEditing() && !ctx.hasPartialAttribute() && !ctx.hasPartialOperator()),
+        cond: (event, ctx) => !ctx.isEditing() || (ctx.isEditing() && !ctx.hasPartialFilter()),
         targetId: "idle",
         action:(event, ctx) => {
           if (ctx.get().filterUnderEdition) {
@@ -79,7 +78,6 @@ export const displayValueSuggestions = {
       },
     ],
     createItem: {
-      // TODO: same as above
       targetId: "idle",
       action: (event, ctx) => {
         const ctxValue = ctx.get();

@@ -51,6 +51,10 @@ class EntityStateMachineContext extends StateMachineContext {
     return Boolean(this.get().partialFilter.operator);
   }
 
+  hasPartialFilter() {
+    return this.hasPartialAttribute() || this.hasPartialOperator();
+  }
+
   // filter creation/edition
   setFilterAttribute(filterAttribute) {
     const ctxValue = this.get();
@@ -171,14 +175,13 @@ class EntityStateMachineContext extends StateMachineContext {
     const filterId = filter.id;
     const filterIndex = ctxValue.filters.findIndex((f) => f.id === filterId);
 
-    // -1 for the logical operator to the left
-    ctxValue.filters.splice(filterIndex > 0 ? filterIndex - 1 : 0);
+    ctxValue.filters.splice(filterIndex, 2);
 
     this.set({ ...ctxValue });
   }
 
   //
-  lastFilter() {
+  getLastFilter() {
     const { filters } = this.get();
     return filters[filters.length - 1];
   }

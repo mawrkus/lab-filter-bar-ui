@@ -37,29 +37,30 @@
   font-size: 11px;
 }
 
-.ui.selection.dropdown {
+.ui.dropdown.search {
   min-height: auto;
   max-height: 24px;
 }
 
-.ui.selection.dropdown > .dropdown.icon {
+.ui.dropdown.search > .dropdown.icon {
   display: none;
 }
 
-.ui.dropdown .menu {
+.ui.dropdown.search .menu {
   padding-top: 12px;
 }
 
-.ui.search.dropdown > input.search {
+.ui.dropdown.search > input.search {
   font-size: 11px;
   top: -2px;
 }
 
-.ui.dropdown .menu .item, .ui.dropdown .menu .message {
+.ui.dropdown.search .menu .item, .ui.dropdown.search .menu .message {
   font-size: 11px;
+  color: rgba(0,0,0,.6);
 }
 
-.ui.dropdown .menu .item, .ui.search.dropdown.active > .text {
+.ui.dropdown.search .menu .item, .ui.dropdown.search > .text {
   font-size: 11px;
   top: -7px;
 }

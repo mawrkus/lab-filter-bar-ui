@@ -6,10 +6,6 @@
 
 ## TODOS
 
-### Bugs
-
-### Features
-
 - state ctx -> suggestions: { visible, loading, error, items }
 - `<FilterBar filters={} onChange={} />`
 - "IN" operator + multi-select

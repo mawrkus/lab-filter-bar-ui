@@ -1,5 +1,5 @@
 import './App.css';
-import { FilterBar } from './FilterBar';
+import { FilterBar } from './components/FilterBar';
 
 export const App = () => {
   return (

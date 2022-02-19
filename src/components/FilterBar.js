@@ -2,12 +2,12 @@
 import { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 
-import { Chiclet } from './components/Chiclet';
-import { PartialChiclet } from './components/PartialChiclet';
-import { SuggestionsDropdown } from './components/SuggestionsDropdown';
+import { Chiclet } from './Chiclet';
+import { PartialChiclet } from './PartialChiclet';
+import { SuggestionsDropdown } from './SuggestionsDropdown';
 
-import { entityStateMachine } from './entity-state/entityStateMachine';
-import { useStateMachine } from './hooks/useStateMachine';
+import { entityStateMachine } from '../state/entityStateMachine';
+import { useStateMachine } from '../hooks/useStateMachine';
 
 const getDropdownPosition = (chicletElement) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();

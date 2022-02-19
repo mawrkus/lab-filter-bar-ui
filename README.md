@@ -9,7 +9,6 @@
 - `<FilterBar filters={} onChange={} />`
 - "IN" operator + multi-select
 - Support delete key
-- AbortController
 - Contextual: if season selected -> reduce episodes list
 - Contextual: remove selected items from suggestions
 

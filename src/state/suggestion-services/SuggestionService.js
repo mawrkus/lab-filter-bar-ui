@@ -9,8 +9,6 @@ export class SuggestionService {
     this._operatorService = operatorService;
     this._valueService = valueService;
     this._logicalOperatorService = logicalOperatorService;
-
-    this._request = null;
   }
 
   loadAttributes() {
@@ -21,11 +19,15 @@ export class SuggestionService {
     return this._operatorService.load();
   }
 
-  async loadValues({ type }) {
+  loadValues({ type }) {
     return this._valueService.load({ type });
   }
 
   loadLogicalOperators() {
     return this._logicalOperatorService.load();
+  }
+
+  cancelLoad() {
+    this._valueService.cancelLoad();
   }
 }

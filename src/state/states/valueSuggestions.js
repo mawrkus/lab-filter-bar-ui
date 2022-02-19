@@ -21,8 +21,15 @@ export const loadValueSuggestions = {
       try {
         values = await toolkit.suggestionService.loadValues({ type });
       } catch (e) {
-        console.error('💥 Ooops!', e);
-        error = e;
+        const wasLoadCancelled = e instanceof DOMException && e.name === 'AbortError';
+
+        if (wasLoadCancelled) {
+          // nothing to do here as the cancellation was initiated when entering the "idle" state
+          return;
+        } else {
+          console.error('💥 Ooops!', e);
+          error = e;
+        }
       }
 
       ctx.doneLoading(values, error);

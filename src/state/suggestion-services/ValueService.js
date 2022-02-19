@@ -23,7 +23,7 @@ export class ValueService {
   }
 
   async loadCharacters() {
-    const response = await fetch('https://api.tvmaze.com/shows/216/cast');
+    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/cast');
 
     const json = await response.json();
 
@@ -35,7 +35,7 @@ export class ValueService {
   }
 
   async loadSeasons() {
-    const response = await fetch('https://api.tvmaze.com/shows/216/seasons');
+    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/seasons');
 
     const json = await response.json();
 
@@ -47,7 +47,7 @@ export class ValueService {
   }
 
   async loadEpisodes() {
-    const response = await fetch('https://api.tvmaze.com/shows/216/episodes');
+    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/episodes');
 
     const json = await response.json();
 
@@ -59,7 +59,7 @@ export class ValueService {
   }
 
   async loadCrew() {
-    const response = await fetch('https://api.tvmaze.com/shows/216/crew');
+    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/crew');
 
     const json = await response.json();
 
@@ -68,5 +68,9 @@ export class ValueService {
       value: person.name,
       label: `${person.name} (${type})`,
     }));
+  }
+
+  cancelLoad() {
+    this._httpClient.cancel();
   }
 };

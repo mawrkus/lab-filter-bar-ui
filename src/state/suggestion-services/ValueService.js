@@ -39,11 +39,13 @@ export class ValueService {
 
     const json = await response.json();
 
-    return json.map(({ id, number, episodeOrder }) => ({
-      id,
-      value: number,
-      label: `${number} (${episodeOrder} episodes)`,
-    }));
+    return json
+      .filter(({ premiereDate }) => premiereDate)
+      .map(({ id, number, episodeOrder }) => ({
+        id,
+        value: number,
+        label: `${number} (${episodeOrder} episodes)`,
+      }));
   }
 
   async loadEpisodes() {

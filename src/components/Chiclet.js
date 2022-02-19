@@ -77,7 +77,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         className="middle"
         onClick={(e) => onClick(e, filter, 'value')}
       >
-        {value.label}
+        {value.id ? value.label : `"${value.label}"`}
       </Label>
 
       <Label

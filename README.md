@@ -6,8 +6,9 @@
 
 ## TODOS
 
-- `<FilterBar filters={} onChange={} />`
+- `<FilterBar filters={[...]} onChange={} />`
 - "IN" operator + multi-select
+- Parentheses
 - Support delete key
 - Contextual: if season selected -> reduce episodes list
 - Contextual: remove selected items from suggestions
@@ -15,7 +16,7 @@
 ## Architecture
 
 - State machine with domain context (the app state)
-- Suggestion services (API requests via HTTP)
+- Suggestion services (cancellable HTTP requests to API)
 - Contract on the data structure (suggestion item -> filter)
 - React Hooks
 - Dumb components

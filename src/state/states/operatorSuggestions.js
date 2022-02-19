@@ -3,9 +3,9 @@ export const loadOperatorSuggestions = {
     onEntry: async (event, ctx, toolkit) => {
       ctx.startLoading();
 
-      const suggestions = await toolkit.suggestionService.loadOperators();
+      const operators = await toolkit.suggestionService.loadOperators();
 
-      ctx.doneLoading(suggestions);
+      ctx.doneLoading(operators);
 
       toolkit.sendEvent("onOperatorSuggestionsLoaded");
     },

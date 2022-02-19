@@ -1,7 +1,9 @@
 export const idle = {
   actions: {
-    onEntry: (event, ctx) => {
+    onEntry: (event, ctx, toolkit) => {
       ctx.reset();
+      // TODO
+      // toolkit.suggestionService.cancelRequest();
     },
   },
   events: {

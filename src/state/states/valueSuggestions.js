@@ -13,19 +13,19 @@ export const loadValueSuggestions = {
         ? filterUnderEdition.attribute.value
         : partialFilter.attribute.value;
 
-      let suggestions = [];
+      let values = [];
       let error = null;
 
       ctx.startLoading();
 
       try {
-        suggestions = await toolkit.suggestionService.loadValues({ type });
+        values = await toolkit.suggestionService.loadValues({ type });
       } catch (e) {
         console.error('💥 Ooops!', e);
         error = e;
       }
 
-      ctx.doneLoading(suggestions, error);
+      ctx.doneLoading(values, error);
 
       if (!error) {
         toolkit.sendEvent("onValueSuggestionsLoaded");

@@ -3,9 +3,9 @@ export const loadLogicalSuggestions = {
     onEntry: async (event, ctx, toolkit) => {
       ctx.startLoading();
 
-      const suggestions = await toolkit.suggestionService.loadLogicalOperators();
+      const logicalOperators = await toolkit.suggestionService.loadLogicalOperators();
 
-      ctx.doneLoading(suggestions);
+      ctx.doneLoading(logicalOperators);
 
       toolkit.sendEvent("onLogicalOperatorSuggestionsLoaded");
     },

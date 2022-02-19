@@ -2,12 +2,14 @@ import { StateMachineContext } from "./lib/state-machine";
 
 class EntityStateMachineContext extends StateMachineContext {
   reset() {
-    // TODO: cancel loading with abort signal
     this.set({
       ...this.get(),
-      isLoading: false,
-      showSuggestions: false,
-      suggestions: [],
+      suggestions: {
+        visible: false,
+        loading: false,
+        error: null,
+        items: [],
+      },
       filterUnderEdition: null,
       isEditing: false,
     });
@@ -17,13 +19,27 @@ class EntityStateMachineContext extends StateMachineContext {
 
   // loading states
   startLoading() {
-    this.set({ ...this.get(), isLoading: true, showSuggestions: true, error: null });
-    return this.get();
+    this.set({
+      ...this.get(),
+      suggestions: {
+        visible: true,
+        loading: true,
+        error: null,
+        items: [],
+      },
+    });
   }
 
-  doneLoading(suggestions, error = null) {
-    this.set({ ...this.get(), isLoading: false, showSuggestions: true, suggestions, error });
-    return this.get();
+  doneLoading(items, error = null) {
+    this.set({
+      ...this.get(),
+      suggestions: {
+        visible: true,
+        loading: false,
+        error,
+        items,
+      },
+    });
   }
 
   // partial filters
@@ -45,8 +61,6 @@ class EntityStateMachineContext extends StateMachineContext {
     ctxValue.isEditing = false;
 
     this.set(ctxValue);
-
-    return this.get();
   }
 
   setFilterOperator(filterOperator) {
@@ -64,8 +78,6 @@ class EntityStateMachineContext extends StateMachineContext {
     ctxValue.isEditing = false;
 
     this.set(ctxValue);
-
-    return this.get();
   }
 
   setFilterValue(filterValue) {
@@ -83,8 +95,6 @@ class EntityStateMachineContext extends StateMachineContext {
     ctxValue.isEditing = false;
 
     this.set(ctxValue);
-
-    return this.get();
   }
 
   completePartialFilter(filterValue, type='attribute-operator-value') {
@@ -105,8 +115,6 @@ class EntityStateMachineContext extends StateMachineContext {
     partialFilter.operator = null;
 
     this.set(ctxValue);
-
-    return this.get();
   }
 
   createFreeTextFilter(filterValue) {
@@ -124,8 +132,6 @@ class EntityStateMachineContext extends StateMachineContext {
     ctxValue.filterId += 1;
 
     this.set(ctxValue);
-
-    return this.get();
   }
 
   createLogicalOperator(filterOperator) {
@@ -143,10 +149,9 @@ class EntityStateMachineContext extends StateMachineContext {
     ctxValue.filterId += 1;
 
     this.set(ctxValue);
-
-    return this.get();
   }
 
+  // editing states
   startEditing(completedFilter) {
     this.set({ ...this.get(), isEditing: true, filterUnderEdition: completedFilter });
   }
@@ -170,10 +175,9 @@ class EntityStateMachineContext extends StateMachineContext {
     ctxValue.filters.splice(filterIndex > 0 ? filterIndex - 1 : 0);
 
     this.set({ ...ctxValue });
-
-    return this.get();
   }
 
+  //
   lastFilter() {
     const { filters } = this.get();
     return filters[filters.length - 1];
@@ -187,10 +191,12 @@ export const entityStateMachineContext = new EntityStateMachineContext({
   },
   filters: [],
   filterId: 1,
-  isLoading: false,
-  showSuggestions: false,
-  suggestions: [],
-  error: null,
+  suggestions: {
+    visible: false,
+    loading: false,
+    error: null,
+    items: [],
+  },
   filterUnderEdition: null,
   isEditing: false,
 });

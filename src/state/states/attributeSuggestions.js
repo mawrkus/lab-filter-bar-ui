@@ -3,9 +3,9 @@ export const loadAttributeSuggestions = {
     onEntry: async (event, ctx, toolkit) => {
       ctx.startLoading();
 
-      const suggestions = await toolkit.suggestionService.loadAttributes();
+      const attributes = await toolkit.suggestionService.loadAttributes();
 
-      ctx.doneLoading(suggestions);
+      ctx.doneLoading(attributes);
 
       toolkit.sendEvent("onAttributeSuggestionsLoaded");
     },

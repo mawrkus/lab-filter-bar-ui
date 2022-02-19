@@ -6,7 +6,6 @@
 
 ## TODOS
 
-- state ctx -> suggestions: { visible, loading, error, items }
 - `<FilterBar filters={} onChange={} />`
 - "IN" operator + multi-select
 - Support delete key

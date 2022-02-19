@@ -1,5 +1,5 @@
-export const logicalOperatorService = {
-  load: async () => {
+export class LogicalOperatorService {
+  load(){
     return [{
       id: 1,
       value: 'and',

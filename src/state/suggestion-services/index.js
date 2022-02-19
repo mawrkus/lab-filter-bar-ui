@@ -1,11 +1,12 @@
-import { attributeService } from "./attributeService";
-import { operatorService } from "./operatorService";
-import { valueService } from "./valueService";
-import { logicalOperatorService } from "./logicalOperatorService";
+import { SuggestionService } from "./SuggestionService";
+import { AttributeService } from "./AttributeService";
+import { OperatorService } from "./OperatorService";
+import { ValueService } from "./ValueService";
+import { LogicalOperatorService } from "./LogicalOperatorService";
 
-export const suggestionService = {
-  loadAttributes: attributeService.load,
-  loadOperators: operatorService.load,
-  loadValues: valueService.load,
-  loadLogicalOperators: logicalOperatorService.load,
-};
+export const suggestionService = new SuggestionService({
+  attributeService: new AttributeService(),
+  operatorService: new OperatorService(),
+  valueService: new ValueService({ httpClient: window.fetch.bind(window) }),
+  logicalOperatorService: new LogicalOperatorService(),
+});

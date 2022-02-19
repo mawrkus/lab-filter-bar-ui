@@ -1,5 +1,5 @@
-export const attributeService = {
-  load: async () => {
+export class AttributeService {
+  load() {
     return [
       {
         id: 1,

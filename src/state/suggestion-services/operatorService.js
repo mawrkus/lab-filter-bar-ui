@@ -1,5 +1,5 @@
-export const operatorService = {
-  load: async () => {
+export class OperatorService {
+  load() {
     return [{
       id: 1,
       value: '=',

@@ -1,51 +1,72 @@
-export const valueService = {
-  load: async ({ type }) => {
-    if (type === 'character') {
-      const response = await fetch('https://api.tvmaze.com/shows/216/cast');
+export class ValueService {
+  constructor({ httpClient }) {
+    this._httpClient = httpClient;
+  }
 
-      const json = await response.json();
+  async load({ type }) {
+    switch (type) {
+      case 'character':
+        return this.loadCharacters();
 
-      return json.map(({ person, character }) => ({
-        id: character.id,
-        value: character.name,
-        label: `${character.name} (${person.name})`,
-      }));
+      case 'season':
+        return this.loadSeasons();
+
+      case 'episode':
+        return this.loadEpisodes();
+
+      case 'crew':
+        return this.loadCrew();
+
+      default:
+        throw new Error(`Unsupported type "${type}"!`);
     }
+  }
 
-    if (type === 'season') {
-      const response = await fetch('https://api.tvmaze.com/shows/216/seasons');
+  async loadCharacters() {
+    const response = await fetch('https://api.tvmaze.com/shows/216/cast');
 
-      const json = await response.json();
+    const json = await response.json();
 
-      return json.map(({ id, number, episodeOrder }) => ({
-        id,
-        value: number,
-        label: `${number} (${episodeOrder} episodes)`,
-      }));
-    }
+    return json.map(({ person, character }) => ({
+      id: character.id,
+      value: character.name,
+      label: `${character.name} (${person.name})`,
+    }));
+  }
 
-    if (type === 'episode') {
-      const response = await fetch('https://api.tvmaze.com/shows/216/episodes');
+  async loadSeasons() {
+    const response = await fetch('https://api.tvmaze.com/shows/216/seasons');
 
-      const json = await response.json();
+    const json = await response.json();
 
-      return json.map(({ id, name, season, number }) => ({
-        id,
-        value: name,
-        label: `${name} (S${season}E${number})`,
-      }));
-    }
+    return json.map(({ id, number, episodeOrder }) => ({
+      id,
+      value: number,
+      label: `${number} (${episodeOrder} episodes)`,
+    }));
+  }
 
-    if (type === 'crew') {
-      const response = await fetch('https://api.tvmaze.com/shows/216/crew');
+  async loadEpisodes() {
+    const response = await fetch('https://api.tvmaze.com/shows/216/episodes');
 
-      const json = await response.json();
+    const json = await response.json();
 
-      return json.map(({ type, person }) => ({
-        id: `${person.id}-${type}`,
-        value: person.name,
-        label: `${person.name} (${type})`,
-      }));
-    }
-  },
+    return json.map(({ id, name, season, number }) => ({
+      id,
+      value: name,
+      label: `${name} (S${season}E${number})`,
+    }));
+  }
+
+  async loadCrew() {
+    const response = await fetch('https://api.tvmaze.com/shows/216/crew');
+
+    const json = await response.json();
+
+    return json.map(({ type, person }) => ({
+      id: `${person.id}-${type}`,
+      value: person.name,
+      label: `${person.name} (${type})`,
+    }));
+  }
 };

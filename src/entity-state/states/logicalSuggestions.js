@@ -34,7 +34,6 @@ export const displayLogicalSuggestions = {
         targetId: "idle",
         action:(event, ctx) => {
           ctx.setFilterOperator(event.data);
-          ctx.stopEditing();
         },
       },
       {
@@ -42,7 +41,6 @@ export const displayLogicalSuggestions = {
         targetId: "loadOperatorSuggestions",
         action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
-          ctx.stopEditing();
         },
       },
       {
@@ -50,10 +48,10 @@ export const displayLogicalSuggestions = {
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
-          ctx.stopEditing();
         },
       },
     ],
+    // to automatically connect free text filters
     createItem: {
       targetId: "idle",
       action: (event, ctx) => {

@@ -43,19 +43,36 @@ export const loadValueSuggestions = {
 export const displayValueSuggestions = {
   events: {
     discardSuggestions: "idle",
-    selectItem: {
-      targetId: "idle",
-      action: (event, ctx) => {
-        const ctxValue = ctx.get();
-
-        if (ctxValue.filterUnderEdition) {
-          ctx.setFilterValue(event.data);
-        } else {
-          ctx.completePartialFilter(event.data);
-        }
+    selectItem: [
+      // TODO: if isEditing and no partial and last filter is logical -> load value suggestions
+      {
+        cond: (event, ctx) => !ctx.isEditing() || (ctx.isEditing() && !ctx.hasPartialAttribute() && !ctx.hasPartialOperator()),
+        targetId: "idle",
+        action:(event, ctx) => {
+          if (ctx.get().filterUnderEdition) {
+            ctx.setFilterValue(event.data);
+          } else {
+            ctx.completePartialFilter(event.data);
+          }
+        },
       },
-    },
+      {
+        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        targetId: "loadOperatorSuggestions",
+        action: (event, ctx) => {
+          ctx.setFilterValue(event.data);
+        },
+      },
+      {
+        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        targetId: "loadValueSuggestions",
+        action: (event, ctx) => {
+          ctx.setFilterValue(event.data);
+        },
+      },
+    ],
     createItem: {
+      // TODO: same as above
       targetId: "idle",
       action: (event, ctx) => {
         const ctxValue = ctx.get();

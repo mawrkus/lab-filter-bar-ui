@@ -25,9 +25,6 @@ export const displayAttributeSuggestions = {
         targetId: "loadOperatorSuggestions",
         action: (event, ctx) => {
           ctx.setFilterAttribute(event.data);
-          // we might be editing a partial filter value and because we don't go back to idle
-          // we have to stop editing
-          ctx.stopEditing();
         },
       },
       {
@@ -35,9 +32,6 @@ export const displayAttributeSuggestions = {
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
           ctx.setFilterAttribute(event.data);
-            // we might be editing a partial filter value and because we don't go back to idle
-          // we have to stop editing
-          ctx.stopEditing();
         },
       },
     ],

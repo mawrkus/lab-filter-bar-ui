@@ -41,6 +41,8 @@ class EntityStateMachineContext extends StateMachineContext {
     const { partialFilter } = ctxValue;
 
     partialFilter.attribute = filterAttribute;
+    ctxValue.filterUnderEdition = null;
+    ctxValue.isEditing = false;
 
     this.set(ctxValue);
 
@@ -54,9 +56,12 @@ class EntityStateMachineContext extends StateMachineContext {
     if (filterUnderEdition) {
       const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
       filter.operator = filterOperator;
+      ctxValue.filterUnderEdition = null;
     } else {
       partialFilter.operator = filterOperator;
     }
+
+    ctxValue.isEditing = false;
 
     this.set(ctxValue);
 
@@ -70,9 +75,12 @@ class EntityStateMachineContext extends StateMachineContext {
     if (filterUnderEdition) {
       const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
       filter.value = filterValue;
+      ctxValue.filterUnderEdition = null;
     } else {
       partialFilter.value = filterValue;
     }
+
+    ctxValue.isEditing = false;
 
     this.set(ctxValue);
 
@@ -144,7 +152,7 @@ class EntityStateMachineContext extends StateMachineContext {
   }
 
   stopEditing() {
-    this.set({ ...this.get(), isEditing: false });
+    this.set({ ...this.get(), isEditing: false, filterUnderEdition: null });
   }
 
   isEditing() {

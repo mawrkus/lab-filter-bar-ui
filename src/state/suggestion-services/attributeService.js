@@ -22,5 +22,5 @@ export class AttributeService {
         label: 'Crew',
       },
     ];
-  },
+  }
 };

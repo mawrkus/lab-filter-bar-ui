@@ -9,5 +9,5 @@ export const transitionLogger = (transition, ctx) => {
     ? '✔'
     : '💥', transition.fromStateId, transition.toStateId);
 
-  console.log('  🔎', ctx.get());
+  console.log('  🔎', JSON.stringify(ctx.get()));
 };

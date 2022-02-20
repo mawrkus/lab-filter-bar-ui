@@ -10,8 +10,8 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
           as='a'
           color="blue"
           size="small"
-          title="Change value"
-          className="left"
+          title={`Click to change "${value.label}"`}
+          className="left value"
           onClick={(e) => onClick(e, filter, 'value')}
         >
           "{value.label}"
@@ -38,7 +38,8 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
           as='a'
           color="blue"
           size="small"
-          title="Change logical operator"
+          title={`Click to change "${operator.label}"`}
+          className="operator"
           onClick={(e) => onClick(e, filter, 'logical-operator')}
         >
           {operator.label}
@@ -53,7 +54,7 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         as='span'
         color="blue"
         size="small"
-        className="left"
+        className="left attribute"
       >
         {attribute.label}
       </Label>
@@ -62,8 +63,8 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         as='a'
         color="blue"
         size="small"
-        title="Change operator"
-        className="middle"
+        title={`Click to change "${operator.label}"`}
+        className="middle operator"
         onClick={(e) => onClick(e, filter, 'operator')}
       >
         {operator.label}
@@ -73,8 +74,8 @@ export const Chiclet = ({ filter, onClick, onRemove }) => {
         as='a'
         color="blue"
         size="small"
-        title="Change value"
-        className="middle"
+        title={`Click to change "${value.label}"`}
+        className="middle value"
         onClick={(e) => onClick(e, filter, 'value')}
       >
         {value.id ? value.label : `"${value.label}"`}

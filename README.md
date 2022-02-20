@@ -8,6 +8,7 @@
 
 - `<FilterBar filters={[...]} onChange={} />`
 - "IN" operator + multi-select
+- tabIndex
 - Parentheses
 - Contextual: if season selected -> reduce episodes list
 - Contextual: remove selected items from suggestions

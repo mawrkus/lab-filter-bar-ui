@@ -1,6 +1,10 @@
 import { Icon, Label } from 'semantic-ui-react'
 
-export const Chiclet = ({ filter, onClick, onRemove }) => {
+export const Chiclet = ({
+  filter,
+  onClick,
+  onRemove,
+}) => {
   const { attribute, operator, value, type } = filter;
 
   if (type === 'free-text') {

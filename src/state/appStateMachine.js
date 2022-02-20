@@ -1,6 +1,6 @@
 import { StateMachine, transitionLogger } from "./lib/state-machine";
 import { suggestionService } from "./suggestion-services";
-import { entityStateMachineContext } from "./entityStateMachineContext";
+import { appStateMachineContext } from "./appStateMachineContext";
 
 import {
   idle,
@@ -14,10 +14,10 @@ import {
   displayLogicalSuggestions,
 } from "./states";
 
-export const entityStateMachine = new StateMachine({
+export const appStateMachine = new StateMachine({
   initialStateId: "idle",
   onTransition: transitionLogger,
-  context: entityStateMachineContext,
+  context: appStateMachineContext,
   toolkit: { suggestionService },
   states: {
     idle,

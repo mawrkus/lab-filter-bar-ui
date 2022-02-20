@@ -1,6 +1,6 @@
 import { StateMachineContext } from "./lib/state-machine";
 
-class EntityStateMachineContext extends StateMachineContext {
+class AppStateMachineContext extends StateMachineContext {
   reset() {
     this.set({
       ...this.get(),
@@ -203,7 +203,7 @@ class EntityStateMachineContext extends StateMachineContext {
   }
 };
 
-export const entityStateMachineContext = new EntityStateMachineContext({
+export const appStateMachineContext = new AppStateMachineContext({
   partialFilter: {
     attribute: null,
     operator: null,

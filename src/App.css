@@ -8,6 +8,17 @@
 
 .chiclet, .partial-chiclet {
   margin-right: 4px;
+  /* flex */
+  display: flex;
+  max-height: 24px;
+  min-width: 0;
+}
+
+.ui.label.attribute, .ui.label.operator, .ui.label.value {
+  /* flex + ellipsis */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ui.label.left {

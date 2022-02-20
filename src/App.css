@@ -53,8 +53,12 @@
   max-height: 24px;
 }
 
-.ui.dropdown.search > .dropdown.icon {
+.ui.dropdown.search:not(.loading) > .dropdown.icon {
   display: none;
+}
+
+.ui.dropdown.search.loading > .dropdown.icon {
+  margin: -14px -12px 0;
 }
 
 .ui.dropdown.search .menu {

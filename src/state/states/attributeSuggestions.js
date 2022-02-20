@@ -41,5 +41,12 @@ export const displayAttributeSuggestions = {
         ctx.createFreeTextFilter(event.data);
       },
     },
+    // On backspace
+    removeLastFilter: {
+      targetId: "idle",
+      action: (event, ctx) => {
+        ctx.removeFilter(ctx.getLastFilter());
+      },
+    },
   },
 };

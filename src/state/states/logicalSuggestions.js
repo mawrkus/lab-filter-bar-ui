@@ -59,5 +59,9 @@ export const displayLogicalSuggestions = {
         ctx.createFreeTextFilter(event.data);
       },
     },
+    // On backspace
+    removeLastFilter: {
+      targetId: 'displayLogicalSuggestions',
+    },
   },
 };

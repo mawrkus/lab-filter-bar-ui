@@ -89,5 +89,19 @@ export const displayValueSuggestions = {
         }
       },
     },
+    // On backspace
+    removeLastFilter: [
+      {
+        cond: (event, ctx) => !ctx.isEditing() && ctx.hasPartialOperator(),
+        targetId: "loadOperatorSuggestions",
+        action: (event, ctx) => {
+          ctx.removePartialOperator();
+        },
+      },
+      {
+        cond: () => true,
+        targetId: "displayValueSuggestions",
+      },
+    ],
   },
 };

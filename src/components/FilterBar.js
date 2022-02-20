@@ -7,7 +7,7 @@ import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './SuggestionsDropdown';
 
 import { entityStateMachine } from '../state/entityStateMachine';
-import { useStateMachine } from '../hooks/useStateMachine';
+import { useStateMachine } from '../hooks';
 
 const getDropdownPosition = (chicletElement) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();
@@ -41,30 +41,34 @@ export const FilterBar = () => {
   const onClickPartialChiclet = (event, filter, part) => {
     if (part === 'attribute') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return entityStateMachine.sendEvent("editPartialAttribute", { filter });
+      return entityStateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return entityStateMachine.sendEvent("editPartialOperator", { filter });
+      return entityStateMachine.sendEvent("editPartialOperator");
     }
   };
 
   const onClickChiclet = (event, filter, part) => {
     if (part === 'operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return entityStateMachine.sendEvent("editOperator", { filter });
+      return entityStateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return entityStateMachine.sendEvent("editValue", { filter });
+      return entityStateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return entityStateMachine.sendEvent("editLogicalOperator", { filter });
+      return entityStateMachine.sendEvent("editLogicalOperator", filter);
     }
+  };
+
+  const onBackspace = () => {
+    entityStateMachine.sendEvent("removeLastFilter");
   };
 
   return (
@@ -95,6 +99,7 @@ export const FilterBar = () => {
           onClose={onCloseSuggestionsDropdown}
           onSelectItem={onSelectSuggestionItem}
           onCreateItem={onCreateSuggestionItem}
+          onBackspace={onBackspace}
         />
       </Form.Group>
     </Form>

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { Dropdown } from 'semantic-ui-react'
+import { usePositionDropdown, useBackspace } from '../hooks';
 
 const loadingSuggestions = [
   { key: 'loading', text: 'Loading...', value: 'loading' },
@@ -18,6 +18,7 @@ export const SuggestionsDropdown = ({
   onClose,
   onSelectItem,
   onCreateItem,
+  onBackspace,
 }) => {
   const options = loading ? loadingSuggestions : suggestions.map(({ id, value, label }) => ({
     key: id,
@@ -44,18 +45,8 @@ export const SuggestionsDropdown = ({
     }
   };
 
-  useEffect(() => {
-    if (editing) {
-      document.querySelector('.ui.search.dropdown').style.position = 'absolute';
-      document.querySelector('.ui.search.dropdown').style.top = `${position.top}px`;
-      document.querySelector('.ui.search.dropdown').style.left = `${position.left}px`;
-      document.querySelector('input.search').click();
-    } else {
-      document.querySelector('.ui.search.dropdown').style.position = null;
-      document.querySelector('.ui.search.dropdown').style.top = null;
-      document.querySelector('.ui.search.dropdown').style.left = null;
-    }
-  }, [editing, position]);
+  usePositionDropdown(editing, position);
+  useBackspace(onBackspace);
 
   return (
     <Dropdown

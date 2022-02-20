@@ -42,25 +42,31 @@ export const idle = {
     editOperator: {
       targetId: "loadOperatorSuggestions",
       action: (event, ctx) => {
-        ctx.startEditing(event.data.filter);
+        ctx.startEditing(event.data);
       },
     },
     editValue: {
       targetId: "loadValueSuggestions",
       action: (event, ctx) => {
-        ctx.startEditing(event.data.filter);
+        ctx.startEditing(event.data);
       },
     },
     editLogicalOperator: {
       targetId: "loadLogicalSuggestions",
       action: (event, ctx) => {
-        ctx.startEditing(event.data.filter);
+        ctx.startEditing(event.data);
       },
     },
     removeFilter: {
       targetId: "idle",
       action: (event, ctx) => {
         ctx.removeFilter(event.data);
+      },
+    },
+    removeLastFilter: {
+      targetId: "idle",
+      action: (event, ctx) => {
+        ctx.removeFilter(ctx.getLastFilter());
       },
     },
   },

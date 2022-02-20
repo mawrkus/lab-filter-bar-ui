@@ -42,5 +42,19 @@ export const displayOperatorSuggestions = {
         },
       },
     ],
+    // On backspace
+    removeLastFilter: [
+      {
+        cond: (event, ctx) => !ctx.isEditing() && ctx.hasPartialAttribute(),
+        targetId: "idle",
+        action: (event, ctx) => {
+          ctx.removePartialAttribute();
+        },
+      },
+      {
+        cond: () => true,
+        targetId: "displayOperatorSuggestions",
+      },
+    ],
   },
 };

@@ -5,8 +5,6 @@ import { Form } from 'semantic-ui-react';
 import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './SuggestionsDropdown';
-
-import { appStateMachine } from '../state/appStateMachine';
 import { useStateMachine } from '../hooks';
 
 const getDropdownPosition = (chicletElement) => {
@@ -14,61 +12,61 @@ const getDropdownPosition = (chicletElement) => {
   return { top: bottom - top, left: left - 27 };
 }
 
-export const FilterBar = () => {
-  const [props] = useStateMachine(appStateMachine);
+export const FilterBar = ({ stateMachine }) => {
+  const [props] = useStateMachine(stateMachine);
   const [dropdownPos, setDropdownPos] = useState(null);
 
   const onOpenSuggestionsDropdown = () => {
-    appStateMachine.sendEvent("startInput");
+    stateMachine.sendEvent("startInput");
   };
 
   const onCloseSuggestionsDropdown = () => {
-    appStateMachine.sendEvent("discardSuggestions");
+    stateMachine.sendEvent("discardSuggestions");
   };
 
   const onSelectSuggestionItem = (event, item) => {
-    appStateMachine.sendEvent("selectItem", item);
+    stateMachine.sendEvent("selectItem", item);
   };
 
   const onCreateSuggestionItem = (event, item) => {
-    appStateMachine.sendEvent("createItem", item);
+    stateMachine.sendEvent("createItem", item);
   };
 
   const onRemoveChiclet = (event, filter) => {
-    appStateMachine.sendEvent("removeFilter", filter);
+    stateMachine.sendEvent("removeFilter", filter);
   };
 
   const onClickPartialChiclet = (event, filter, part) => {
     if (part === 'attribute') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return appStateMachine.sendEvent("editPartialAttribute");
+      return stateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return appStateMachine.sendEvent("editPartialOperator");
+      return stateMachine.sendEvent("editPartialOperator");
     }
   };
 
   const onClickChiclet = (event, filter, part) => {
     if (part === 'operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return appStateMachine.sendEvent("editOperator", filter);
+      return stateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return appStateMachine.sendEvent("editValue", filter);
+      return stateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
       setDropdownPos(getDropdownPosition(event.currentTarget));
-      return appStateMachine.sendEvent("editLogicalOperator", filter);
+      return stateMachine.sendEvent("editLogicalOperator", filter);
     }
   };
 
   const onBackspace = () => {
-    appStateMachine.sendEvent("removeLastFilter");
+    stateMachine.sendEvent("removeLastFilter");
   };
 
   return (

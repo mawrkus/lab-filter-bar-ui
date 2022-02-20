@@ -6,7 +6,7 @@
 
 ## TODOS
 
-- `<FilterBar filters={[...]} onChange={} />`
+- `<FilterBar onChange={} />`
 - "IN" operator + multi-select
 - tabIndex
 - Parentheses

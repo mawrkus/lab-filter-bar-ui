@@ -6,12 +6,11 @@
 
 ## TODOS
 
-- `<FilterBar onChange={} />`
 - "IN" operator + multi-select
 - tabIndex
+- `<FilterBar onChange={} />`
 - Parentheses
 - Contextual: if season selected -> reduce episodes list
-- Contextual: remove selected items from suggestions
 
 ## Architecture
 

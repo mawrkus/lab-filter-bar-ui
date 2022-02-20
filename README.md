@@ -17,6 +17,6 @@
 
 - State machine with domain context (the app state)
 - Suggestion services (cancellable HTTP requests to API)
-- Contract on the data structure (suggestion item -> filter)
+- Clear contract on the data structure (suggestion item -> filter)
 - React Hooks
 - Dumb components

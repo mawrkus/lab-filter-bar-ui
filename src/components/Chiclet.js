@@ -9,15 +9,15 @@ export const Chiclet = ({
 }) => {
   const { attribute, operator, value } = filter;
 
-  if (typeof attribute !== 'undefined' && typeof operator !== 'undefined' && typeof value !== 'undefined') {
+  if (attribute && operator && value) {
     return <ChicletAttributeOperatorValue filter={filter} onClick={onClick} onRemove={onRemove} />
   }
 
-  if (typeof operator !== 'undefined') {
+  if (operator) {
     return <ChicletLogicalOperator filter={filter} onClick={onClick} onRemove={onRemove} />
   }
 
-  if (typeof value !== 'undefined') {
+  if (value) {
     return <ChicletValue filter={filter} onClick={onClick} onRemove={onRemove} />
   }
 

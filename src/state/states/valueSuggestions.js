@@ -98,10 +98,6 @@ export const displayValueSuggestions = {
           ctx.removePartialOperator();
         },
       },
-      {
-        cond: () => true,
-        targetId: "displayValueSuggestions",
-      },
     ],
   },
 };

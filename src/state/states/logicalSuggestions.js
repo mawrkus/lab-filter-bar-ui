@@ -51,14 +51,17 @@ export const displayLogicalSuggestions = {
         },
       },
     ],
-    // to automatically connect free text filters
-    createItem: {
-      targetId: "idle",
-      action: (event, ctx) => {
-        ctx.createLogicalOperator({ value: 'and', label: 'AND' });
-        ctx.createFreeTextFilter(event.data);
+    createItem: [
+      // to automatically connect free text filters
+      {
+        cond: (event, ctx) => !ctx.isEditing(),
+        targetId: "idle",
+        action: (event, ctx) => {
+          ctx.createLogicalOperator({ value: 'and', label: 'AND' });
+          ctx.createFreeTextFilter(event.data);
+        },
       },
-    },
+    ],
     // On backspace
     removeLastFilter: {
       targetId: 'displayLogicalSuggestions',

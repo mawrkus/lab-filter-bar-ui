@@ -51,10 +51,6 @@ export const displayOperatorSuggestions = {
           ctx.removePartialAttribute();
         },
       },
-      {
-        cond: () => true,
-        targetId: "displayOperatorSuggestions",
-      },
     ],
   },
 };

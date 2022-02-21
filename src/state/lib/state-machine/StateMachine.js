@@ -186,7 +186,7 @@ export class StateMachine {
       );
 
       targetStateId = match ? match.targetId : undefined;
-      action = match.action;
+      action = match ? match.action : undefined;
     }
 
     transition.toStateId = targetStateId;

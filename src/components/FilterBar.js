@@ -87,6 +87,11 @@ export const FilterBar = ({ stateMachine }) => {
         />
 
         <SuggestionsDropdown
+          // ugly hack to ensure that the dropdown internal value is unselected
+          // if not, editing an operator or a value in two different chiclets might not work as the
+          // dropdown keeps the last selected value and compares it before allowing an update
+          // (e.g. change '=' to '!=' in the 1st chiclet then change 'LIKE' to '!=' in the 2nd)
+          key={props.isEditing}
           position={dropdownPos}
           open={props.suggestions.visible}
           loading={props.suggestions.loading}

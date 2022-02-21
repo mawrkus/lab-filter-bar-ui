@@ -30,4 +30,8 @@ export class SuggestionService {
   cancelLoad() {
     this._valueService.cancelLoad();
   }
+
+  isCancelError(error) {
+    return error instanceof DOMException && error.name === 'AbortError';
+  }
 }

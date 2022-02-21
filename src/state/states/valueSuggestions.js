@@ -21,9 +21,8 @@ export const loadValueSuggestions = {
       try {
         values = await toolkit.suggestionService.loadValues({ type });
       } catch (e) {
-        const wasLoadCancelled = e instanceof DOMException && e.name === 'AbortError';
-
-        if (wasLoadCancelled) {
+        if (toolkit.suggestionService.isCancelError(e)) {
+          console.log('🗑️ "%s" suggestions request cancelled.', type);
           // nothing to do here as the cancellation was initiated when entering the "idle" state
           return;
         } else {

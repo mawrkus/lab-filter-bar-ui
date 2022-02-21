@@ -1,5 +1,5 @@
 import { Dropdown } from 'semantic-ui-react'
-import { usePositionDropdown, useBackspace } from '../hooks';
+import { usePositionDropdown, useHandleBackspaceKey } from '../hooks';
 
 const loadingSuggestions = [
   { key: 'loading', text: 'Loading...', value: 'loading' },
@@ -44,7 +44,7 @@ export const SuggestionsDropdown = ({
   };
 
   usePositionDropdown(editing, position);
-  useBackspace(onBackspace);
+  useHandleBackspaceKey(onBackspace);
 
   return (
     <Dropdown

@@ -1,6 +1,6 @@
 export const loadOperatorSuggestions = {
   actions: {
-    onEntry: async (event, ctx, toolkit) => {
+    async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
       const operators = await toolkit.suggestionService.loadOperators();
@@ -37,7 +37,7 @@ export const displayOperatorSuggestions = {
       {
         cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
         targetId: "loadOperatorSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterOperator(event.data);
         },
       },
@@ -47,7 +47,7 @@ export const displayOperatorSuggestions = {
       {
         cond: (event, ctx) => !ctx.isEditing() && ctx.hasPartialAttribute(),
         targetId: "idle",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.removePartialAttribute();
         },
       },

@@ -1,6 +1,6 @@
 export const loadValueSuggestions = {
   actions: {
-    onEntry: async (event, ctx, toolkit) => {
+    async onEntry(event, ctx, toolkit) {
       const ctxValue = ctx.get();
       const { partialFilter, filterUnderEdition } = ctxValue;
 
@@ -65,21 +65,21 @@ export const displayValueSuggestions = {
       {
         cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
         targetId: "loadOperatorSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterValue(event.data);
         },
       },
       {
         cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
         targetId: "loadValueSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterValue(event.data);
         },
       },
     ],
     createItem: {
       targetId: "idle",
-      action: (event, ctx) => {
+      action(event, ctx) {
         const ctxValue = ctx.get();
 
         if (ctxValue.filterUnderEdition) {
@@ -94,7 +94,7 @@ export const displayValueSuggestions = {
       {
         cond: (event, ctx) => !ctx.isEditing() && ctx.hasPartialOperator(),
         targetId: "loadOperatorSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.removePartialOperator();
         },
       },

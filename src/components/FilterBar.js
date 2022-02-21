@@ -10,7 +10,7 @@ import { useStateMachine } from '../hooks';
 const getDropdownPosition = (chicletElement) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();
   return { top: bottom - top, left: left - 27 };
-}
+};
 
 export const FilterBar = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);

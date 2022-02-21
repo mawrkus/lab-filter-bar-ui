@@ -1,6 +1,6 @@
 export const loadAttributeSuggestions = {
   actions: {
-    onEntry: async (event, ctx, toolkit) => {
+    async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
       const attributes = await toolkit.suggestionService.loadAttributes();
@@ -23,28 +23,28 @@ export const displayAttributeSuggestions = {
       {
         cond: (event, ctx) => !ctx.hasPartialOperator(),
         targetId: "loadOperatorSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterAttribute(event.data);
         },
       },
       {
         cond: (event, ctx) => ctx.hasPartialOperator(),
         targetId: "loadValueSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterAttribute(event.data);
         },
       },
     ],
     createItem: {
       targetId: "idle",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.createFreeTextFilter(event.data);
       },
     },
     // On backspace
     removeLastFilter: {
       targetId: "idle",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.removeFilter(ctx.getLastFilter());
       },
     },

@@ -1,6 +1,6 @@
 export const idle = {
   actions: {
-    onEntry: (event, ctx, toolkit) => {
+    onEntry(event, ctx, toolkit) {
       toolkit.suggestionService.cancelLoad();
       ctx.reset();
     },
@@ -29,43 +29,43 @@ export const idle = {
     ],
     editPartialAttribute: {
       targetId: "loadAttributeSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.startEditing();
       },
     },
     editPartialOperator: {
       targetId: "loadOperatorSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.startEditing();
       },
     },
     editOperator: {
       targetId: "loadOperatorSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.startEditing(event.data);
       },
     },
     editValue: {
       targetId: "loadValueSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.startEditing(event.data);
       },
     },
     editLogicalOperator: {
       targetId: "loadLogicalSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.startEditing(event.data);
       },
     },
     removeFilter: {
       targetId: "idle",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.removeFilter(event.data);
       },
     },
     removeLastFilter: {
       targetId: "idle",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.removeFilter(ctx.getLastFilter());
       },
     },

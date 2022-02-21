@@ -1,6 +1,6 @@
 export const loadLogicalSuggestions = {
   actions: {
-    onEntry: async (event, ctx, toolkit) => {
+    async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
       const logicalOperators = await toolkit.suggestionService.loadLogicalOperators();
@@ -39,14 +39,14 @@ export const displayLogicalSuggestions = {
       {
         cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
         targetId: "loadOperatorSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterOperator(event.data);
         },
       },
       {
         cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
         targetId: "loadValueSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterOperator(event.data);
         },
       },
@@ -56,7 +56,7 @@ export const displayLogicalSuggestions = {
       {
         cond: (event, ctx) => !ctx.isEditing(),
         targetId: "idle",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.createLogicalOperator({ value: 'and', label: 'AND' });
           ctx.createFreeTextFilter(event.data);
         },

@@ -63,8 +63,14 @@ export const displayLogicalSuggestions = {
       },
     ],
     // On backspace
-    removeLastFilter: {
-      targetId: 'displayLogicalSuggestions',
-    },
+    removeLastFilter: [
+      {
+        cond: (event, ctx) => !ctx.isEditing(),
+        targetId: 'idle',
+        action(event, ctx) {
+          ctx.removeFilter(ctx.getLastFilter());
+        },
+      },
+    ],
   },
 };

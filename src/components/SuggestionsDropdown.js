@@ -3,8 +3,6 @@ import { usePositionDropdown, useBackspace } from '../hooks';
 
 const loadingSuggestions = [
   { key: 'loading', text: 'Loading...', value: 'loading' },
-  { key: 'empty-1', text: '', value: '' },
-  { key: 'empty-2', text: '', value: '' },
 ];
 
 export const SuggestionsDropdown = ({

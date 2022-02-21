@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const useBackspace = (onBackspace) => {
+export const useHandleBackspaceKey = (onBackspace) => {
   useEffect(() => {
     const searchInput = document.querySelector('.ui.dropdown.search > input.search');
 

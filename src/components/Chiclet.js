@@ -1,100 +1,25 @@
-import { Icon, Label } from 'semantic-ui-react'
+import { ChicletAttributeOperatorValue } from './ChicletAttributeOperatorValue';
+import { ChicletLogicalOperator } from './ChicletLogicalOperator';
+import { ChicletValue } from './ChicletValue';
 
 export const Chiclet = ({
   filter,
   onClick,
   onRemove,
 }) => {
-  const { attribute, operator, value, type } = filter;
+  const { attribute, operator, value } = filter;
 
-  if (type === 'free-text') {
-    return (
-      <div className="chiclet">
-        <Label
-          as='a'
-          color="blue"
-          size="small"
-          title={`Click to change "${value.label}"`}
-          className="left value"
-          onClick={(e) => onClick(e, filter, 'value')}
-        >
-          "{value.label}"
-        </Label>
-
-        <Label
-          as='a'
-          color="blue"
-          size="small"
-          title="Remove filter"
-          className="right"
-          onClick={(e) => onRemove(e, filter)}
-        >
-          <Icon name='delete' />
-        </Label>
-      </div>
-    );
+  if (typeof attribute !== 'undefined' && typeof operator !== 'undefined' && typeof value !== 'undefined') {
+    return <ChicletAttributeOperatorValue filter={filter} onClick={onClick} onRemove={onRemove} />
   }
 
-  if (type === 'logical-operator') {
-    return (
-      <div className="chiclet">
-        <Label
-          as='a'
-          color="blue"
-          size="small"
-          title={`Click to change "${operator.label}"`}
-          className="operator"
-          onClick={(e) => onClick(e, filter, 'logical-operator')}
-        >
-          {operator.label}
-        </Label>
-      </div>
-    );
+  if (typeof operator !== 'undefined') {
+    return <ChicletLogicalOperator filter={filter} onClick={onClick} onRemove={onRemove} />
   }
 
-  return (
-    <div className="chiclet">
-      <Label
-        as='span'
-        color="blue"
-        size="small"
-        className="left attribute"
-      >
-        {attribute.label}
-      </Label>
+  if (typeof value !== 'undefined') {
+    return <ChicletValue filter={filter} onClick={onClick} onRemove={onRemove} />
+  }
 
-      <Label
-        as='a'
-        color="blue"
-        size="small"
-        title={`Click to change "${operator.label}"`}
-        className="middle operator"
-        onClick={(e) => onClick(e, filter, 'operator')}
-      >
-        {operator.label}
-      </Label>
-
-      <Label
-        as='a'
-        color="blue"
-        size="small"
-        title={`Click to change "${value.label}"`}
-        className="middle value"
-        onClick={(e) => onClick(e, filter, 'value')}
-      >
-        {value.id ? value.label : `"${value.label}"`}
-      </Label>
-
-      <Label
-        as='a'
-        color="blue"
-        size="small"
-        title="Remove filter"
-        className="right"
-        onClick={(e) => onRemove(e, filter)}
-      >
-        <Icon name='delete' />
-      </Label>
-    </div>
-  );
+  throw new TypeError(`Unsupported filter (${JSON.stringify(filter)})!`);
 };

@@ -68,6 +68,10 @@
   padding-top: 12px;
 }
 
+.ui.dropdown.search.error .menu {
+  border-color: #e0b4b4;
+}
+
 .ui.dropdown.search > input.search {
   font-size: 11px;
   top: -2px;

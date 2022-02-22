@@ -2,11 +2,7 @@ import { ChicletAttributeOperatorValue } from './ChicletAttributeOperatorValue';
 import { ChicletLogicalOperator } from './ChicletLogicalOperator';
 import { ChicletSearchText } from './ChicletSearchText';
 
-export const Chiclet = ({
-  filter,
-  onClick,
-  onRemove,
-}) => {
+export const Chiclet = ({ filter, onClick, onRemove }) => {
   switch (filter.type) {
     case 'attribute-operator-value':
       return <ChicletAttributeOperatorValue filter={filter} onClick={onClick} onRemove={onRemove} />

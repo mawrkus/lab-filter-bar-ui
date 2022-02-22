@@ -64,7 +64,7 @@
   margin: -14px -12px 0;
 }
 
-.ui.dropdown.search .menu {
+.ui.dropdown.search:not(.error) .menu {
   padding-top: 12px;
 }
 

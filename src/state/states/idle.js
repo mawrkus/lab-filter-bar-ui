@@ -59,12 +59,29 @@ export const idle = {
         ctx.startEditing(event.data);
       },
     },
-    removeFilter: {
-      targetId: "idle",
-      action(event, ctx) {
-        ctx.removeFilter(event.data);
+    removeFilter: [
+      {
+        cond: (event, ctx) => !ctx.hasPartialFilter(),
+        targetId: "idle",
+        action(event, ctx) {
+          ctx.removeFilter(event.data);
+        },
       },
-    },
+      {
+        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.removeFilter(event.data);
+        },
+      },
+      {
+        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        targetId: "loadValueSuggestions",
+        action(event, ctx) {
+          ctx.removeFilter(event.data);
+        },
+      },
+    ],
     removeLastFilter: {
       targetId: "idle",
       action(event, ctx) {

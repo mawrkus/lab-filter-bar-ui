@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const usePositionDropdown = (editing, position) => {
+export const usePositionDropdown = (open, editing, position) => {
   useEffect(() => {
     if (editing) {
       document.querySelector('.ui.search.dropdown').style.position = 'absolute';
@@ -11,6 +11,11 @@ export const usePositionDropdown = (editing, position) => {
       document.querySelector('.ui.search.dropdown').style.position = null;
       document.querySelector('.ui.search.dropdown').style.top = null;
       document.querySelector('.ui.search.dropdown').style.left = null;
+
+      if (open) {
+        // force a click to work when a chiclet is removed and a partial filter exists
+        document.querySelector('input.search').click();
+      }
     }
-  }, [editing, position]);
+  }, [open, editing, position]);
 };

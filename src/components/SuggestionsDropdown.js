@@ -43,7 +43,7 @@ export const SuggestionsDropdown = ({
     }
   };
 
-  usePositionDropdown(editing, position);
+  usePositionDropdown(open, editing, position);
   useHandleBackspaceKey(onBackspace);
 
   return (

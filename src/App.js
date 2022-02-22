@@ -38,9 +38,7 @@ export const App = () => {
     <div className="container">
       <h2 className="title">🧪 Rick &amp; Morty filter bar 🧪</h2>
       <Form>
-        <Form.Group>
-          <FilterBar stateMachine={appStateMachine} />
-        </Form.Group>
+        <FilterBar stateMachine={appStateMachine} />
       </Form>
     </div>
   );

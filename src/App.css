@@ -23,6 +23,7 @@
 .ui.label.left {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+  padding-right: 5px;
 }
 
 .ui.label.middle {
@@ -30,11 +31,14 @@
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .ui.label.right {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+  padding-left: 5px;
 }
 
 .ui.label, .ui.label > .icon.delete {

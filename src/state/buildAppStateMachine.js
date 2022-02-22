@@ -5,13 +5,16 @@ import { suggestionService } from "./suggestion-services";
 import {
   idle,
   loadAttributeSuggestions,
-  displayAttributeSuggestions,
+  chooseAttribute,
   loadOperatorSuggestions,
-  displayOperatorSuggestions,
+  chooseOperator,
+  editOperator,
   loadValueSuggestions,
-  displayValueSuggestions,
-  loadLogicalSuggestions,
-  displayLogicalSuggestions,
+  chooseValue,
+  editValue,
+  loadLogicalOperatorSuggestions,
+  chooseLogicalOperator,
+  editLogicalOperator,
 } from "./states";
 
 export const buildAppStateMachine = ({ filters }) => {
@@ -40,13 +43,16 @@ export const buildAppStateMachine = ({ filters }) => {
     states: {
       idle,
       loadAttributeSuggestions,
-      displayAttributeSuggestions,
+      chooseAttribute,
       loadOperatorSuggestions,
-      displayOperatorSuggestions,
+      chooseOperator,
+      editOperator,
       loadValueSuggestions,
-      displayValueSuggestions,
-      loadLogicalSuggestions,
-      displayLogicalSuggestions,
+      chooseValue,
+      editValue,
+      loadLogicalOperatorSuggestions,
+      chooseLogicalOperator,
+      editLogicalOperator,
     },
   });
 

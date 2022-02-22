@@ -12,11 +12,11 @@ export const loadAttributeSuggestions = {
   },
   events: {
     discardSuggestions: "idle",
-    onAttributeSuggestionsLoaded: "displayAttributeSuggestions",
+    onAttributeSuggestionsLoaded: "chooseAttribute",
   },
 };
 
-export const displayAttributeSuggestions = {
+export const chooseAttribute = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
@@ -38,7 +38,7 @@ export const displayAttributeSuggestions = {
     createItem: {
       targetId: "idle",
       action(event, ctx) {
-        ctx.createFreeTextFilter(event.data);
+        ctx.createSearchTextFilter(event.data);
       },
     },
     // On backspace

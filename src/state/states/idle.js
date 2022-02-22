@@ -2,7 +2,9 @@ export const idle = {
   actions: {
     onEntry(event, ctx, toolkit) {
       toolkit.suggestionService.cancelLoad();
-      ctx.reset();
+
+      const resetError = event?.name === 'discardSuggestions';
+      ctx.reset(resetError);
     },
   },
   events: {
@@ -11,7 +13,7 @@ export const idle = {
       {
         cond: (event, ctx) => (ctx.getLastFilter() && ctx.getLastFilter().type !== 'logical-operator')
           && !ctx.hasPartialFilter(),
-        targetId: "loadLogicalSuggestions",
+        targetId: "loadLogicalOperatorSuggestions",
       },
       {
         cond: (event, ctx) => (!ctx.getLastFilter() || ctx.getLastFilter().type === 'logical-operator')
@@ -52,7 +54,7 @@ export const idle = {
       },
     },
     editLogicalOperator: {
-      targetId: "loadLogicalSuggestions",
+      targetId: "loadLogicalOperatorSuggestions",
       action(event, ctx) {
         ctx.startEditing(event.data);
       },

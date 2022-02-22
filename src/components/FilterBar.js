@@ -69,6 +69,10 @@ export const FilterBar = ({ stateMachine }) => {
     stateMachine.sendEvent("removeLastFilter");
   };
 
+  console.log('__________________________________________________________________________________');
+  console.log(props.suggestions.error);
+  console.log('__________________________________________________________________________________');
+
   return (
     <Form.Group>
       {props.filters.map((filter, i) => (

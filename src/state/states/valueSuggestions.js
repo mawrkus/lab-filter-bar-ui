@@ -4,7 +4,7 @@ export const loadValueSuggestions = {
       const ctxValue = ctx.get();
       const { partialFilter, filterUnderEdition } = ctxValue;
 
-      if (filterUnderEdition?.type === 'free-text') {
+      if (filterUnderEdition?.type === 'search-text') {
         ctx.doneLoading([filterUnderEdition.value], null);
         return toolkit.sendEvent("onValueSuggestionsLoaded");
       }
@@ -33,68 +33,102 @@ export const loadValueSuggestions = {
 
       ctx.doneLoading(values, error);
 
-      if (!error) {
-        toolkit.sendEvent("onValueSuggestionsLoaded");
-      } else {
-        toolkit.sendEvent("idle");
-      }
+      toolkit.sendEvent("onValueSuggestionsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    onValueSuggestionsLoaded: "displayValueSuggestions",
+    onValueSuggestionsLoaded: [
+      {
+        cond: (event, ctx) => ctx.hasLoadingError(),
+        targetId: "idle",
+      },
+      {
+        cond: (event, ctx) => !ctx.isEditing(),
+        targetId: "chooseValue",
+      },
+      {
+        cond: (event, ctx) => ctx.isEditing(),
+        targetId: "editValue",
+      }
+    ],
   },
 };
 
-export const displayValueSuggestions = {
+export const chooseValue = {
+  events: {
+    discardSuggestions: "idle",
+    selectItem: {
+      targetId: "idle",
+      action:(event, ctx) => {
+        ctx.completePartialFilter(event.data);
+      },
+    },
+    createItem: {
+      targetId: "idle",
+      action(event, ctx) {
+        ctx.completePartialFilter(event.data);
+      },
+    },
+    // On backspace
+    removeLastFilter: [
+      {
+        cond: (event, ctx) => ctx.hasPartialOperator(),
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.removePartialOperator();
+        },
+      },
+    ],
+  },
+};
+
+export const editValue = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event, ctx) => !ctx.isEditing() || (ctx.isEditing() && !ctx.hasPartialFilter()),
+        cond: (event, ctx) => !ctx.hasPartialFilter(),
         targetId: "idle",
         action:(event, ctx) => {
-          if (ctx.get().filterUnderEdition) {
-            ctx.setFilterValue(event.data);
-          } else {
-            ctx.completePartialFilter(event.data);
-          }
+          ctx.setFilterValue(event.data);
         },
       },
       {
-        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.setFilterValue(event.data);
         },
       },
       {
-        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.setFilterValue(event.data);
         },
       },
     ],
-    createItem: {
-      targetId: "idle",
-      action(event, ctx) {
-        const ctxValue = ctx.get();
-
-        if (ctxValue.filterUnderEdition) {
-          ctx.setFilterValue(event.data);
-        } else {
-          ctx.completePartialFilter(event.data);
-        }
-      },
-    },
-    // On backspace
-    removeLastFilter: [
+    createItem: [
       {
-        cond: (event, ctx) => !ctx.isEditing() && ctx.hasPartialOperator(),
+        cond: (event, ctx) => !ctx.hasPartialFilter(),
+        targetId: "idle",
+        action(event, ctx) {
+          ctx.setFilterValue(event.data);
+        },
+      },
+      {
+        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
-          ctx.removePartialOperator();
+          ctx.setFilterValue(event.data);
+        },
+      },
+      {
+        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        targetId: "loadValueSuggestions",
+        action(event, ctx) {
+          ctx.setFilterValue(event.data);
         },
       },
     ],

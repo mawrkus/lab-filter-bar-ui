@@ -1,13 +1,16 @@
 import { StateMachineContext } from "./lib/state-machine";
 
 export class AppStateMachineContext extends StateMachineContext {
-  reset() {
+  reset(resetError) {
+    const ctxValue = this.get();
+    const lastLoadingError = ctxValue.suggestions.error;
+
     this.set({
-      ...this.get(),
+      ...ctxValue,
       suggestions: {
-        visible: false,
+        visible: resetError ? false : Boolean(lastLoadingError),
         loading: false,
-        error: null,
+        error: resetError ? null : lastLoadingError,
         items: [],
       },
       filterUnderEdition: null,
@@ -40,6 +43,10 @@ export class AppStateMachineContext extends StateMachineContext {
         items,
       },
     });
+  }
+
+  hasLoadingError() {
+    return Boolean(this.get().suggestions.error);
   }
 
   // partial filters
@@ -113,7 +120,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  completePartialFilter(filterValue, type='attribute-operator-value') {
+  completePartialFilter(filterValue) {
     const ctxValue = this.get();
     const { partialFilter, filters } = ctxValue;
 
@@ -122,7 +129,7 @@ export class AppStateMachineContext extends StateMachineContext {
       attribute: partialFilter.attribute,
       operator: partialFilter.operator,
       value: filterValue,
-      type,
+      type: 'attribute-operator-value',
     });
 
     ctxValue.filterId += 1;
@@ -133,7 +140,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  createFreeTextFilter(filterValue) {
+  createSearchTextFilter(filterValue) {
     const ctxValue = this.get();
     const { filters } = ctxValue;
 
@@ -142,7 +149,7 @@ export class AppStateMachineContext extends StateMachineContext {
       attribute: null,
       operator: null,
       value: filterValue,
-      type: 'free-text',
+      type: 'search-text',
     });
 
     ctxValue.filterId += 1;
@@ -150,7 +157,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  createLogicalOperator(filterOperator) {
+  createLogicalOperatorFilter(filterOperator) {
     const ctxValue = this.get();
     const { filters } = ctxValue;
 

@@ -1,53 +1,57 @@
-export const loadOperatorSuggestions = {
+export const loadLogicalOperatorSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
-      const operators = await toolkit.suggestionService.loadOperators();
+      const logicalOperators = await toolkit.suggestionService.loadLogicalOperators();
 
-      ctx.doneLoading(operators);
+      ctx.doneLoading(logicalOperators);
 
-      toolkit.sendEvent("onOperatorSuggestionsLoaded");
+      toolkit.sendEvent("onLogicalOperatorSuggestionsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    onOperatorSuggestionsLoaded: [
+    onLogicalOperatorSuggestionsLoaded: [
       {
         cond: (event, ctx) => !ctx.isEditing(),
-        targetId: "chooseOperator",
+        targetId: "chooseLogicalOperator",
       },
       {
         cond: (event, ctx) => ctx.isEditing(),
-        targetId: "editOperator",
+        targetId: "editLogicalOperator",
       }
     ],
   },
 };
 
-export const chooseOperator = {
+export const chooseLogicalOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: {
-      targetId: "loadValueSuggestions",
+      targetId: "idle",
       action:(event, ctx) => {
-        ctx.setFilterOperator(event.data);
+        ctx.createLogicalOperatorFilter(event.data);
+      },
+    },
+    createItem: {
+      targetId: "idle",
+      action(event, ctx) {
+        ctx.createLogicalOperatorFilter({ value: 'and', label: 'AND' });
+        ctx.createSearchTextFilter(event.data);
       },
     },
     // On backspace
-    removeLastFilter: [
-      {
-        cond: (event, ctx) => ctx.hasPartialAttribute(),
-        targetId: "idle",
-        action(event, ctx) {
-          ctx.removePartialAttribute();
-        },
+    removeLastFilter: {
+      targetId: 'idle',
+      action(event, ctx) {
+        ctx.removeFilter(ctx.getLastFilter());
       },
-    ],
+    },
   },
 };
 
-export const editOperator = {
+export const editLogicalOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
@@ -68,7 +72,7 @@ export const editOperator = {
       {
         cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
         targetId: "loadValueSuggestions",
-        action:(event, ctx) => {
+        action(event, ctx) {
           ctx.setFilterOperator(event.data);
         },
       },

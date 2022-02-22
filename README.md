@@ -23,5 +23,6 @@ A filter bar UI component built with:
 - tabIndex
 - Parentheses
 - "IN" operator + multi-select
+- "IS NULL" operator
 - Contextual: if season selected -> reduce episodes list
 - React.memo()?

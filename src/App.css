@@ -2,10 +2,6 @@
   padding: 20px;
 }
 
-.title {
-  margin-bottom: 24px;
-}
-
 .chiclet, .partial-chiclet {
   margin-right: 4px;
   /* flex */

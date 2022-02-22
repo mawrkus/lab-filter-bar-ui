@@ -1,5 +1,5 @@
 import "./App.css";
-import { Form, Message } from "semantic-ui-react";
+import { Form, Header, Message } from "semantic-ui-react";
 import { FilterBar } from "./components/FilterBar";
 import { buildAppStateMachine } from "./state";
 import { useMemo, useState } from "react";
@@ -47,7 +47,7 @@ export const App = () => {
 
   return (
     <div className="container">
-      <h2 className="title">🧪 Rick &amp; Morty filter bar 🧪</h2>
+      <Header as='h1'>🧪 Rick &amp; Morty filter bar 🧪</Header>
 
       <Form>
         <FilterBar stateMachine={appStateMachine} />

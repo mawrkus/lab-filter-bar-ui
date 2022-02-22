@@ -1,6 +1,27 @@
 import { StateMachineContext } from "./lib/state-machine";
 
 export class AppStateMachineContext extends StateMachineContext {
+  constructor({ initFilters, onUpdateFilters }) {
+    super({
+      partialFilter: {
+        attribute: null,
+        operator: null,
+      },
+      filters: initFilters,
+      filterId: initFilters.length + 1,
+      suggestions: {
+        visible: false,
+        loading: false,
+        error: null,
+        items: [],
+      },
+      filterUnderEdition: null,
+      isEditing: false,
+    });
+
+    this._nofityFiltersUpdate = onUpdateFilters;
+  }
+
   reset(resetError) {
     const ctxValue = this.get();
     const lastLoadingError = ctxValue.suggestions.error;
@@ -92,8 +113,15 @@ export class AppStateMachineContext extends StateMachineContext {
 
     if (filterUnderEdition) {
       const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
+
       filter.operator = filterOperator;
       ctxValue.filterUnderEdition = null;
+
+      this._nofityFiltersUpdate(ctxValue.filters, {
+        action: 'edit',
+        filter: filterUnderEdition,
+        target: 'operator',
+      });
     } else {
       partialFilter.operator = filterOperator;
     }
@@ -109,8 +137,15 @@ export class AppStateMachineContext extends StateMachineContext {
 
     if (filterUnderEdition) {
       const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
+
       filter.value = filterValue;
       ctxValue.filterUnderEdition = null;
+
+      this._nofityFiltersUpdate(ctxValue.filters, {
+        action: 'edit',
+        filter: filterUnderEdition,
+        target: 'value',
+      });
     } else {
       partialFilter.value = filterValue;
     }
@@ -124,19 +159,22 @@ export class AppStateMachineContext extends StateMachineContext {
     const ctxValue = this.get();
     const { partialFilter, filters } = ctxValue;
 
-    filters.push({
+    const newFilter = {
       id: ctxValue.filterId,
       attribute: partialFilter.attribute,
       operator: partialFilter.operator,
       value: filterValue,
       type: 'attribute-operator-value',
-    });
+    }
+
+    filters.push(newFilter);
 
     ctxValue.filterId += 1;
 
     partialFilter.attribute = null;
     partialFilter.operator = null;
 
+    this._nofityFiltersUpdate(filters, { action: 'create', filter: newFilter });
     this.set(ctxValue);
   }
 
@@ -144,16 +182,19 @@ export class AppStateMachineContext extends StateMachineContext {
     const ctxValue = this.get();
     const { filters } = ctxValue;
 
-    filters.push({
+    const newFilter = {
       id: ctxValue.filterId,
       attribute: null,
       operator: null,
       value: filterValue,
       type: 'search-text',
-    });
+    };
+
+    filters.push(newFilter);
 
     ctxValue.filterId += 1;
 
+    this._nofityFiltersUpdate(filters, { action: 'create', filter: newFilter });
     this.set(ctxValue);
   }
 
@@ -161,16 +202,19 @@ export class AppStateMachineContext extends StateMachineContext {
     const ctxValue = this.get();
     const { filters } = ctxValue;
 
-    filters.push({
+    const newFilter = {
       id: ctxValue.filterId,
       attribute: null,
       operator: filterOperator,
       value: null,
       type: 'logical-operator',
-    });
+    };
+
+    filters.push(newFilter);
 
     ctxValue.filterId += 1;
 
+    this._nofityFiltersUpdate(filters, { action: 'create', filter: newFilter });
     this.set(ctxValue);
   }
 
@@ -205,9 +249,11 @@ export class AppStateMachineContext extends StateMachineContext {
 
     const filterId = filter.id;
     const filterIndex = ctxValue.filters.findIndex((f) => f.id === filterId);
+    const filterRemoved = ctxValue.filters[filterIndex];
 
     ctxValue.filters.splice(filterIndex, 2);
 
+    this._nofityFiltersUpdate(ctxValue.filters, { action: 'remove', filter: filterRemoved });
     this.set(ctxValue);
   }
 

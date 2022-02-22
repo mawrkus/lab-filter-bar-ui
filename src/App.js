@@ -1,9 +1,12 @@
 import "./App.css";
-import { Form } from "semantic-ui-react";
+import { Form, Message } from "semantic-ui-react";
 import { FilterBar } from "./components/FilterBar";
 import { buildAppStateMachine } from "./state";
+import { useMemo, useState } from "react";
 
-// const filters = [
+const initFilters = [];
+
+// const initFilters = [
 //   {
 //     id: 1,
 //     attribute: { id: 2, value: "season", label: "Season" },
@@ -31,17 +34,33 @@ import { buildAppStateMachine } from "./state";
 //   },
 // ];
 
-const filters = [];
-
 export const App = () => {
-  const appStateMachine = buildAppStateMachine({ filters });
+  const [currentFilters, setCurrentFilters] = useState(initFilters);
+
+  const appStateMachine = useMemo(() => buildAppStateMachine({
+    initFilters,
+    onUpdateFilters: (newFilters, event) => {
+      console.log('🧪 Filters update: "%s"', event.action, event);
+      setCurrentFilters(newFilters);
+    },
+  }), []);
 
   return (
     <div className="container">
       <h2 className="title">🧪 Rick &amp; Morty filter bar 🧪</h2>
+
       <Form>
         <FilterBar stateMachine={appStateMachine} />
       </Form>
+
+      <Message size="mini" style={{ marginTop: '24px' }}>
+        <Message.Header>Filters ({currentFilters.length})</Message.Header>
+        <Message.List as="ol">
+          {currentFilters.map((filter) => (
+            <Message.Item key={filter.id}>{JSON.stringify(filter)}</Message.Item>
+          ))}
+        </Message.List>
+      </Message>
     </div>
   );
 };

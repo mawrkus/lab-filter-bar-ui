@@ -15,7 +15,6 @@ A filter bar UI component built with:
 
 ## TODOS
 
-- `<FilterBar onChange={} />`
 - "IS NULL" operator
 - tabIndex
 - "IN" operator + multi-select

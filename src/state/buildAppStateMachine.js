@@ -17,22 +17,10 @@ import {
   editLogicalOperator,
 } from "./states";
 
-export const buildAppStateMachine = ({ filters }) => {
+export const buildAppStateMachine = ({ initFilters, onUpdateFilters }) => {
   const appStateMachineContext = new AppStateMachineContext({
-    partialFilter: {
-      attribute: null,
-      operator: null,
-    },
-    filters,
-    filterId: filters.length + 1,
-    suggestions: {
-      visible: false,
-      loading: false,
-      error: null,
-      items: [],
-    },
-    filterUnderEdition: null,
-    isEditing: false,
+    initFilters,
+    onUpdateFilters,
   });
 
   const appStateMachine = new StateMachine({

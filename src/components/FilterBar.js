@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import { Form } from 'semantic-ui-react';
 
 import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
@@ -70,41 +69,34 @@ export const FilterBar = ({ stateMachine }) => {
   };
 
   return (
-    <Form>
-      <Form.Group>
-        {props.filters.map((filter, i) => (
-          <Chiclet
-            key={filter.id}
-            filter={filter}
-            onClick={onClickChiclet}
-            onRemove={onRemoveChiclet}
-          />
-        ))}
-
-        <PartialChiclet
-          filter={props.partialFilter}
-          onClick={onClickPartialChiclet}
+    <>
+      {props.filters.map((filter, i) => (
+        <Chiclet
+          key={filter.id}
+          filter={filter}
+          onClick={onClickChiclet}
+          onRemove={onRemoveChiclet}
         />
+      ))}
 
-        <SuggestionsDropdown
-          // ugly hack to ensure that the dropdown internal value is unselected
-          // if not, editing an operator or a value in two different chiclets might not work as the
-          // dropdown keeps the last selected value and compares it before allowing an update
-          // (e.g. change '=' to '!=' in the 1st chiclet then change 'LIKE' to '!=' in the 2nd)
-          key={props.isEditing}
-          position={dropdownPos}
-          open={props.suggestions.visible}
-          loading={props.suggestions.loading}
-          error={props.suggestions.error}
-          suggestions={props.suggestions.items}
-          editing={props.isEditing}
-          onOpen={onOpenSuggestionsDropdown}
-          onClose={onCloseSuggestionsDropdown}
-          onSelectItem={onSelectSuggestionItem}
-          onCreateItem={onCreateSuggestionItem}
-          onBackspace={onBackspace}
-        />
-      </Form.Group>
-    </Form>
+      <PartialChiclet
+        filter={props.partialFilter}
+        onClick={onClickPartialChiclet}
+      />
+
+      <SuggestionsDropdown
+        position={dropdownPos}
+        open={props.suggestions.visible}
+        loading={props.suggestions.loading}
+        error={props.suggestions.error}
+        suggestions={props.suggestions.items}
+        editing={props.isEditing}
+        onOpen={onOpenSuggestionsDropdown}
+        onClose={onCloseSuggestionsDropdown}
+        onSelectItem={onSelectSuggestionItem}
+        onCreateItem={onCreateSuggestionItem}
+        onBackspace={onBackspace}
+      />
+    </>
   );
 }

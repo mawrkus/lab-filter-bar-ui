@@ -1,10 +1,12 @@
+import { copy } from 'fastest-json-copy';
+
 export class StateMachineContext {
   /**
    * @param {Object} initialValue
    */
   constructor(initialValue) {
     this._value = { ...initialValue };
-    this._updateHandler = null;
+    this._updateHandlers = [];
   }
 
   /**
@@ -18,17 +20,17 @@ export class StateMachineContext {
    * @param {Object} newValue
    */
   set(newValue) {
-    this._value = newValue;
+    this._value = copy(newValue);
 
-    if (this._updateHandler) {
-      this._updateHandler(this._value);
-    }
+    this._updateHandlers.forEach((h) => h(this._value));
   }
 
   /**
    * @param {Function} handler
    */
   onUpdate(handler) {
-    this._updateHandler = handler;
+    if (!this._updateHandlers.find((h) => h === handler)) {
+      this._updateHandlers.push(handler);
+    }
   }
 }

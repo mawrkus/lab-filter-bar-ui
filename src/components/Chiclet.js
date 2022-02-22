@@ -1,19 +1,44 @@
-import { ChicletAttributeOperatorValue } from './ChicletAttributeOperatorValue';
-import { ChicletLogicalOperator } from './ChicletLogicalOperator';
-import { ChicletSearchText } from './ChicletSearchText';
+import { memo } from "react";
+import areEqual from "fast-deep-equal";
 
-export const Chiclet = ({ filter, onClick, onRemove }) => {
+import { ChicletAttributeOperatorValue } from "./ChicletAttributeOperatorValue";
+import { ChicletLogicalOperator } from "./ChicletLogicalOperator";
+import { ChicletSearchText } from "./ChicletSearchText";
+
+const ChicletComponent = ({ filter, onClick, onRemove }) => {
   switch (filter.type) {
-    case 'attribute-operator-value':
-      return <ChicletAttributeOperatorValue filter={filter} onClick={onClick} onRemove={onRemove} />
+    case "attribute-operator-value":
+      return (
+        <ChicletAttributeOperatorValue
+          filter={filter}
+          onClick={onClick}
+          onRemove={onRemove}
+        />
+      );
 
-    case 'logical-operator':
-      return <ChicletLogicalOperator filter={filter} onClick={onClick} onRemove={onRemove} />
+    case "logical-operator":
+      return (
+        <ChicletLogicalOperator
+          filter={filter}
+          onClick={onClick}
+          onRemove={onRemove}
+        />
+      );
 
-    case 'search-text':
-      return <ChicletSearchText filter={filter} onClick={onClick} onRemove={onRemove} />
+    case "search-text":
+      return (
+        <ChicletSearchText
+          filter={filter}
+          onClick={onClick}
+          onRemove={onRemove}
+        />
+      );
 
     default:
-      throw new TypeError(`Unsupported filter type "${filter.type}" (${JSON.stringify(filter)})!`);
+      throw new TypeError(
+        `Unsupported filter type "${filter.type}" (${JSON.stringify(filter)})!`
+      );
   }
 };
+
+export const Chiclet = memo(ChicletComponent, areEqual);

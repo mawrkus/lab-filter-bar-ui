@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useStateMachine = (stateMachine) => {
   const machineContext = stateMachine.getContext();
-
   const [props, setProps] = useState(machineContext.get());
 
-  machineContext.onUpdate(setProps);
+  useEffect(() => {
+    machineContext.onUpdate(setProps);
+  }, [machineContext]);
 
   return [props];
 };

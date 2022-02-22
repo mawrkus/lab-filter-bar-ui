@@ -176,11 +176,19 @@ export class AppStateMachineContext extends StateMachineContext {
 
   // editing states
   startEditing(completedFilter) {
-    this.set({ ...this.get(), isEditing: true, filterUnderEdition: completedFilter });
+    this.set({
+      ...this.get(),
+      isEditing: true,
+      filterUnderEdition: completedFilter,
+    });
   }
 
   stopEditing() {
-    this.set({ ...this.get(), isEditing: false, filterUnderEdition: null });
+    this.set({
+      ...this.get(),
+      isEditing: false,
+      filterUnderEdition: null,
+    });
   }
 
   isEditing() {
@@ -200,7 +208,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
     ctxValue.filters.splice(filterIndex, 2);
 
-    this.set({ ...ctxValue });
+    this.set(ctxValue);
   }
 
   //

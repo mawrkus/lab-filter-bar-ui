@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 
 import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
@@ -12,9 +12,42 @@ const getDropdownPosition = (chicletElement) => {
   return { top: bottom - top, left: left - 27 };
 };
 
-export const FilterBar = ({ stateMachine }) => {
+const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
   const [dropdownPos, setDropdownPos] = useState(null);
+
+  const onClickPartialChiclet = useCallback((event, filter, part) => {
+    if (part === 'attribute') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
+      return stateMachine.sendEvent("editPartialAttribute");
+    }
+
+    if (part === 'operator') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
+      return stateMachine.sendEvent("editPartialOperator");
+    }
+  }, [stateMachine]);
+
+  const onClickChiclet = useCallback((event, filter, part) => {
+    if (part === 'operator') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
+      return stateMachine.sendEvent("editOperator", filter);
+    }
+
+    if (part === 'value') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
+      return stateMachine.sendEvent("editValue", filter);
+    }
+
+    if (part === 'logical-operator') {
+      setDropdownPos(getDropdownPosition(event.currentTarget));
+      return stateMachine.sendEvent("editLogicalOperator", filter);
+    }
+  }, [stateMachine]);
+
+  const onRemoveChiclet = useCallback((event, filter) => {
+    stateMachine.sendEvent("removeFilter", filter);
+  }, [stateMachine]);
 
   const onOpenSuggestionsDropdown = () => {
     stateMachine.sendEvent("startInput");
@@ -30,39 +63,6 @@ export const FilterBar = ({ stateMachine }) => {
 
   const onCreateSuggestionItem = (event, item) => {
     stateMachine.sendEvent("createItem", item);
-  };
-
-  const onRemoveChiclet = (event, filter) => {
-    stateMachine.sendEvent("removeFilter", filter);
-  };
-
-  const onClickPartialChiclet = (event, filter, part) => {
-    if (part === 'attribute') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
-      return stateMachine.sendEvent("editPartialAttribute");
-    }
-
-    if (part === 'operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
-      return stateMachine.sendEvent("editPartialOperator");
-    }
-  };
-
-  const onClickChiclet = (event, filter, part) => {
-    if (part === 'operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
-      return stateMachine.sendEvent("editOperator", filter);
-    }
-
-    if (part === 'value') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
-      return stateMachine.sendEvent("editValue", filter);
-    }
-
-    if (part === 'logical-operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
-      return stateMachine.sendEvent("editLogicalOperator", filter);
-    }
   };
 
   const onBackspace = () => {
@@ -101,3 +101,5 @@ export const FilterBar = ({ stateMachine }) => {
     </Form.Group>
   );
 }
+
+export const FilterBar = memo(FilterBarComponent);

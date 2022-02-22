@@ -31,8 +31,10 @@ import { buildAppStateMachine } from "./state";
 //   },
 // ];
 
+const filters = [];
+
 export const App = () => {
-  const appStateMachine = buildAppStateMachine({ filters: [] });
+  const appStateMachine = buildAppStateMachine({ filters });
 
   return (
     <div className="container">

@@ -15,7 +15,7 @@ A filter bar UI component built with:
 
 ## TODOS
 
-- React.memo()
+- remove filter + partial -> open
 - tabIndex
 - `<FilterBar onChange={} />`
 - Fix bug: ensure that the dropdown internal value is unselected, if not, editing an operator or a

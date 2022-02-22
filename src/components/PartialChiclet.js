@@ -6,7 +6,7 @@ const PartialChicletComponent = ({ filter, onClick }) => {
   const { attribute, operator } = filter;
 
   return (
-    <div className="partial-chiclet">
+    <div className="chiclet partial">
       {attribute && <Label
         as='a'
         size="small"

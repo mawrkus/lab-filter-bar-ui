@@ -2,7 +2,7 @@
   padding: 20px;
 }
 
-.chiclet, .partial-chiclet {
+.chiclet {
   margin-right: 4px;
   /* flex */
   display: flex;

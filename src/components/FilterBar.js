@@ -4,7 +4,7 @@ import { memo, useState, useCallback } from 'react';
 import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './SuggestionsDropdown';
-import { useStateMachine } from '../hooks';
+import { useStateMachine, useKeyboardNavigation } from '../hooks';
 import { Form } from 'semantic-ui-react';
 
 const getDropdownPosition = (chicletElement) => {
@@ -15,6 +15,7 @@ const getDropdownPosition = (chicletElement) => {
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
   const [dropdownPos, setDropdownPos] = useState(null);
+  useKeyboardNavigation();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {

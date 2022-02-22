@@ -5,6 +5,7 @@ import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './SuggestionsDropdown';
 import { useStateMachine } from '../hooks';
+import { Form } from 'semantic-ui-react';
 
 const getDropdownPosition = (chicletElement) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();
@@ -69,7 +70,7 @@ export const FilterBar = ({ stateMachine }) => {
   };
 
   return (
-    <>
+    <Form.Group>
       {props.filters.map((filter, i) => (
         <Chiclet
           key={filter.id}
@@ -97,6 +98,6 @@ export const FilterBar = ({ stateMachine }) => {
         onCreateItem={onCreateSuggestionItem}
         onBackspace={onBackspace}
       />
-    </>
+    </Form.Group>
   );
 }

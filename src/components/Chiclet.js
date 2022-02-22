@@ -1,25 +1,23 @@
 import { ChicletAttributeOperatorValue } from './ChicletAttributeOperatorValue';
 import { ChicletLogicalOperator } from './ChicletLogicalOperator';
-import { ChicletValue } from './ChicletValue';
+import { ChicletSearchText } from './ChicletSearchText';
 
 export const Chiclet = ({
   filter,
   onClick,
   onRemove,
 }) => {
-  const { attribute, operator, value } = filter;
+  switch (filter.type) {
+    case 'attribute-operator-value':
+      return <ChicletAttributeOperatorValue filter={filter} onClick={onClick} onRemove={onRemove} />
 
-  if (attribute && operator && value) {
-    return <ChicletAttributeOperatorValue filter={filter} onClick={onClick} onRemove={onRemove} />
+    case 'logical-operator':
+      return <ChicletLogicalOperator filter={filter} onClick={onClick} onRemove={onRemove} />
+
+    case 'search-text':
+      return <ChicletSearchText filter={filter} onClick={onClick} onRemove={onRemove} />
+
+    default:
+      throw new TypeError(`Unsupported filter type "${filter.type}" (${JSON.stringify(filter)})!`);
   }
-
-  if (operator) {
-    return <ChicletLogicalOperator filter={filter} onClick={onClick} onRemove={onRemove} />
-  }
-
-  if (value) {
-    return <ChicletValue filter={filter} onClick={onClick} onRemove={onRemove} />
-  }
-
-  throw new TypeError(`Unsupported filter (${JSON.stringify(filter)})!`);
 };

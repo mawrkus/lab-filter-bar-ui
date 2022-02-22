@@ -1,6 +1,6 @@
 import { Icon, Label } from 'semantic-ui-react'
 
-export const ChicletValue = ({
+export const ChicletSearchText = ({
   filter,
   onClick,
   onRemove,

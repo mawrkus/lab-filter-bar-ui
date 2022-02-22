@@ -24,7 +24,7 @@ export const ChicletSearchText = ({
         as='a'
         color="blue"
         size="small"
-        title="Remove filter"
+        title={`Click to remove "${value.label}"`}
         className="right"
         onClick={(e) => onRemove(e, filter)}
       >

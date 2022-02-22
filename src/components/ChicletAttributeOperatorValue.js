@@ -13,6 +13,7 @@ export const ChicletAttributeOperatorValue = ({
         as='span'
         color="blue"
         size="small"
+        title={`Cannot change "${attribute.label}"`}
         className="left attribute"
       >
         {attribute.label}
@@ -44,7 +45,7 @@ export const ChicletAttributeOperatorValue = ({
         as='a'
         color="blue"
         size="small"
-        title="Remove filter"
+        title={`Click to remove "${attribute.label} ${operator.label} ${value.label}"`}
         className="right"
         onClick={(e) => onRemove(e, filter)}
       >

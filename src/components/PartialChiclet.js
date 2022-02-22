@@ -13,6 +13,7 @@ const PartialChicletComponent = ({ filter, onClick }) => {
         title={`Click to change "${attribute.label}"`}
         className="left attribute"
         onClick={(e) => onClick(e, filter, 'attribute')}
+        tabIndex="0"
       >
         {attribute.label}
       </Label>}
@@ -23,6 +24,7 @@ const PartialChicletComponent = ({ filter, onClick }) => {
         title={`Click to change "${operator.label}"`}
         className="middle operator"
         onClick={(e) => onClick(e, filter, 'operator')}
+        tabIndex="0"
       >
         {operator.label}
       </Label>}

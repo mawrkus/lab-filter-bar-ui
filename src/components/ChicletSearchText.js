@@ -1,10 +1,6 @@
 import { Icon, Label } from 'semantic-ui-react'
 
-export const ChicletSearchText = ({
-  filter,
-  onClick,
-  onRemove,
-}) => {
+export const ChicletSearchText = ({ filter, onClick, onRemove }) => {
   const { value } = filter;
 
   return (
@@ -16,6 +12,7 @@ export const ChicletSearchText = ({
         title={`Click to change "${value.label}"`}
         className="left value"
         onClick={(e) => onClick(e, filter, 'value')}
+        tabIndex="0"
       >
         "{value.label}"
       </Label>
@@ -27,6 +24,7 @@ export const ChicletSearchText = ({
         title={`Click to remove "${value.label}"`}
         className="right"
         onClick={(e) => onRemove(e, filter)}
+        tabIndex="0"
       >
         <Icon name='delete' />
       </Label>

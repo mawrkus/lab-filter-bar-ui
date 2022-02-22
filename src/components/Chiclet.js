@@ -21,7 +21,6 @@ const ChicletComponent = ({ filter, onClick, onRemove }) => {
         <ChicletLogicalOperator
           filter={filter}
           onClick={onClick}
-          onRemove={onRemove}
         />
       );
 

@@ -2,6 +2,7 @@ import { memo } from "react";
 import areEqual from "fast-deep-equal";
 
 import { ChicletAttributeOperatorValue } from "./ChicletAttributeOperatorValue";
+import { ChicletAttributeOperator } from "./ChicletAttributeOperator";
 import { ChicletLogicalOperator } from "./ChicletLogicalOperator";
 import { ChicletSearchText } from "./ChicletSearchText";
 
@@ -10,6 +11,15 @@ const ChicletComponent = ({ filter, onClick, onRemove }) => {
     case "attribute-operator-value":
       return (
         <ChicletAttributeOperatorValue
+          filter={filter}
+          onClick={onClick}
+          onRemove={onRemove}
+        />
+      );
+
+    case "attribute-operator":
+      return (
+        <ChicletAttributeOperator
           filter={filter}
           onClick={onClick}
           onRemove={onRemove}

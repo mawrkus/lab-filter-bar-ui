@@ -115,11 +115,28 @@ export class AppStateMachineContext extends StateMachineContext {
       const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
 
       filter.operator = filterOperator;
+
+      if (typeof filterUnderEdition.operator.presetValue !== 'undefined' && typeof filterOperator.presetValue === 'undefined') {
+        filter.value = {
+          id: null,
+          value: filterUnderEdition.operator.presetValue,
+          label: String(filterUnderEdition.operator.presetValue),
+        };
+        filter.type = 'attribute-operator-value';
+      } else if (typeof filterUnderEdition.operator.presetValue === 'undefined' && typeof filterOperator.presetValue !== 'undefined') {
+        filter.value = {
+          id: null,
+          value: filterOperator.presetValue,
+          label: String(filterOperator.presetValue),
+        };
+        filter.type = 'attribute-operator';
+      }
+
       ctxValue.filterUnderEdition = null;
 
       this._nofityFiltersUpdate(ctxValue.filters, {
         action: 'edit',
-        filter: filterUnderEdition,
+        filter,
         target: 'operator',
       });
     } else {
@@ -143,7 +160,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
       this._nofityFiltersUpdate(ctxValue.filters, {
         action: 'edit',
-        filter: filterUnderEdition,
+        filter,
         target: 'value',
       });
     } else {
@@ -155,7 +172,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  completePartialFilter(filterValue) {
+  completePartialFilter(filterValue, type='attribute-operator-value') {
     const ctxValue = this.get();
     const { partialFilter, filters } = ctxValue;
 
@@ -164,7 +181,7 @@ export class AppStateMachineContext extends StateMachineContext {
       attribute: partialFilter.attribute,
       operator: partialFilter.operator,
       value: filterValue,
-      type: 'attribute-operator-value',
+      type,
     }
 
     filters.push(newFilter);

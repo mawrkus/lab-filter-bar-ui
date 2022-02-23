@@ -15,7 +15,7 @@ A filter bar UI component built with:
 
 ## TODOS
 
-- "IS NULL" operator
+- Dropdown -> set max width (check episodes)
 - "IN" operator + multi-select
 - Fix bug: ensure that the dropdown internal value is unselected, if not, editing an operator or a
   value in two different chiclets might not work, as the dropdown keeps the last selected value and

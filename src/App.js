@@ -40,7 +40,7 @@ export const App = () => {
   const appStateMachine = useMemo(() => buildAppStateMachine({
     initFilters,
     onUpdateFilters: (newFilters, event) => {
-      console.log('🧪 Filters update: "%s"', event.action, event);
+      console.log('🧪 Filters update: "%s"', event.action, JSON.stringify(event));
       setCurrentFilters(newFilters);
     },
   }), []);

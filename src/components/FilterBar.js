@@ -71,7 +71,7 @@ const FilterBarComponent = ({ stateMachine }) => {
   };
 
   return (
-    <Form.Group>
+    <Form.Group className="filter-bar">
       {props.filters.map((filter, i) => (
         <Chiclet
           key={filter.id}

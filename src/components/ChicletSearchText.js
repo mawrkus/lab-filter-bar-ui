@@ -4,7 +4,7 @@ export const ChicletSearchText = ({ filter, onClick, onRemove }) => {
   const { value } = filter;
 
   return (
-    <div className="chiclet">
+    <div className="chiclet search-text">
       <Label
         as='a'
         color="blue"

@@ -4,7 +4,7 @@ export const ChicletAttributeOperator = ({ filter, onClick, onRemove }) => {
   const { attribute, operator } = filter;
 
   return (
-    <div className="chiclet">
+    <div className="chiclet attribute-operator">
       <Label
         as='span'
         color="blue"

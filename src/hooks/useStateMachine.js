@@ -5,6 +5,7 @@ export const useStateMachine = (stateMachine) => {
   const [props, setProps] = useState(machineContext.get());
 
   useEffect(() => {
+    setProps(machineContext.get());
     machineContext.onUpdate(setProps);
   }, [machineContext]);
 

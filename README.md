@@ -1,4 +1,4 @@
-# 🧪 Filter Bar UI component
+# 🧪 Lab project: a Filter Bar UI component
 
 A filter bar UI component built with:
 

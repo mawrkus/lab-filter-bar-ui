@@ -7,9 +7,10 @@ import { SuggestionsDropdown } from './SuggestionsDropdown';
 import { useStateMachine, useKeyboardNavigation } from '../hooks';
 import { Form } from 'semantic-ui-react';
 
-const getDropdownPosition = (chicletElement) => {
+const getDropdownPosition = (chicletElement, filterType) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();
-  return { top: bottom - top, left: left - 27 };
+  const leftDec = ['search-text', 'logical-operator'].includes(filterType) ? 27 : 32;
+  return { top: bottom - top, left: left - leftDec };
 };
 
 const FilterBarComponent = ({ stateMachine }) => {
@@ -19,29 +20,29 @@ const FilterBarComponent = ({ stateMachine }) => {
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
+      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
       return stateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
+      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
       return stateMachine.sendEvent("editPartialOperator");
     }
   }, [stateMachine]);
 
   const onClickChiclet = useCallback((event, filter, part) => {
     if (part === 'operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
+      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
       return stateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
+      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
       return stateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget));
+      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
       return stateMachine.sendEvent("editLogicalOperator", filter);
     }
   }, [stateMachine]);

@@ -5,6 +5,10 @@ import { Label } from 'semantic-ui-react'
 const PartialChicletComponent = ({ filter, onClick }) => {
   const { attribute, operator } = filter;
 
+  if (!attribute && !operator) {
+    return null;
+  }
+
   return (
     <div className="chiclet partial">
       {attribute && <Label

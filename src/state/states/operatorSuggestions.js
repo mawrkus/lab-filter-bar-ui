@@ -73,7 +73,7 @@ export const editOperator = {
         cond: (event, ctx) => typeof ctx.get().filterUnderEdition.operator.presetValue !== 'undefined' && typeof event.data.presetValue === 'undefined',
         targetId: "loadValueSuggestions",
         action:(event, ctx) => {
-          const filterUnderEdition = ctx.get().filterUnderEdition;
+          const { filterUnderEdition } = ctx.get();
           ctx.setFilterOperator(event.data);
           ctx.startEditing(filterUnderEdition);
         },

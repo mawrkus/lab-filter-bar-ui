@@ -122,6 +122,7 @@ export class AppStateMachineContext extends StateMachineContext {
           value: filterUnderEdition.operator.presetValue,
           label: String(filterUnderEdition.operator.presetValue),
         };
+
         filter.type = 'attribute-operator-value';
       } else if (typeof filterUnderEdition.operator.presetValue === 'undefined' && typeof filterOperator.presetValue !== 'undefined') {
         filter.value = {
@@ -129,6 +130,7 @@ export class AppStateMachineContext extends StateMachineContext {
           value: filterOperator.presetValue,
           label: String(filterOperator.presetValue),
         };
+
         filter.type = 'attribute-operator';
       }
 

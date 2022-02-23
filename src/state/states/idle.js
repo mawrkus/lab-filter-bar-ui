@@ -11,13 +11,13 @@ export const idle = {
     discardSuggestions: "idle",
     startInput: [
       {
-        cond: (event, ctx) => (ctx.getLastFilter() && ctx.getLastFilter().type !== 'logical-operator')
-          && !ctx.hasPartialFilter(),
+        cond: (event, ctx) => !ctx.hasPartialFilter()
+          && (ctx.getLastFilter() && ctx.getLastFilter().type !== 'logical-operator'),
         targetId: "loadLogicalOperatorSuggestions",
       },
       {
-        cond: (event, ctx) => (!ctx.getLastFilter() || ctx.getLastFilter().type === 'logical-operator')
-          && !ctx.hasPartialFilter(),
+        cond: (event, ctx) => !ctx.hasPartialFilter()
+          && (!ctx.getLastFilter() || ctx.getLastFilter().type === 'logical-operator'),
         targetId: "loadAttributeSuggestions",
       },
       {

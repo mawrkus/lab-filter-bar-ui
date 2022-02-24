@@ -16,6 +16,7 @@ const getDropdownPosition = (chicletElement, filterType) => {
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
   const [dropdownPos, setDropdownPos] = useState(null);
+
   useKeyboardNavigation();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {

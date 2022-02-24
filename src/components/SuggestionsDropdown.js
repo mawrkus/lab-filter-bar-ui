@@ -1,5 +1,5 @@
 import { Dropdown } from 'semantic-ui-react'
-import { usePositionDropdown, useHandleBackspaceKey } from '../hooks';
+import { usePositionDropdown, useHandleBackspaceKey, useControlledDropdownValue } from '../hooks';
 
 const loadingSuggestions = [
   { key: 'loading', text: 'Loading...', value: 'loading' },
@@ -28,10 +28,14 @@ export const SuggestionsDropdown = ({
     value: `${id}-${value}`,
   }));
 
+  const [value, setValue] = useControlledDropdownValue(open);
+
   const onCustomSelectItem = (e, { value }) => {
     if (loading) {
       return;
     }
+
+    setValue(value);
 
     // we don't receive the full item, only its value
     const item = suggestions.find((item) => `${item.id}-${item.value}` === value);
@@ -65,6 +69,7 @@ export const SuggestionsDropdown = ({
       selection
       selectOnBlur={false}
       selectOnNavigation={false}
+      value={value}
     />
   );
 };

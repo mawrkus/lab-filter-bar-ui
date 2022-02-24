@@ -70,14 +70,9 @@ export const editOperator = {
     discardSuggestions: "idle",
     selectItem: [
       {
-        // Existing filter edition, e.g.: IS NULL -> =
-        cond: (event, ctx) => {
-          const { filterUnderEdition } = ctx.get();
-
-          return filterUnderEdition
-            && typeof filterUnderEdition.operator.presetValue !== 'undefined'
-            && typeof event.data.presetValue === 'undefined';
-        },
+        // Existing filter edition, e.g.: IS NULL -> = or LIKE -> =
+        cond: (event, ctx) => ctx.get().filterUnderEdition
+          && typeof event.data.presetValue === 'undefined',
         targetId: "loadValueSuggestions",
         action:(event, ctx) => {
           const { filterUnderEdition } = ctx.get();

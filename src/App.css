@@ -3,7 +3,7 @@
 }
 
 .filter-bar {
-  margin: 0 !important;
+  display: flex;
 }
 
 .chiclet {

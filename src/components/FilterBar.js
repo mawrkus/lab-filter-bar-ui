@@ -73,7 +73,7 @@ const FilterBarComponent = ({ stateMachine }) => {
   };
 
   return (
-    <Form.Group className="filter-bar">
+    <div className="filter-bar">
       {props.filters.map((filter, i) => (
         <Chiclet
           key={filter.id}
@@ -101,7 +101,7 @@ const FilterBarComponent = ({ stateMachine }) => {
         onCreateItem={onCreateSuggestionItem}
         onBackspace={onBackspace}
       />
-    </Form.Group>
+    </div>
   );
 }
 

@@ -5,7 +5,6 @@ import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './SuggestionsDropdown';
 import { useStateMachine, useKeyboardNavigation } from '../hooks';
-import { Form } from 'semantic-ui-react';
 
 const getDropdownPosition = (chicletElement, filterType) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();

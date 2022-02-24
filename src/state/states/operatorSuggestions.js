@@ -81,7 +81,7 @@ export const editOperator = {
           ctx.startEditing(filterUnderEdition);
         },
       },
-      // partial filter edition, e.g.: = -> IS NULL
+      // e.g.: = -> IS NULL
       {
         cond: (event, ctx) => typeof ctx.get().partialFilter.operator?.presetValue === 'undefined'
           && typeof event.data.presetValue !== 'undefined',
@@ -95,7 +95,7 @@ export const editOperator = {
             label: String(event.data.presetValue),
           };
 
-          ctx.completePartialFilter(filterValue, 'attribute-operator');
+          ctx.setFilterValue(filterValue, 'attribute-operator');
         },
       },
       {

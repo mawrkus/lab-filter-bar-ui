@@ -150,6 +150,18 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
+  setFilterAttributeOperator(filterOperator) {
+    this.setFilterOperator(filterOperator);
+
+    const filterValue = {
+      id: null,
+      value: filterOperator.presetValue,
+      label: String(filterOperator.presetValue),
+    };
+
+    this.setFilterValue(filterValue, 'attribute-operator');
+  }
+
   setFilterValue(filterValue) {
     const ctxValue = this.get();
     const { partialFilter, filterUnderEdition } = ctxValue;
@@ -195,6 +207,18 @@ export class AppStateMachineContext extends StateMachineContext {
 
     this._nofityFiltersUpdate(filters, { action: 'create', filter: newFilter });
     this.set(ctxValue);
+  }
+
+  completePartialAttributeOperatorFilter(filterOperator) {
+    this.setFilterOperator(filterOperator);
+
+    const filterValue = {
+      id: null,
+      value: filterOperator.presetValue,
+      label: String(filterOperator.presetValue),
+    };
+
+    this.completePartialFilter(filterValue, 'attribute-operator');
   }
 
   createSearchTextFilter(filterValue) {

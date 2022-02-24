@@ -1,51 +1,50 @@
 
-import { memo, useState, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 
 import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './SuggestionsDropdown';
-import { useStateMachine, useKeyboardNavigation } from '../hooks';
-
-const getDropdownPosition = (chicletElement, filterType) => {
-  const { top, bottom, left } = chicletElement.getBoundingClientRect();
-  const leftDec = ['search-text', 'logical-operator'].includes(filterType) ? 27 : 32;
-  return { top: bottom - top, left: left - leftDec };
-};
+import { useStateMachine, useKeyboardNavigation, useDropdownEdition } from '../hooks';
 
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
-  const [dropdownPos, setDropdownPos] = useState(null);
+
+  const [
+    dropdownPos,
+    dropdownValue,
+    setDropdownPosAndValue,
+  ] = useDropdownEdition(props.suggestions.visible);
 
   useKeyboardNavigation();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {
-      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editPartialOperator");
     }
-  }, [stateMachine]);
+  }, [setDropdownPosAndValue, stateMachine]);
 
   const onClickChiclet = useCallback((event, filter, part) => {
     if (part === 'operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
-      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
-      setDropdownPos(getDropdownPosition(event.currentTarget, filter.type));
+      setDropdownPosAndValue(event.currentTarget, filter, 'operator');
       return stateMachine.sendEvent("editLogicalOperator", filter);
     }
-  }, [stateMachine]);
+  }, [stateMachine, setDropdownPosAndValue]);
 
   const onRemoveChiclet = useCallback((event, filter) => {
     stateMachine.sendEvent("removeFilter", filter);
@@ -89,6 +88,7 @@ const FilterBarComponent = ({ stateMachine }) => {
 
       <SuggestionsDropdown
         position={dropdownPos}
+        value={dropdownValue}
         open={props.suggestions.visible}
         loading={props.suggestions.loading}
         error={props.suggestions.error}

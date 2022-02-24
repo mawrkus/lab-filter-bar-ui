@@ -1,4 +1,4 @@
-export * from './useControlledDropdownValue';
+export * from './useDropdownEdition';
 export * from './useHandleBackspaceKey';
 export * from './useKeyboardNavigation';
 export * from './usePositionDropdown';

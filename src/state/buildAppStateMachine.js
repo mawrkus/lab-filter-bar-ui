@@ -1,6 +1,6 @@
 import { StateMachine, transitionLogger } from "./lib/state-machine";
 import { AppStateMachineContext } from "./AppStateMachineContext";
-import { suggestionService } from "./suggestion-services";
+import { buildSuggestionService } from "./suggestion-services";
 
 import {
   idle,
@@ -18,6 +18,8 @@ import {
 } from "./states";
 
 export const buildAppStateMachine = ({ initFilters, onUpdateFilters }) => {
+  const suggestionService = buildSuggestionService();
+
   const appStateMachineContext = new AppStateMachineContext({
     initFilters,
     onUpdateFilters,

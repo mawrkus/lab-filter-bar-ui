@@ -5,7 +5,7 @@ import { ValueService } from "./ValueService";
 import { LogicalOperatorService } from "./LogicalOperatorService";
 import { HttpClient } from "./HttpClient";
 
-export const suggestionService = new SuggestionService({
+export const buildSuggestionService = () => new SuggestionService({
   attributeService: new AttributeService(),
   operatorService: new OperatorService(),
   valueService: new ValueService({ httpClient: new HttpClient() }),

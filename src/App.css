@@ -78,7 +78,13 @@
   color: rgba(0,0,0,.6);
 }
 
-.ui.dropdown.search .menu .item, .ui.dropdown.search > .text {
+.ui.dropdown.search .menu .item {
   font-size: 11px;
   top: -7px;
+}
+
+.ui.dropdown.search > .text {
+  font-size: 11px;
+  top: -8px;
+  color: rgba(115,115,115,.87);
 }

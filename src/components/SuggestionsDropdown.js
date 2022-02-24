@@ -60,6 +60,7 @@ export const SuggestionsDropdown = ({
       open={open}
       openOnFocus={false}
       options={options}
+      placeholder="Add filter..."
       search
       selection
       selectOnBlur={false}

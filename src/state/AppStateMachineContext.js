@@ -184,7 +184,7 @@ export class AppStateMachineContext extends StateMachineContext {
       operator: partialFilter.operator,
       value: filterValue,
       type,
-    }
+    };
 
     filters.push(newFilter);
 

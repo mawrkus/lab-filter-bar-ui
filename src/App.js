@@ -22,11 +22,11 @@ export const App = () => {
     <div className="container">
       <Header as='h1'>🧪 Rick &amp; Morty filter bar 🧪</Header>
 
-      <Form>
+      <Form style={{ marginTop: '42px' }}>
         <FilterBar stateMachine={appStateMachine} />
       </Form>
 
-      <Message size="mini" style={{ marginTop: '24px' }}>
+      <Message size="mini" style={{ marginTop: '24px', boxShadow: 'none' }}>
         <Message.Header>Filters ({currentFilters.length})</Message.Header>
         <Message.List as="ol">
           {currentFilters.map((filter) => (

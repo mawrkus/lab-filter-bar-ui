@@ -2,6 +2,10 @@
   padding: 20px;
 }
 
+.filter-bar {
+  margin: 0 !important;
+}
+
 .chiclet {
   margin-right: 4px;
   /* flex */

@@ -7,7 +7,7 @@ A filter bar UI component built with:
 - [TVmaze API](https://www.tvmaze.com/api)
 - A custom state machine implementation inspired by [XState](https://xstate.js.org/)
 
-## Architecture: core concepts
+## ⛩️ Architecture: core concepts
 
 - State machine with domain context (the app state, observable)
 - Suggestion services via an HTTP client -> API (+ cancellable requests)
@@ -15,7 +15,7 @@ A filter bar UI component built with:
 - Dumb UI components
 - Filter Bar as a proxy to the state machine
 
-## Use cases
+## 📗 Use cases
 
 ### Creation
 

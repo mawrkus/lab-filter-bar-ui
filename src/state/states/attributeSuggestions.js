@@ -21,14 +21,14 @@ export const chooseAttribute = {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event, ctx) => !ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.setFilterAttribute(event.data);
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialValue(),
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.setFilterAttribute(event.data);

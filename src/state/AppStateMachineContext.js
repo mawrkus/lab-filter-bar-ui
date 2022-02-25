@@ -1,4 +1,5 @@
 import { StateMachineContext } from "./lib/state-machine";
+import { hasPresetValue } from "./states/operatorSuggestions";
 
 export class AppStateMachineContext extends StateMachineContext {
   constructor({ initFilters, onUpdateFilters }) {
@@ -71,16 +72,19 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   // partial filters
-  hasPartialAttribute() {
-    return Boolean(this.get().partialFilter.attribute);
-  }
-
-  hasPartialOperator() {
-    return Boolean(this.get().partialFilter.operator);
-  }
-
   hasPartialFilter() {
-    return this.hasPartialAttribute() || this.hasPartialOperator();
+    const ctxValue = this.get();
+    return Boolean(ctxValue.partialFilter.attribute) || Boolean(ctxValue.partialFilter.operator);
+  }
+
+  hasMissingPartialOperator() {
+    const ctxValue = this.get();
+    return !ctxValue.partialFilter.operator;
+  }
+
+  hasMissingPartialValue() {
+    const ctxValue = this.get();
+    return Boolean(ctxValue.partialFilter.attribute) && Boolean(ctxValue.partialFilter.operator);
   }
 
   removePartialAttribute() {
@@ -111,41 +115,44 @@ export class AppStateMachineContext extends StateMachineContext {
     const ctxValue = this.get();
     const { partialFilter, filterUnderEdition } = ctxValue;
 
-    if (filterUnderEdition) {
-      const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
-
-      filter.operator = filterOperator;
-
-      if (typeof filterUnderEdition.operator.presetValue !== 'undefined' && typeof filterOperator.presetValue === 'undefined') {
-        filter.value = {
-          id: null,
-          value: filterUnderEdition.operator.presetValue,
-          label: String(filterUnderEdition.operator.presetValue),
-        };
-
-        filter.type = 'attribute-operator-value';
-      } else if (typeof filterUnderEdition.operator.presetValue === 'undefined' && typeof filterOperator.presetValue !== 'undefined') {
-        filter.value = {
-          id: null,
-          value: filterOperator.presetValue,
-          label: String(filterOperator.presetValue),
-        };
-
-        filter.type = 'attribute-operator';
-      }
-
-      ctxValue.filterUnderEdition = null;
-
-      this._nofityFiltersUpdate(ctxValue.filters, {
-        action: 'edit',
-        filter,
-        target: 'operator',
-      });
-    } else {
+    if (!filterUnderEdition) {
       partialFilter.operator = filterOperator;
+      ctxValue.isEditing = false;
+
+      this.set(ctxValue);
+      return;
     }
 
+    const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
+
+    filter.operator = filterOperator;
+
+    if (hasPresetValue(filterUnderEdition.operator) && !hasPresetValue(filterOperator)) {
+      filter.value = {
+        id: null,
+        value: filterUnderEdition.operator.presetValue,
+        label: String(filterUnderEdition.operator.presetValue),
+      };
+
+      filter.type = 'attribute-operator-value';
+    } else if (!hasPresetValue(filterUnderEdition.operator) && hasPresetValue(filterOperator)) {
+      filter.value = {
+        id: null,
+        value: filterOperator.presetValue,
+        label: String(filterOperator.presetValue),
+      };
+
+      filter.type = 'attribute-operator';
+    }
+
+    ctxValue.filterUnderEdition = null;
     ctxValue.isEditing = false;
+
+    this._nofityFiltersUpdate(ctxValue.filters, {
+      action: 'edit',
+      filter,
+      target: 'operator',
+    });
 
     this.set(ctxValue);
   }
@@ -166,22 +173,25 @@ export class AppStateMachineContext extends StateMachineContext {
     const ctxValue = this.get();
     const { partialFilter, filterUnderEdition } = ctxValue;
 
-    if (filterUnderEdition) {
-      const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
-
-      filter.value = filterValue;
-      ctxValue.filterUnderEdition = null;
-
-      this._nofityFiltersUpdate(ctxValue.filters, {
-        action: 'edit',
-        filter,
-        target: 'value',
-      });
-    } else {
+    if (!filterUnderEdition) {
       partialFilter.value = filterValue;
+      ctxValue.isEditing = false;
+
+      this.set(ctxValue);
+      return;
     }
 
+    const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
+
+    filter.value = filterValue;
+    ctxValue.filterUnderEdition = null;
     ctxValue.isEditing = false;
+
+    this._nofityFiltersUpdate(ctxValue.filters, {
+      action: 'edit',
+      filter,
+      target: 'value',
+    });
 
     this.set(ctxValue);
   }

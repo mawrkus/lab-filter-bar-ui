@@ -21,11 +21,11 @@ export const idle = {
         targetId: "loadAttributeSuggestions",
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
         targetId: "loadOperatorSuggestions",
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialValue(),
         targetId: "loadValueSuggestions",
       },
     ],
@@ -68,14 +68,14 @@ export const idle = {
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.removeFilter(event.data);
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialValue(),
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.removeFilter(event.data);

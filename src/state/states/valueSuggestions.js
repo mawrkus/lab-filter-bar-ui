@@ -73,7 +73,7 @@ export const chooseValue = {
     // On backspace
     removeLastFilter: [
       {
-        cond: (event, ctx) => ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasPartialFilter(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.removePartialOperator();
@@ -95,14 +95,14 @@ export const editValue = {
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.setFilterValue(event.data);
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialValue(),
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.setFilterValue(event.data);
@@ -118,14 +118,14 @@ export const editValue = {
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.setFilterValue(event.data);
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialValue(),
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.setFilterValue(event.data);

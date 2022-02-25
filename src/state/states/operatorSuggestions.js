@@ -18,26 +18,38 @@ export const loadOperatorSuggestions = {
         targetId: "chooseOperator",
       },
       {
-        cond: (event, ctx) => ctx.isEditing(),
+        cond: (event, ctx) => {
+          const { isEditing, filterUnderEdition } = ctx.get();
+          return isEditing && !filterUnderEdition;
+        },
+        targetId: "editPartialOperator",
+      },
+      {
+        cond: (event, ctx) => {
+          const { isEditing, filterUnderEdition } = ctx.get();
+          return isEditing && filterUnderEdition;
+        },
         targetId: "editOperator",
-      }
+      },
     ],
   },
 };
+
+export const hasPresetValue = (operator) => typeof operator.presetValue !== 'undefined';
 
 export const chooseOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event, ctx) => typeof event.data.presetValue === 'undefined',
+        cond: (event) => !hasPresetValue(event.data),
         targetId: "loadValueSuggestions",
         action:(event, ctx) => {
           ctx.setFilterOperator(event.data);
         },
       },
       {
-        cond: (event, ctx) => typeof event.data.presetValue !== 'undefined',
+        cond: (event) => hasPresetValue(event.data),
         targetId: "idle",
         action:(event, ctx) => {
           ctx.setFilterOperator(event.data);
@@ -55,10 +67,39 @@ export const chooseOperator = {
     // On backspace
     removeLastFilter: [
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute(),
+        cond: (event, ctx) => ctx.hasPartialFilter(),
         targetId: "idle",
         action(event, ctx) {
           ctx.removePartialAttribute();
+        },
+      },
+    ],
+  },
+};
+
+export const editPartialOperator = {
+  events: {
+    discardSuggestions: "idle",
+    selectItem: [
+      {
+        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.setFilterOperator(event.data);
+        },
+      },
+      {
+        cond: (event, ctx) => !hasPresetValue(event.data) && ctx.hasMissingPartialValue(),
+        targetId: "loadValueSuggestions",
+        action:(event, ctx) => {
+          ctx.setFilterOperator(event.data);
+        },
+      },
+      {
+        cond: (event, ctx) => hasPresetValue(event.data) && ctx.hasMissingPartialValue(),
+        targetId: "idle",
+        action:(event, ctx) => {
+          ctx.completePartialAttributeOperatorFilter(event.data);
         },
       },
     ],
@@ -69,24 +110,19 @@ export const editOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
-      // Existing filter edition, e.g.: = -> !=
-      // Existing filter edition, e.g.: IS NULL -> IS NOT NULL
-      // Existing filter edition, e.g.: = -> IS NULL
+      // Existing filter edition, e.g.:
+        // = -> !=
+        // IS NULL -> IS NOT NULL
+        // = -> IS NULL
       {
         cond: (event, ctx) => {
           const { filterUnderEdition } = ctx.get();
-          if (!filterUnderEdition) {
-            return;
-          }
-
-          const typeOfPresetValueUnderEdition = typeof filterUnderEdition.operator.presetValue;
-          const typeOfNewPresetValue = typeof event.data.presetValue;
 
           return (
-              (typeOfPresetValueUnderEdition === typeOfNewPresetValue)
-                || (typeOfPresetValueUnderEdition === 'undefined' && typeOfNewPresetValue !== 'undefined')
-              )
-              && !ctx.hasPartialFilter();
+              (hasPresetValue(filterUnderEdition.operator) === hasPresetValue(event.data))
+                || (!hasPresetValue(filterUnderEdition.operator) && hasPresetValue(event.data))
+            )
+            && !ctx.hasPartialFilter();
         },
         targetId: "idle",
         action:(event, ctx) => {
@@ -96,18 +132,12 @@ export const editOperator = {
       {
         cond: (event, ctx) => {
           const { filterUnderEdition } = ctx.get();
-          if (!filterUnderEdition) {
-            return;
-          }
-
-          const typeOfPresetValueUnderEdition = typeof filterUnderEdition.operator.presetValue;
-          const typeOfNewPresetValue = typeof event.data.presetValue;
 
           return (
-              (typeOfPresetValueUnderEdition === typeOfNewPresetValue)
-                || (typeOfPresetValueUnderEdition === 'undefined' && typeOfNewPresetValue !== 'undefined')
-              )
-              && ctx.hasPartialAttribute() && !ctx.hasPartialOperator();
+              (hasPresetValue(filterUnderEdition.operator) === hasPresetValue(event.data))
+                || (!hasPresetValue(filterUnderEdition.operator) && hasPresetValue(event.data))
+            )
+            && ctx.hasMissingPartialOperator();
         },
         targetId: "loadOperatorSuggestions",
         action:(event, ctx) => {
@@ -117,18 +147,12 @@ export const editOperator = {
       {
         cond: (event, ctx) => {
           const { filterUnderEdition } = ctx.get();
-          if (!filterUnderEdition) {
-            return;
-          }
-
-          const typeOfPresetValueUnderEdition = typeof filterUnderEdition.operator.presetValue;
-          const typeOfNewPresetValue = typeof event.data.presetValue;
 
           return (
-              (typeOfPresetValueUnderEdition === typeOfNewPresetValue)
-                || (typeOfPresetValueUnderEdition === 'undefined' && typeOfNewPresetValue !== 'undefined')
-              )
-              && ctx.hasPartialAttribute() && ctx.hasPartialOperator();
+              (hasPresetValue(filterUnderEdition.operator) === hasPresetValue(event.data))
+                || (!hasPresetValue(filterUnderEdition.operator) && hasPresetValue(event.data))
+            )
+            && ctx.hasMissingPartialValue();
         },
         targetId: "loadValueSuggestions",
         action:(event, ctx) => {
@@ -137,43 +161,14 @@ export const editOperator = {
       },
       // Existing filter edition, e.g.: IS NULL -> =
       {
-        cond: (event, ctx) => {
-          const { filterUnderEdition } = ctx.get();
-
-          return filterUnderEdition
-            && typeof filterUnderEdition.operator.presetValue !== 'undefined'
-            && typeof event.data.presetValue === 'undefined';
-        },
+        cond: (event, ctx) => !hasPresetValue(event.data)
+          && hasPresetValue(ctx.get().filterUnderEdition.operator),
         targetId: "loadValueSuggestions",
         action:(event, ctx) => {
           const { filterUnderEdition } = ctx.get();
 
           ctx.setFilterOperator(event.data);
           ctx.startEditing(filterUnderEdition);
-        },
-      },
-      // Partial filter edition
-      {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.setFilterOperator(event.data);
-        },
-      },
-      {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator()
-          && typeof event.data.presetValue === 'undefined',
-        targetId: "loadValueSuggestions",
-        action:(event, ctx) => {
-          ctx.setFilterOperator(event.data);
-        },
-      },
-      {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator()
-          && typeof event.data.presetValue !== 'undefined',
-        targetId: "idle",
-        action:(event, ctx) => {
-          ctx.completePartialAttributeOperatorFilter(event.data);
         },
       },
     ],

@@ -63,14 +63,14 @@ export const editLogicalOperator = {
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && !ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.setFilterOperator(event.data);
         },
       },
       {
-        cond: (event, ctx) => ctx.hasPartialAttribute() && ctx.hasPartialOperator(),
+        cond: (event, ctx) => ctx.hasMissingPartialValue(),
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.setFilterOperator(event.data);

@@ -40,8 +40,12 @@ export const loadValueSuggestions = {
     discardSuggestions: "idle",
     onValueSuggestionsLoaded: [
       {
-        cond: (event, ctx) => ctx.hasLoadingError(),
-        targetId: "idle",
+        cond: (event, ctx) => ctx.hasLoadingError() && !ctx.isEditing(),
+        targetId: "chooseValue", // we allow free text filter creation
+      },
+      {
+        cond: (event, ctx) => ctx.hasLoadingError() && ctx.isEditing(),
+        targetId: "editValue", // we allow free text filter edition
       },
       {
         cond: (event, ctx) => !ctx.isEditing(),
@@ -56,6 +60,12 @@ export const loadValueSuggestions = {
 };
 
 export const chooseValue = {
+  actions: {
+    onExit(event, ctx) {
+      // we allow free text filter creation even in case of loading error
+      ctx.clearLoadingError();
+    },
+  },
   events: {
     discardSuggestions: "idle",
     selectItem: {
@@ -84,6 +94,12 @@ export const chooseValue = {
 };
 
 export const editValue = {
+  actions: {
+    onExit(event, ctx) {
+      // we allow free text filter edition even in case of loading error
+      ctx.clearLoadingError();
+    },
+  },
   events: {
     discardSuggestions: "idle",
     selectItem: [

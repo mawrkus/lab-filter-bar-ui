@@ -38,8 +38,6 @@ export class AppStateMachineContext extends StateMachineContext {
       filterUnderEdition: null,
       isEditing: false,
     });
-
-    return this.get();
   }
 
   // loading states
@@ -69,6 +67,12 @@ export class AppStateMachineContext extends StateMachineContext {
 
   hasLoadingError() {
     return Boolean(this.get().suggestions.error);
+  }
+
+  clearLoadingError() {
+    const ctxValue = this.get();
+    ctxValue.suggestions.error = null;
+    this.set(ctxValue);
   }
 
   // partial filters

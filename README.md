@@ -11,7 +11,7 @@ A filter bar UI component built with:
 
 - State machine with domain context (the app state, observable)
 - Suggestion services via an HTTP client -> API (+ cancellable requests)
-- Clear contract on the data structure (suggestion item -> filter -> prop)
+- Clear contract on the data structure (suggestion item from the API -> component prop -> filter)
 - Dumb UI components
 - Filter Bar as a proxy to the state machine
 

@@ -1,3 +1,4 @@
+import { copy } from "fastest-json-copy";
 import { StateMachineContext } from "./lib/state-machine";
 import { hasPresetValue } from "./states/operatorSuggestions";
 
@@ -128,6 +129,7 @@ export class AppStateMachineContext extends StateMachineContext {
     }
 
     const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
+    const prevFilter = copy(filter);
 
     filter.operator = filterOperator;
 
@@ -154,8 +156,9 @@ export class AppStateMachineContext extends StateMachineContext {
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: 'edit',
+      prevFilter,
       filter,
-      target: 'operator',
+      part: 'operator',
     });
 
     this.set(ctxValue);
@@ -186,6 +189,7 @@ export class AppStateMachineContext extends StateMachineContext {
     }
 
     const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
+    const prevFilter = copy(filter);
 
     filter.value = filterValue;
     ctxValue.filterUnderEdition = null;
@@ -193,8 +197,9 @@ export class AppStateMachineContext extends StateMachineContext {
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: 'edit',
+      prevFilter,
       filter,
-      target: 'value',
+      part: 'value',
     });
 
     this.set(ctxValue);

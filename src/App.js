@@ -1,20 +1,36 @@
 import "./App.css";
-import { Form, Header, Message } from "semantic-ui-react";
+
+import { useMemo, useState } from "react";
+import { Form, Header } from "semantic-ui-react";
+
 import { FilterBar } from "./components/FilterBar";
 import { buildAppStateMachine } from "./state";
-import { useMemo, useState } from "react";
+import { AppMessage } from "./AppMessage";
 
 // import { initFilters } from "./initFilters";
 const initFilters = [];
 
 export const App = () => {
-  const [currentFilters, setCurrentFilters] = useState(initFilters);
+  const [filters, setFilters] = useState(initFilters);
+  const [stateId, setStateId] = useState(null);
 
   const appStateMachine = useMemo(() => buildAppStateMachine({
     initFilters,
+    onTransition: (transition) => {
+      setStateId(transition.toStateId);
+    },
     onUpdateFilters: (newFilters, event) => {
-      console.log('🧪 Filters update: "%s"', event.action, JSON.stringify(event));
-      setCurrentFilters(newFilters);
+      const { action, filter, prevFilter, part } = event;
+
+      if (action === 'edit') {
+        console.log('🧪 %s "%s" filter\'s %s', action, prevFilter.type, part);
+        console.log('  🔎 %o → %o', prevFilter[part], filter[part]);
+      } else {
+        console.log('🧪 %s "%s" filter', action, filter.type);
+        console.log('  🔎', filter);
+      }
+
+      setFilters(newFilters);
     },
   }), []);
 
@@ -26,14 +42,7 @@ export const App = () => {
         <FilterBar stateMachine={appStateMachine} />
       </Form>
 
-      <Message size="mini" style={{ marginTop: '24px', boxShadow: 'none' }}>
-        <Message.Header>Filters ({currentFilters.length})</Message.Header>
-        <Message.List as="ol">
-          {currentFilters.map((filter) => (
-            <Message.Item key={filter.id}>{JSON.stringify(filter)}</Message.Item>
-          ))}
-        </Message.List>
-      </Message>
+      <AppMessage stateId={stateId} filters={filters} />
     </div>
   );
 };

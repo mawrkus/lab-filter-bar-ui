@@ -29,7 +29,7 @@ export const chooseLogicalOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: {
-      targetId: "idle",
+      targetId: "loadAttributeSuggestions",
       action:(event, ctx) => {
         ctx.createLogicalOperatorFilter(event.data);
       },

@@ -12,7 +12,7 @@ export const useDropdownEdition = (isDropdownVisible) => {
 
   useEffect(() => {
     if (!isDropdownVisible) {
-      setDropdownValue(null);
+      setDropdownValue('');
     }
   }, [isDropdownVisible]);
 
@@ -21,5 +21,9 @@ export const useDropdownEdition = (isDropdownVisible) => {
     setDropdownValue(`${filter[part].id}-${filter[part].value}`); // See <SuggestionDropdown />
   };
 
-  return [dropdownPos, dropdownValue, setDropdownPosAndValue];
+  return [
+    dropdownPos,
+    dropdownValue,
+    setDropdownPosAndValue,
+  ];
 };

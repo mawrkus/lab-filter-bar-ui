@@ -7,12 +7,12 @@ export const loadLogicalOperatorSuggestions = {
 
       ctx.doneLoading(logicalOperators);
 
-      toolkit.sendEvent("onLogicalOperatorSuggestionsLoaded");
+      toolkit.sendEvent("logicalOperatorSuggestionsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    onLogicalOperatorSuggestionsLoaded: [
+    logicalOperatorSuggestionsLoaded: [
       {
         cond: (event, ctx) => !ctx.isEditing(),
         targetId: "chooseLogicalOperator",
@@ -54,28 +54,11 @@ export const chooseLogicalOperator = {
 export const editLogicalOperator = {
   events: {
     discardSuggestions: "idle",
-    selectItem: [
-      {
-        cond: (event, ctx) => !ctx.hasPartialFilter(),
-        targetId: "idle",
-        action:(event, ctx) => {
-          ctx.setFilterOperator(event.data);
-        },
+    selectItem:  {
+      targetId: "displayPartialFilterSuggestions",
+      action:(event, ctx) => {
+        ctx.setFilterOperator(event.data);
       },
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.setFilterOperator(event.data);
-        },
-      },
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialValue(),
-        targetId: "loadValueSuggestions",
-        action(event, ctx) {
-          ctx.setFilterOperator(event.data);
-        },
-      },
-    ],
+    },
   },
 };

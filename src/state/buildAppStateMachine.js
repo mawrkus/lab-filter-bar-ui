@@ -16,6 +16,7 @@ import {
   loadLogicalOperatorSuggestions,
   chooseLogicalOperator,
   editLogicalOperator,
+  displayPartialFilterSuggestions,
 } from "./states";
 
 export const buildAppStateMachine = ({ initFilters, onUpdateFilters, onTransition = () => {} }) => {
@@ -48,6 +49,7 @@ export const buildAppStateMachine = ({ initFilters, onUpdateFilters, onTransitio
       loadLogicalOperatorSuggestions,
       chooseLogicalOperator,
       editLogicalOperator,
+      displayPartialFilterSuggestions,
     },
   });
 

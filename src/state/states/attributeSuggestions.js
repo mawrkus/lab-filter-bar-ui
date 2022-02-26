@@ -7,34 +7,24 @@ export const loadAttributeSuggestions = {
 
       ctx.doneLoading(attributes);
 
-      toolkit.sendEvent("onAttributeSuggestionsLoaded");
+      toolkit.sendEvent("attributeSuggestionsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    onAttributeSuggestionsLoaded: "chooseAttribute",
+    attributeSuggestionsLoaded: "chooseAttribute",
   },
 };
 
 export const chooseAttribute = {
   events: {
     discardSuggestions: "idle",
-    selectItem: [
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.setFilterAttribute(event.data);
-        },
+    selectItem: {
+      targetId: "displayPartialFilterSuggestions",
+      action(event, ctx) {
+        ctx.setFilterAttribute(event.data);
       },
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialValue(),
-        targetId: "loadValueSuggestions",
-        action(event, ctx) {
-          ctx.setFilterAttribute(event.data);
-        },
-      },
-    ],
+    },
     createItem: {
       targetId: "idle",
       action(event, ctx) {

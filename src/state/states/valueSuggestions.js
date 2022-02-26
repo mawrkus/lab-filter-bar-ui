@@ -6,7 +6,8 @@ export const loadValueSuggestions = {
 
       if (filterUnderEdition?.type === 'search-text') {
         ctx.doneLoading([filterUnderEdition.value], null);
-        return toolkit.sendEvent("onValueSuggestionsLoaded");
+
+        return toolkit.sendEvent("valueSuggestionsLoaded");
       }
 
       const type = filterUnderEdition
@@ -33,20 +34,13 @@ export const loadValueSuggestions = {
 
       ctx.doneLoading(values, error);
 
-      toolkit.sendEvent("onValueSuggestionsLoaded");
+      toolkit.sendEvent("valueSuggestionsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    onValueSuggestionsLoaded: [
-      {
-        cond: (event, ctx) => ctx.hasLoadingError() && !ctx.isEditing(),
-        targetId: "chooseValue", // we allow free text filter creation
-      },
-      {
-        cond: (event, ctx) => ctx.hasLoadingError() && ctx.isEditing(),
-        targetId: "editValue", // we allow free text filter edition
-      },
+    valueSuggestionsLoaded: [
+      // we allow free text filter creation regardless if there was a loading error or not
       {
         cond: (event, ctx) => !ctx.isEditing(),
         targetId: "chooseValue",
@@ -62,7 +56,7 @@ export const loadValueSuggestions = {
 export const chooseValue = {
   actions: {
     onExit(event, ctx) {
-      // we allow free text filter creation even in case of loading error
+      // we allowed free text filter edition even in case of loading error
       ctx.clearLoadingError();
     },
   },
@@ -96,57 +90,23 @@ export const chooseValue = {
 export const editValue = {
   actions: {
     onExit(event, ctx) {
-      // we allow free text filter edition even in case of loading error
+      // we allowed free text filter edition even in case of loading error
       ctx.clearLoadingError();
     },
   },
   events: {
     discardSuggestions: "idle",
-    selectItem: [
-      {
-        cond: (event, ctx) => !ctx.hasPartialFilter(),
-        targetId: "idle",
-        action:(event, ctx) => {
-          ctx.setFilterValue(event.data);
-        },
+    selectItem: {
+      targetId: "displayPartialFilterSuggestions",
+      action:(event, ctx) => {
+        ctx.setFilterValue(event.data);
       },
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.setFilterValue(event.data);
-        },
+    },
+    createItem: {
+      targetId: "displayPartialFilterSuggestions",
+      action(event, ctx) {
+        ctx.setFilterValue(event.data);
       },
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialValue(),
-        targetId: "loadValueSuggestions",
-        action(event, ctx) {
-          ctx.setFilterValue(event.data);
-        },
-      },
-    ],
-    createItem: [
-      {
-        cond: (event, ctx) => !ctx.hasPartialFilter(),
-        targetId: "idle",
-        action(event, ctx) {
-          ctx.setFilterValue(event.data);
-        },
-      },
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialOperator(),
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.setFilterValue(event.data);
-        },
-      },
-      {
-        cond: (event, ctx) => ctx.hasMissingPartialValue(),
-        targetId: "loadValueSuggestions",
-        action(event, ctx) {
-          ctx.setFilterValue(event.data);
-        },
-      },
-    ],
+    },
   },
 };

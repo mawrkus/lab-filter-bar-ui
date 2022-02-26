@@ -31,6 +31,7 @@ export class ValueService {
       id: character.id,
       value: character.name,
       label: `${character.name} (${person.name})`,
+      searchLabel: character.name,
     }));
   }
 
@@ -45,6 +46,7 @@ export class ValueService {
         id,
         value: number,
         label: `${number} (${episodeOrder} episodes)`,
+        searchLabel: number,
       }));
   }
 
@@ -57,6 +59,7 @@ export class ValueService {
       id,
       value: name,
       label: `${name} (S${season}E${number})`,
+      searchLabel: name,
     }));
   }
 
@@ -69,6 +72,7 @@ export class ValueService {
       id: `${person.id}-${type}`,
       value: person.name,
       label: `${person.name} (${type})`,
+      searchLabel: person.name,
     }));
   }
 

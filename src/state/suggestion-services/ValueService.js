@@ -5,14 +5,14 @@ export class ValueService {
 
   async load({ type }) {
     switch (type) {
-      case 'character':
-        return this.loadCharacters();
-
       case 'season':
         return this.loadSeasons();
 
       case 'episode':
-        return this.loadEpisodes();
+          return this.loadEpisodes();
+
+      case 'character':
+        return this.loadCharacters();
 
       case 'crew':
         return this.loadCrew();
@@ -45,7 +45,7 @@ export class ValueService {
       .map(({ id, number, episodeOrder }) => ({
         id,
         value: number,
-        label: `${number} (${episodeOrder} episodes)`,
+        label: `${number} (${episodeOrder || '?'} episodes)`,
         searchLabel: number,
       }));
   }

@@ -3,18 +3,18 @@ export class AttributeService {
     return [
       {
         id: 1,
-        value: 'character',
-        label: 'Character',
-      },
-      {
-        id: 2,
         value: 'season',
         label: 'Season',
       },
       {
-        id: 3,
+        id: 2,
         value: 'episode',
         label: 'Episode',
+      },
+      {
+        id: 3,
+        value: 'character',
+        label: 'Character',
       },
       {
         id: 4,

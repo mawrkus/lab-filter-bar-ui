@@ -6,15 +6,15 @@ const getDropdownPosition = (chicletElement, filterType) => {
   return { top: bottom - top, left: left - leftDec };
 };
 
-export const useDropdownEdition = (open) => {
+export const useDropdownEdition = (open, editing) => {
   const [dropdownPos, setDropdownPos] = useState();
   const [dropdownValue, setDropdownValue] = useState();
 
   useEffect(() => {
-    if (!open) {
+    if (!open || !editing) {
       setDropdownValue('');
     }
-  }, [open]);
+  }, [open, editing]);
 
   const setDropdownPosAndValue = (chicletElement, filter, part) => {
     setDropdownPos(getDropdownPosition(chicletElement, filter.type));

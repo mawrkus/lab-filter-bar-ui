@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { usePositionDropdown, useHandleBackspaceKey } from '../hooks';
 
@@ -30,7 +29,6 @@ export const SuggestionsDropdown = ({
   onBackspace,
   value,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
   usePositionDropdown(open, editing, position);
   useHandleBackspaceKey(onBackspace);
 
@@ -41,34 +39,16 @@ export const SuggestionsDropdown = ({
       return;
     }
 
-    setSearchQuery('');
+    const searchQuery = value.toLowerCase();
 
     // we don't receive the full item, only its value
-    const item = suggestions.find((item) => `${item.id}-${item.value}` === value);
+    const item = suggestions.find((item) => `${item.id}-${item.value}` === value
+      || String(item.searchLabel || item.label).toLowerCase() === searchQuery);
 
     if (item) {
       onSelectItem(e, item);
     } else {
       onCreateItem(e, { id: null, value, label: value });
-    }
-  };
-
-  const onSearchChange = (e, { searchQuery: rawSearchQuery }) => {
-    if (loading) {
-      return;
-    }
-
-    setSearchQuery(rawSearchQuery);
-
-    const searchQuery = rawSearchQuery.toLowerCase();
-
-    // we don't receive the full item, only its value and...
-    // ...we use the value because the label can be composed (e.g. season + number of episodes)
-    const item = suggestions.find(({ label, searchLabel }) => String(searchLabel || label).toLowerCase() === searchQuery);
-
-    if (item) {
-      setSearchQuery('')
-      onSelectItem(e, item);
     }
   };
 
@@ -83,13 +63,11 @@ export const SuggestionsDropdown = ({
       onChange={onCustomSelectItem}
       onClose={onClose}
       onOpen={onOpen}
-      onSearchChange={onSearchChange}
       open={open}
       openOnFocus={false}
       options={options}
       placeholder="Add filter..."
       search
-      searchQuery={searchQuery}
       selection
       selectOnBlur={false}
       selectOnNavigation={false}

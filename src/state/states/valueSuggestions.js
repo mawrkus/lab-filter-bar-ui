@@ -40,7 +40,7 @@ export const loadValueSuggestions = {
   events: {
     discardSuggestions: "idle",
     valueSuggestionsLoaded: [
-      // we allow free text filter creation regardless if there was a loading error or not
+      // we allow search text filter creation regardless if there was a loading error or not
       {
         cond: (event, ctx) => !ctx.isEditing(),
         targetId: "chooseValue",
@@ -56,7 +56,7 @@ export const loadValueSuggestions = {
 export const chooseValue = {
   actions: {
     onExit(event, ctx) {
-      // we allowed free text filter edition even in case of loading error
+      // we allowed search text filter edition even in case of loading error
       ctx.clearLoadingError();
     },
   },
@@ -90,7 +90,7 @@ export const chooseValue = {
 export const editValue = {
   actions: {
     onExit(event, ctx) {
-      // we allowed free text filter edition even in case of loading error
+      // we allowed search text filter edition even in case of loading error
       ctx.clearLoadingError();
     },
   },

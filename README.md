@@ -23,8 +23,8 @@ Using the mouse or the keyboard:
 
 1. Creation of a 3-part filter
 2. Creation of a logical operator
-3. Creation of free text filter
-4. Creation of a 3-part filter with free text
+3. Creation of search text filter
+4. Creation of a 3-part filter with search text
 5. Creation of 2-part filter
 
 ### Edition
@@ -46,4 +46,4 @@ Using the mouse or keyboard:
 ### Loading
 
 - Request cancellation
-- Error: selection blocked, free text creation allowed
+- Error: selection blocked, search text creation allowed

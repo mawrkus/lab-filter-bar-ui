@@ -72,34 +72,38 @@ const FilterBarComponent = ({ stateMachine }) => {
 
   return (
     <div className="filter-bar">
-      {props.filters.map((filter, i) => (
-        <Chiclet
-          key={filter.id}
-          filter={filter}
-          onClick={onClickChiclet}
-          onRemove={onRemoveChiclet}
+      <div className="chiclets">
+        {props.filters.map((filter, i) => (
+          <Chiclet
+            key={filter.id}
+            filter={filter}
+            onClick={onClickChiclet}
+            onRemove={onRemoveChiclet}
+          />
+        ))}
+
+        <PartialChiclet
+          filter={props.partialFilter}
+          onClick={onClickPartialChiclet}
         />
-      ))}
+      </div>
 
-      <PartialChiclet
-        filter={props.partialFilter}
-        onClick={onClickPartialChiclet}
-      />
-
-      <SuggestionsDropdown
-        position={dropdownPos}
-        value={dropdownValue}
-        open={props.suggestions.visible}
-        loading={props.suggestions.loading}
-        error={props.suggestions.error}
-        suggestions={props.suggestions.items}
-        editing={props.isEditing}
-        onOpen={onOpenSuggestionsDropdown}
-        onClose={onCloseSuggestionsDropdown}
-        onSelectItem={onSelectSuggestionItem}
-        onCreateItem={onCreateSuggestionItem}
-        onBackspace={onBackspace}
-      />
+      <div className="suggestions">
+        <SuggestionsDropdown
+          position={dropdownPos}
+          value={dropdownValue}
+          open={props.suggestions.visible}
+          loading={props.suggestions.loading}
+          error={props.suggestions.error}
+          suggestions={props.suggestions.items}
+          editing={props.isEditing}
+          onOpen={onOpenSuggestionsDropdown}
+          onClose={onCloseSuggestionsDropdown}
+          onSelectItem={onSelectSuggestionItem}
+          onCreateItem={onCreateSuggestionItem}
+          onBackspace={onBackspace}
+        />
+      </div>
     </div>
   );
 }

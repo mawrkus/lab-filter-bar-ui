@@ -7,7 +7,6 @@ export const ChicletLogicalOperator = ({ filter, onClick }) => {
     <div className="chiclet logical-operator">
       <Label
         as='a'
-        color="teal"
         size="small"
         title={`Click to change "${operator.label}"`}
         className="operator"

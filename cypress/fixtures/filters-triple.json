@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "attribute": { "id": 1, "value": "season", "label": "Season" },
+    "operator": { "id": 1, "value": "=", "label": "=" },
+    "value": {
+      "id": 882,
+      "value": 1,
+      "label": "1 (11 episodes)",
+      "searchLabel": 1
+    },
+    "type": "attribute-operator-value"
+  },
+  {
+    "id": 2,
+    "attribute": null,
+    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "value": null,
+    "type": "logical-operator"
+  },
+  {
+    "id": 3,
+    "attribute": { "id": 2, "value": "episode", "label": "Episode" },
+    "operator": { "id": 2, "value": "!=", "label": "!=" },
+    "value": {
+      "id": 14308,
+      "value": "Pilot",
+      "label": "Pilot (S1E1)",
+      "searchLabel": "Pilot"
+    },
+    "type": "attribute-operator-value"
+  }
+]

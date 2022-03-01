@@ -1,0 +1,94 @@
+[
+  {
+    "id": 1,
+    "attribute": { "id": 1, "value": "season", "label": "Season" },
+    "operator": { "id": 1, "value": "=", "label": "=" },
+    "value": {
+      "id": 6906,
+      "value": 2,
+      "label": "2 (10 episodes)",
+      "searchLabel": 2
+    },
+    "type": "attribute-operator-value"
+  },
+  {
+    "id": 2,
+    "attribute": null,
+    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "value": null,
+    "type": "logical-operator"
+  },
+  {
+    "id": 3,
+    "attribute": { "id": 2, "value": "episode", "label": "Episode" },
+    "operator": { "id": 2, "value": "!=", "label": "!=" },
+    "value": {
+      "id": 14313,
+      "value": "Rick Potion #9",
+      "label": "Rick Potion #9 (S1E6)",
+      "searchLabel": "Rick Potion #9"
+    },
+    "type": "attribute-operator-value"
+  },
+  {
+    "id": 4,
+    "attribute": null,
+    "operator": { "id": 2, "value": "or", "label": "OR" },
+    "value": null,
+    "type": "logical-operator"
+  },
+  {
+    "id": 5,
+    "attribute": { "id": 3, "value": "character", "label": "Character" },
+    "operator": { "id": 3, "value": "like", "label": "LIKE" },
+    "value": { "id": null, "value": "smith", "label": "smith" },
+    "type": "attribute-operator-value"
+  },
+  {
+    "id": 6,
+    "attribute": null,
+    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "value": null,
+    "type": "logical-operator"
+  },
+  {
+    "id": 7,
+    "attribute": { "id": 4, "value": "crew", "label": "Crew" },
+    "operator": {
+      "id": 6,
+      "value": "is-not-null",
+      "label": "IS NOT NULL",
+      "presetValue": null
+    },
+    "value": { "id": null, "value": null, "label": "null" },
+    "type": "attribute-operator"
+  },
+  {
+    "id": 8,
+    "attribute": null,
+    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "value": null,
+    "type": "logical-operator"
+  },
+  {
+    "id": 9,
+    "attribute": null,
+    "operator": null,
+    "value": { "id": null, "value": "adult", "label": "adult" },
+    "type": "search-text"
+  },
+  {
+    "id": 10,
+    "attribute": null,
+    "operator": { "value": "and", "label": "AND" },
+    "value": null,
+    "type": "logical-operator"
+  },
+  {
+    "id": 11,
+    "attribute": null,
+    "operator": null,
+    "value": { "id": null, "value": "swim", "label": "swim" },
+    "type": "search-text"
+  }
+]

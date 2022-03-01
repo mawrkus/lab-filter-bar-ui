@@ -11,7 +11,6 @@ export const useDropdownDOMPosition = (open, editing, position) => {
       document.querySelector('.ui.search.dropdown').style.position = null;
       document.querySelector('.ui.search.dropdown').style.top = null;
       document.querySelector('.ui.search.dropdown').style.left = null;
-      document.querySelector('.ui.search.dropdown > input.search').style.left = null;
 
       if (open) {
         // force a click to work when a chiclet is removed and a partial filter exists

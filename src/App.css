@@ -9,6 +9,7 @@
 .suggestions, .chiclets {
   display: flex;
   width: 100%;
+  max-height: 24px;
 }
 
 .chiclets {
@@ -79,7 +80,6 @@
 
 .ui.dropdown.search {
   min-height: auto;
-  max-height: 24px;
 }
 
 .ui.dropdown.search:not(.loading) > .dropdown.icon {

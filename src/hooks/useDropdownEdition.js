@@ -2,27 +2,39 @@ import { useEffect, useState } from 'react';
 
 const getDropdownPosition = (chicletElement, filterType) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();
-  const leftDec = ['search-text', 'logical-operator'].includes(filterType) ? 27 : 32;
+  const leftDec = filterType === 'search-text' ? 27 : 31;
   return { top: bottom - top, left: left - leftDec };
 };
 
 export const useDropdownEdition = (open, editing) => {
-  const [dropdownPos, setDropdownPos] = useState();
   const [dropdownValue, setDropdownValue] = useState();
 
   useEffect(() => {
     if (!open || !editing) {
+      document.querySelector('.ui.search.dropdown').style.position = null;
+      document.querySelector('.ui.search.dropdown').style.top = null;
+      document.querySelector('.ui.search.dropdown').style.left = null;
+
       setDropdownValue('');
+    }
+
+    if (open) {
+      // force a click to work when a chiclet is removed and a partial filter exists
+      document.querySelector('.ui.search.dropdown > input.search').click();
     }
   }, [open, editing]);
 
   const setDropdownPosAndValue = (chicletElement, filter, part) => {
-    setDropdownPos(getDropdownPosition(chicletElement, filter.type));
+    const position = getDropdownPosition(chicletElement, filter.type);
+
+    document.querySelector('.ui.search.dropdown').style.position = 'absolute';
+    document.querySelector('.ui.search.dropdown').style.top = `${position.top}px`;
+    document.querySelector('.ui.search.dropdown').style.left = `${position.left}px`;
+
     setDropdownValue(`${filter[part].id}-${filter[part].value}`); // See <SuggestionDropdown />
   };
 
   return [
-    dropdownPos,
     dropdownValue,
     setDropdownPosAndValue,
   ];

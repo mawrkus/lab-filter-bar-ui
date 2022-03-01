@@ -10,41 +10,40 @@ const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
 
   const [
-    dropdownPos,
     dropdownValue,
-    setDropdownPosAndValue,
+    setDropdownValue,
   ] = useDropdownEdition(props.suggestions.visible, props.isEditing);
 
   useKeyboardNavigation();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setDropdownValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setDropdownValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editPartialOperator");
     }
-  }, [setDropdownPosAndValue, stateMachine]);
+  }, [setDropdownValue, stateMachine]);
 
   const onClickChiclet = useCallback((event, filter, part) => {
     if (part === 'operator') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setDropdownValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setDropdownValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
-      setDropdownPosAndValue(event.currentTarget, filter, 'operator');
+      setDropdownValue(event.currentTarget, filter, 'operator');
       return stateMachine.sendEvent("editLogicalOperator", filter);
     }
-  }, [stateMachine, setDropdownPosAndValue]);
+  }, [stateMachine, setDropdownValue]);
 
   const onRemoveChiclet = useCallback((event, filter) => {
     stateMachine.sendEvent("removeFilter", filter);
@@ -90,13 +89,11 @@ const FilterBarComponent = ({ stateMachine }) => {
 
       <div className="suggestions">
         <SuggestionsDropdown
-          position={dropdownPos}
           value={dropdownValue}
           open={props.suggestions.visible}
           loading={props.suggestions.loading}
           error={props.suggestions.error}
           suggestions={props.suggestions.items}
-          editing={props.isEditing}
           onOpen={onOpenSuggestionsDropdown}
           onClose={onCloseSuggestionsDropdown}
           onSelectItem={onSelectSuggestionItem}

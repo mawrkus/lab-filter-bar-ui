@@ -5,12 +5,11 @@ import { Form, Header } from "semantic-ui-react";
 
 import { FilterBar } from "./components/FilterBar";
 import { buildAppStateMachine } from "./state";
+import { useFiltersFromUrl } from "./hooks/useFiltersFromUrl";
 import { AppMessage } from "./AppMessage";
 
-// import { initFilters } from "./initFilters";
-const initFilters = [];
-
 export const App = () => {
+  const [initFilters] = useFiltersFromUrl();
   const [filters, setFilters] = useState(initFilters);
   const [stateId, setStateId] = useState(null);
 
@@ -32,7 +31,7 @@ export const App = () => {
 
       setFilters(newFilters);
     },
-  }), []);
+  }), [initFilters]);
 
   return (
     <div className="container">

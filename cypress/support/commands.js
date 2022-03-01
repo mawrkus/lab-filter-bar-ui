@@ -24,7 +24,7 @@ Cypress.Commands.add('selectSuggestion', (text, checkForLoading = false) => {
     cy
       .intercept(`${apiHost}/**`)
       .as('fetchData')
-      .wait(250);
+      .wait(500);
   }
 
   cy
@@ -75,7 +75,7 @@ Cypress.Commands.add('editFilterValue', (from, to) => {
   cy
     .intercept(`${apiHost}/**`)
     .as('fetchData')
-    .wait(250);
+    .wait(500);
 
   cy
     .get('.filter-bar .chiclets .chiclet .value')

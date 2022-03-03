@@ -19,12 +19,9 @@ Cypress.Commands.add('selectSuggestion', (text, checkForLoading = false) => {
 
   if (checkForLoading) {
     cy.log(`📡 Intercepting "${apiHost}" requests...`);
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy
       .intercept(`${apiHost}/**`)
-      .as('fetchData')
-      .wait(500);
+      .as('fetchData');
   }
 
   cy
@@ -34,7 +31,10 @@ Cypress.Commands.add('selectSuggestion', (text, checkForLoading = false) => {
 
   if (checkForLoading) {
     cy.log('⏳ Waiting for request...');
-    cy.wait('@fetchData');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy
+      .wait('@fetchData')
+      .wait(500);
   }
 });
 
@@ -92,6 +92,18 @@ Cypress.Commands.add('editFilterValue', (from, to) => {
   return cy.selectSuggestion(to);
 });
 
+Cypress.Commands.add('clickOnPartialAttribute', (text) => {
+  return cy
+    .get('.filter-bar .chiclet.partial .attribute')
+    .click();
+});
+
+Cypress.Commands.add('clickOnPartialOperator', (text) => {
+  return cy
+    .get('.filter-bar .chiclet.partial .operator')
+    .click();
+});
+
 /* Assertions */
 
 Cypress.Commands.add('filterBarShouldHaveText', (text) => {
@@ -104,4 +116,13 @@ Cypress.Commands.add('filterBarShouldBeEmpty', (text) => {
   return cy
     .get('.filter-bar .chiclets .chiclet')
     .should('have.length', 0);
+});
+
+Cypress.Commands.add('suggestionsShouldBe', (expectedLabels) => {
+  return cy
+    .get('.suggestions [role="listbox"] [role="option"]')
+    .then(($options) => {
+      const labels = $options.map((i, $option) => $option.textContent);
+      expect(labels.get()).to.deep.equal(expectedLabels);
+    });
 });

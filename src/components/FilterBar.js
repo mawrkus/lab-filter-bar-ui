@@ -11,39 +11,39 @@ const FilterBarComponent = ({ stateMachine }) => {
 
   const [
     dropdownValue,
-    setDropdownValue,
-  ] = useDropdownEdition(props.suggestions.visible, props.isEditing);
+    setDropdownPosAndValue,
+  ] = useDropdownEdition(props.suggestions.visible, props.isEditing, props.suggestions.selectionType);
 
   useKeyboardNavigation();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {
-      setDropdownValue(event.currentTarget, filter, part);
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
-      setDropdownValue(event.currentTarget, filter, part);
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editPartialOperator");
     }
-  }, [setDropdownValue, stateMachine]);
+  }, [setDropdownPosAndValue, stateMachine]);
 
   const onClickChiclet = useCallback((event, filter, part) => {
     if (part === 'operator') {
-      setDropdownValue(event.currentTarget, filter, part);
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
-      setDropdownValue(event.currentTarget, filter, part);
+      setDropdownPosAndValue(event.currentTarget, filter, part);
       return stateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
-      setDropdownValue(event.currentTarget, filter, 'operator');
+      setDropdownPosAndValue(event.currentTarget, filter, 'operator');
       return stateMachine.sendEvent("editLogicalOperator", filter);
     }
-  }, [stateMachine, setDropdownValue]);
+  }, [stateMachine, setDropdownPosAndValue]);
 
   const onRemoveChiclet = useCallback((event, filter) => {
     stateMachine.sendEvent("removeFilter", filter);

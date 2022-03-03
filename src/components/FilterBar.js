@@ -4,7 +4,7 @@ import { memo, useCallback } from 'react';
 import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './SuggestionsDropdown';
-import { useStateMachine, useKeyboardNavigation, useDropdownEdition } from '../hooks';
+import { useStateMachine, useKeyboardActions, useDropdownEdition } from '../hooks';
 
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
@@ -14,7 +14,7 @@ const FilterBarComponent = ({ stateMachine }) => {
     setDropdownPosAndValue,
   ] = useDropdownEdition(props.suggestions.visible, props.isEditing, props.suggestions.selectionType);
 
-  useKeyboardNavigation();
+  useKeyboardActions();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {

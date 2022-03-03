@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const useKeyboardNavigation = () => {
+export const useKeyboardActions = () => {
   useEffect(() => {
     document.addEventListener('keydown', (e) => {
       if (['Enter', 'ArrowDown'].includes(e.code)) {

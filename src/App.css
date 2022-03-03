@@ -118,3 +118,8 @@
   font-size: 11px;
   top: -8px;
 }
+
+.ui.dropdown.search > .text.default {
+  color: rgba(115,115,115,.87);
+}
+

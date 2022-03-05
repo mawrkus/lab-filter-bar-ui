@@ -4,6 +4,8 @@ export class ValueService {
   }
 
   async load({ type }) {
+    this.cancelLoad();
+
     switch (type) {
       case 'season':
         return this.loadSeasons();

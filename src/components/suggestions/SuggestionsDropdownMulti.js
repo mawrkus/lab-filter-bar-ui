@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Dropdown } from 'semantic-ui-react';
-import { buildOptions, buildOptionValue } from './buildOptions';
-// import { useHandleBackspaceKey } from '../../hooks';
+import { useState, useEffect } from "react";
+import { Dropdown } from "semantic-ui-react";
+import { buildOptions, buildOptionValue } from "./buildOptions";
+import { useHandleMultiBackspaceKey } from "../../hooks";
 
 const getInitialValue = (selectedItem) =>
   selectedItem
@@ -10,16 +10,6 @@ const getInitialValue = (selectedItem) =>
         []
       )
     : [];
-
-const useSelectedValue = (selectedItem) => {
-  const [selectedValue, setSelectedValue] = useState(getInitialValue(selectedItem));
-
-  useEffect(() => {
-    setSelectedValue(getInitialValue(selectedItem));
-  }, [selectedItem]);
-
-  return [selectedValue, setSelectedValue];
-};
 
 export const SuggestionsDropdownMulti = ({
   selectedItem,
@@ -32,16 +22,23 @@ export const SuggestionsDropdownMulti = ({
   onSelectItem,
   onBackspace,
 }) => {
-  // useHandleBackspaceKey(onBackspace);
+  const [selectedValue, setSelectedValue] = useState(
+    getInitialValue(selectedItem)
+  );
 
-  const [selectedValue, setSelectedValue] = useSelectedValue(selectedItem);
+  useEffect(() => {
+    setSelectedValue(getInitialValue(selectedItem));
+  }, [selectedItem]);
+
+  useHandleMultiBackspaceKey(onBackspace, selectedValue);
 
   const onChange = (e, { value: rawNewValues }) => {
     if (!loading) {
       // prevent free text suggestions to be added, because the component triggers a change event
       // but does not allow the free text item to be created in the UI anyway
-      const newValues = rawNewValues
-        .filter((newValue) => suggestions.find((item) => buildOptionValue(item) === newValue));
+      const newValues = rawNewValues.filter((newValue) =>
+        suggestions.find((item) => buildOptionValue(item) === newValue)
+      );
 
       setSelectedValue(newValues);
     }
@@ -60,14 +57,20 @@ export const SuggestionsDropdownMulti = ({
     const itemLabels = [];
 
     for (let newValue of data.value) {
-      const item = suggestions.find((item) => buildOptionValue(item) === newValue);
+      const item = suggestions.find(
+        (item) => buildOptionValue(item) === newValue
+      );
 
       itemIds.push(item.id);
       itemValues.push(item.value);
       itemLabels.push(item.label);
     }
 
-    const item = { id: itemIds, value: itemValues, label: itemLabels.join(', ') };
+    const item = {
+      id: itemIds,
+      value: itemValues,
+      label: itemLabels.join(", "),
+    };
 
     // setTimeout to prevent warning in the Dropdown component:
     // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.

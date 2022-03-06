@@ -50,6 +50,8 @@ Using the mouse or keyboard:
 
 ## 🙈 Quirks
 
+### Invalid state transitions
+
 Choosing "Crew" then the "IN" operator:
 
 - sends a `selectItem` event with selectionType = "multiple"
@@ -65,5 +67,7 @@ Why? Because the `startInput` event comes from:
 - mounting `<SuggestionDropdowMulti />` with `open` = true
 - which calls the `onOpen` prop
 - which sends the `startInput` event
+
+The same hapens when removing a partial IN operator.
 
 State machine FTW! :D

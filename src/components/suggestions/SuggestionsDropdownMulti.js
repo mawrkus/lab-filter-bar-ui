@@ -11,6 +11,18 @@ const getInitialValue = (selectedItem) =>
       )
     : [];
 
+const useSelectedValue = (selectedItem) => {
+  const [selectedValue, setSelectedValue] = useState(
+    getInitialValue(selectedItem)
+  );
+
+  useEffect(() => {
+    setSelectedValue(getInitialValue(selectedItem));
+  }, [selectedItem]);
+
+  return [selectedValue, setSelectedValue];
+};
+
 export const SuggestionsDropdownMulti = ({
   selectedItem,
   open,
@@ -22,13 +34,7 @@ export const SuggestionsDropdownMulti = ({
   onSelectItem,
   onBackspace,
 }) => {
-  const [selectedValue, setSelectedValue] = useState(
-    getInitialValue(selectedItem)
-  );
-
-  useEffect(() => {
-    setSelectedValue(getInitialValue(selectedItem));
-  }, [selectedItem]);
+  const [selectedValue, setSelectedValue] = useSelectedValue(selectedItem);
 
   useHandleMultiBackspaceKey(onBackspace, selectedValue);
 

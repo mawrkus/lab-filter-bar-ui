@@ -13,9 +13,9 @@ describe('Filter Bar - Interacting with the mouse', () => {
     // 1 -> attribute-operator-value
     cy.clickOnSearchInput();
 
-    cy.selectSuggestion('Season');
-    cy.selectSuggestion('=', true);
-    cy.selectSuggestion('2 (10 episodes)');
+    cy.selectAttribute('Season');
+    cy.selectOperator('=');
+    cy.selectValue('2 (10 episodes)');
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)');
 
@@ -23,10 +23,10 @@ describe('Filter Bar - Interacting with the mouse', () => {
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
 
-    cy.selectSuggestion('AND');
-    cy.selectSuggestion('Episode');
-    cy.selectSuggestion('!=', true);
-    cy.selectSuggestion('Rick Potion #9 (S1E6)');
+    cy.selectLogicalOperator('AND');
+    cy.selectAttribute('Episode');
+    cy.selectOperator('!=');
+    cy.selectValue('Rick Potion #9 (S1E6)');
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)');
 
@@ -34,9 +34,9 @@ describe('Filter Bar - Interacting with the mouse', () => {
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
 
-    cy.selectSuggestion('OR');
-    cy.selectSuggestion('Character');
-    cy.selectSuggestion('LIKE', true);
+    cy.selectLogicalOperator('OR');
+    cy.selectAttribute('Character');
+    cy.selectOperator('LIKE');
     cy.clickOnSearchInput().type('smith{enter}');
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"');
@@ -45,9 +45,9 @@ describe('Filter Bar - Interacting with the mouse', () => {
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
 
-    cy.selectSuggestion('AND');
-    cy.selectSuggestion('Crew');
-    cy.selectSuggestion('IS NOT NULL',);
+    cy.selectLogicalOperator('AND');
+    cy.selectAttribute('Crew');
+    cy.selectOperator('IS NOT NULL',);
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULL');
 
@@ -55,7 +55,7 @@ describe('Filter Bar - Interacting with the mouse', () => {
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
 
-    cy.selectSuggestion('AND');
+    cy.selectLogicalOperator('AND');
     cy.clickOnSearchInput().type('adult{enter}');
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"');
@@ -71,10 +71,10 @@ describe('Filter Bar - Interacting with the mouse', () => {
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
 
-    cy.selectSuggestion('OR');
+    cy.selectLogicalOperator('OR');
 
-    cy.selectSuggestion('Season');
-    cy.selectSuggestion('IN', true);
+    cy.selectAttribute('Season');
+    cy.selectOperator('IN');
     // note: the order of the array passed will not be respected
     cy.selectMultipleSuggestions(['2 (10 episodes)', '1 (11 episodes)']);
 

@@ -1,5 +1,11 @@
 /// <reference types="cypress" />
 
+import { attributesList } from "../../support/commands";
+import { seasonsList } from "../../fixtures/api/seasonsList";
+import { episodesList } from "../../fixtures/api/episodesList";
+import { crewList } from "../../fixtures/api/crewList";
+import { charactersList } from "../../fixtures/api/charactersList";
+
 describe('Filter Bar - Interacting with the mouse', () => {
   beforeEach(() => cy.visit('/'));
 
@@ -58,96 +64,77 @@ describe('Filter Bar - Interacting with the mouse', () => {
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"AND"swim"');
   });
 
-  it('should allow the user to edit the partial filter before the complete filter is created', () => {
+  it('should allow the user to edit the partial filter attribute', () => {
     cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(attributesList);
 
-    cy.suggestionsShouldBe(['Season', 'Episode', 'Character', 'Crew']);
+    cy.selectAttribute('Episode');
 
-    cy.selectSuggestion('Episode');
-
-    cy.suggestionsShouldBe(['=', '!=', 'LIKE', 'NOT LIKE', 'IS NULL', 'IS NOT NULL']);
-
-    // edit partial attribute
     cy.clickOnPartialAttribute();
+    cy.selectAttribute('Character');
 
-    cy.suggestionsShouldBe(['Season', 'Episode', 'Character', 'Crew']);
+    cy.clickOnPartialAttribute();
+    cy.selectAttribute('Crew');
 
-    cy.selectSuggestion('Season');
+    cy.clickOnPartialAttribute();
+    cy.selectAttribute('Season');
 
-    cy.suggestionsShouldBe(['=', '!=', 'LIKE', 'NOT LIKE', 'IS NULL', 'IS NOT NULL']);
+    cy.selectOperator('LIKE');
+    cy.suggestionsShouldBe(seasonsList);
+    cy.selectValue('2 (10 episodes)');
 
-    cy.selectSuggestion('!=', true);
+    cy.filterBarShouldHaveText('SeasonLIKE2 (10 episodes)');
+  });
 
-    cy.suggestionsShouldBe([
-      '1 (11 episodes)',
-      '2 (10 episodes)',
-      '3 (10 episodes)',
-      '4 (10 episodes)',
-      '5 (10 episodes)',
-    ]);
+  it('should allow the user to edit the partial filter operator', () => {
+    cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(attributesList);
 
-    // edit partial operator
+    cy.selectAttribute('Season');
+    cy.selectOperator('=');
+    cy.suggestionsShouldBe(seasonsList);
+
     cy.clickOnPartialOperator();
+    cy.selectOperator('!=');
+    cy.suggestionsShouldBe(seasonsList);
 
-    cy.suggestionsShouldBe(['=', '!=', 'LIKE', 'NOT LIKE', 'IS NULL', 'IS NOT NULL']);
+    cy.clickOnPartialOperator();
+    cy.selectOperator('LIKE');
+    cy.suggestionsShouldBe(seasonsList);
 
-    cy.selectSuggestion('LIKE', true);
+    cy.clickOnPartialOperator();
+    cy.selectOperator('IN');
+    cy.suggestionsShouldBe(seasonsList);
 
-    cy.suggestionsShouldBe([
-      '1 (11 episodes)',
-      '2 (10 episodes)',
-      '3 (10 episodes)',
-      '4 (10 episodes)',
-      '5 (10 episodes)',
-    ]);
+    cy.clickOnPartialOperator();
+    cy.selectOperator('IS NULL');
 
-    // edit partial attribute when an operator is already seelcted
+    cy.filterBarShouldHaveText('SeasonIS NULL');
+  });
+
+  it('should allow the user to edit the partial filter attribute when there is already a partial filter operator', () => {
+    cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(attributesList);
+
+    cy.selectAttribute('Season');
+    cy.selectOperator('=');
+    cy.suggestionsShouldBe(seasonsList);
+
+    // we don't use selectAttribute() because we don't expect the operators suggestions
     cy.clickOnPartialAttribute();
+    cy.selectSuggestion('Episode', true);
+    cy.suggestionsShouldBe(episodesList);
 
-    cy.suggestionsShouldBe(['Season', 'Episode', 'Character', 'Crew']);
+    cy.clickOnPartialAttribute();
+    cy.selectSuggestion('Character', true);
+    cy.suggestionsShouldBe(charactersList);
 
+    cy.clickOnPartialAttribute();
     cy.selectSuggestion('Crew', true);
+    cy.suggestionsShouldBe(crewList);
 
-    cy.suggestionsShouldBe([
-      "Justin Roiland (Creator)",
-      "Justin Roiland (Executive Producer)",
-      "James A. Fino (Executive Producer)",
-      "Joe Russo II (Executive Producer)",
-      "Dan Harmon (Creator)",
-      "Dan Harmon (Executive Producer)",
-      "Mehar Sethi (Supervising Producer)",
-      "Dan Guterman (Co-Executive Producer)",
-      "Dan Guterman (Producer)",
-      "Ryan Ridley (Co-Executive Producer)",
-      "Ryan Ridley (Producer)",
-      "Keith Crofford (Executive Producer)",
-      "Michael Lazzo (Executive Producer)",
-      "Pete Michels (Supervising Producer)",
-      "Tom Kauffman (Producer)",
-      "Mike McMahan (Executive Producer)",
-      "Mike McMahan (Supervising Producer)",
-      "Lee Harting (Editor)",
-      "Lee Harting (Producer)",
-      "J. Michael Mendel (Producer)",
-      "Wes Archer (Supervising Art Director)",
-      "James McDermott (Art Director)",
-      "Ruth Lambert (Casting Director)",
-      "Ryan Elder (Music)",
-      "Ryan Elder (Main Title Theme)",
-      "James Siciliano (Co-Producer)",
-      "Konrad Pinon (Re-Recording Mixer)",
-      "Hunter Curra (Supervising Sound Editor)",
-      "Ollie Green (Producer)",
-      "Jeff Loveness (Co-Producer)",
-      "Michael Waldron (Producer)",
-      "Sydney Ryan (Producer)",
-      "Robert McGee (Casting Director)",
-      "Steve Levy (Associate Producer)",
-      "Dave Otterby (Production Manager)",
-    ]);
+    cy.selectValue('Dan Harmon (Creator)');
 
-    cy.selectSuggestion('Dan Harmon (Creator)');
-
-    cy.filterBarShouldHaveText('CrewLIKEDan Harmon (Creator)');
+    cy.filterBarShouldHaveText('Crew=Dan Harmon (Creator)');
   });
 });

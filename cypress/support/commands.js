@@ -2,6 +2,19 @@
 
 const apiHost = Cypress.env('apiHost');
 
+export const attributesList = ["Season", "Episode", "Character", "Crew"];
+
+export const operatorsList = [
+  "=",
+  "!=",
+  "LIKE",
+  "NOT LIKE",
+  "IS NULL",
+  "IS NOT NULL",
+  "IN",
+  "NOT IN",
+];
+
 Cypress.Commands.add('visitWithFilters', (fixturePath) => {
   return cy
     .fixture(fixturePath)
@@ -36,6 +49,19 @@ Cypress.Commands.add('selectSuggestion', (text, checkForLoading = false) => {
       .wait('@fetchData')
       .wait(500);
   }
+});
+
+Cypress.Commands.add('selectAttribute', (text) => {
+  cy.selectSuggestion(text);
+  return cy.suggestionsShouldBe(['=', '!=', 'LIKE', 'NOT LIKE', 'IS NULL', 'IS NOT NULL', 'IN', 'NOT IN']);
+});
+
+Cypress.Commands.add('selectOperator', (text) => {
+  return cy.selectSuggestion(text, true);
+});
+
+Cypress.Commands.add('selectValue', (text) => {
+  return cy.selectSuggestion(text);
 });
 
 Cypress.Commands.add('typeInSearchInput', (text) => {
@@ -93,15 +119,19 @@ Cypress.Commands.add('editFilterValue', (from, to) => {
 });
 
 Cypress.Commands.add('clickOnPartialAttribute', (text) => {
-  return cy
+  cy
     .get('.filter-bar .chiclet.partial .attribute')
     .click();
+
+  return cy.suggestionsShouldBe(attributesList);
 });
 
 Cypress.Commands.add('clickOnPartialOperator', (text) => {
-  return cy
+  cy
     .get('.filter-bar .chiclet.partial .operator')
     .click();
+
+    return cy.suggestionsShouldBe(operatorsList);
 });
 
 /* Assertions */

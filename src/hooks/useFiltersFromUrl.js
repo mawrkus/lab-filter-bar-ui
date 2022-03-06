@@ -9,9 +9,11 @@ export const useFiltersFromUrl = () => {
     const urlFilters = JSON.parse(jsonFilters);
     const initFilters = Array.isArray(urlFilters) ? urlFilters : [];
 
-    setFilters(initFilters);
+    if (initFilters.length) {
+      setFilters(initFilters);
+    }
   }, [setFilters]);
 
-  // TOOD: set -> change URL search param
+  // TOOD: set -> change URL search param?
   return [filters];
 };

@@ -14,7 +14,12 @@ export const useFiltersFromUrl = () => {
   const setUrlFilters = (newFilters) => {
     const url = new URL(window.location);
 
-    url.searchParams.set('filters', JSON.stringify(newFilters));
+    if (newFilters.length) {
+      url.searchParams.set('filters', JSON.stringify(newFilters));
+    } else {
+      url.searchParams.delete('filters');
+    }
+
     window.history.pushState({}, '', url);
 
     setFilters(newFilters);

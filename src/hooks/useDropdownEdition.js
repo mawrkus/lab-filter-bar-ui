@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 const getDropdownPosition = (chicletElement, filter) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();
@@ -40,10 +40,10 @@ export const useDropdownEdition = (open, editing) => {
     }
   }, [open, editing, position]);
 
-  const setSelectedItemAndPosition = (filter, part, chicletElement) => {
+  const setSelectedItemAndPosition = useCallback((filter, part, chicletElement) => {
     setSelectedItem(filter[part]);
     setPosition(getDropdownPosition(chicletElement, filter));
-  };
+  }, []);
 
   return [
     selectedItem,

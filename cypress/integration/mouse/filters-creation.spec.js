@@ -9,7 +9,7 @@ import { charactersList } from "../../fixtures/api/charactersList";
 describe('Filter Bar - Interacting with the mouse', () => {
   beforeEach(() => cy.visit('/'));
 
-  it.only('should allow the user to create a diverse selection of filters', () => {
+  it('should allow the user to create a diverse selection of filters', () => {
     // 1 -> attribute-operator-value
     cy.clickOnSearchInput();
 

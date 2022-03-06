@@ -1,12 +1,16 @@
-import { Icon, Label } from 'semantic-ui-react'
+import { Icon, Label } from "semantic-ui-react";
 
-export const ChicletAttributeOperatorValue = ({ filter, onClick, onRemove }) => {
+export const ChicletAttributeOperatorValue = ({
+  filter,
+  onClick,
+  onRemove,
+}) => {
   const { attribute, operator, value } = filter;
 
   return (
     <div className="chiclet attribute-operator-value">
       <Label
-        as='span'
+        as="span"
         color="blue"
         size="small"
         title={`Cannot change "${attribute.label}"`}
@@ -16,39 +20,41 @@ export const ChicletAttributeOperatorValue = ({ filter, onClick, onRemove }) => 
       </Label>
 
       <Label
-        as='a'
+        as="a"
         color="blue"
         size="small"
         title={`Click to change "${operator.label}"`}
         className="middle operator"
-        onClick={(e) => onClick(e, filter, 'operator')}
+        onClick={(e) => onClick(e, filter, "operator")}
         tabIndex="0"
       >
         {operator.label}
       </Label>
 
       <Label
-        as='a'
+        as="a"
         color="blue"
         size="small"
-        title={`Click to change "${value.label}"`}
+        title={value ? `Click to change "${value.label}"` : "Click to choose a value"}
         className="middle value"
-        onClick={(e) => onClick(e, filter, 'value')}
+        onClick={(e) => onClick(e, filter, "value")}
         tabIndex="0"
       >
-        {value.id ? value.label : `"${value.label}"`}
+        {/* handle search text filters and absence of value after converting from single to multi operator*/}
+        {!value && ""}
+        {value && (value.id === null ? `"${value.label}"` : value.label)}
       </Label>
 
       <Label
-        as='a'
+        as="a"
         color="blue"
         size="small"
-        title={`Click to remove "${attribute.label} ${operator.label} ${value.label}"`}
+        title={`Click to remove "${attribute.label} ${operator.label}${value?.label ? ` ${value.label}` : ""}"`}
         className="right"
         onClick={(e) => onRemove(e, filter)}
         tabIndex="0"
       >
-        <Icon name='delete' />
+        <Icon name="delete" />
       </Label>
     </div>
   );

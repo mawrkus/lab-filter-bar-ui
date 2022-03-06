@@ -155,6 +155,15 @@ export class AppStateMachineContext extends StateMachineContext {
       filter.type = 'attribute-operator';
     }
 
+    if (filterOperator.selectionType === 'multiple') {
+      if (hasPresetValue(filterUnderEdition.operator)) {
+        filter.value = null;
+      } else {
+        filter.value.id = [filter.value.id];
+        filter.value.value = [filter.value.value];
+      }
+    }
+
     ctxValue.filterUnderEdition = null;
     ctxValue.isEditing = false;
 

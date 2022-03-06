@@ -38,14 +38,8 @@ export const SuggestionsDropdownMulti = ({
 
   useHandleMultiBackspaceKey(onBackspace, selectedValue);
 
-  const onChange = (e, { value: rawNewValues }) => {
+  const onChange = (e, { value: newValues }) => {
     if (!loading) {
-      // prevent free text suggestions to be added, because the component triggers a change event
-      // but does not allow the free text item to be created in the UI anyway
-      const newValues = rawNewValues.filter((newValue) =>
-        suggestions.find((item) => buildOptionValue(item) === newValue)
-      );
-
       setSelectedValue(newValues);
     }
   };
@@ -65,9 +59,13 @@ export const SuggestionsDropdownMulti = ({
         (item) => buildOptionValue(item) === newValue
       );
 
-      itemIds.push(item.id);
-      itemValues.push(item.value);
-      itemLabels.push(item.label);
+      // handles search text suggestions, because the component allows the search text item to be
+      // added in the values array but does not render it
+      if (item) {
+        itemIds.push(item.id);
+        itemValues.push(item.value);
+        itemLabels.push(item.label);
+      }
     }
 
     const item = {

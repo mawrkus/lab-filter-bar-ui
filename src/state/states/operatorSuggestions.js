@@ -103,10 +103,12 @@ export const editOperator = {
   events: {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
-      // Existing filter edition, e.g.:
+      // E.g.:
       // = -> !=
       // IS NULL -> IS NOT NULL
       // = -> IS NULL
+      // = -> IN
+      // IS NULL -> IN
       {
         cond: (event, ctx) => {
           const { filterUnderEdition } = ctx.get();
@@ -123,7 +125,7 @@ export const editOperator = {
           ctx.setFilterOperator(event.data);
         },
       },
-      // Existing filter edition, e.g.: IS NULL -> =
+      // E.g.: IS NULL -> =
       {
         cond: (event, ctx) =>
           !hasPresetValue(event.data) &&

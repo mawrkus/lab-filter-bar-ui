@@ -82,17 +82,34 @@ Cypress.Commands.add("selectOperator", (label) => {
   return cy.selectSuggestion(label, true);
 });
 
+Cypress.Commands.add("selectLogicalOperator", (label) => {
+  cy.selectSuggestion(label);
+
+  return cy.suggestionsShouldBe(attributesList);
+});
+
 Cypress.Commands.add("selectValue", (label) => {
   return cy.selectSuggestion(label);
 });
 
-Cypress.Commands.add("deleteFilter", (index) => {
+Cypress.Commands.add("deleteFilter", (index, checkForLoading = false) => {
   cy.log(`🗑️ Deleting filter #${index}...`);
 
-  return cy
+  if (checkForLoading) {
+    cy.log(`📡 Intercepting "${apiHost}" requests...`);
+    cy.intercept(`${apiHost}/**`).as("fetchData");
+  }
+
+  cy
     .get(`.filter-bar .chiclets .chiclet:nth-child(${index})`)
     .find(".icon.delete")
     .click();
+
+  if (checkForLoading) {
+    cy.log("⏳ Waiting for request...");
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait("@fetchData").wait(500);
+  }
 });
 
 Cypress.Commands.add(

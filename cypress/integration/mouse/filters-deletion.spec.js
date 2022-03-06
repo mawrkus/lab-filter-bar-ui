@@ -1,7 +1,10 @@
 /// <reference types="cypress" />
 
+import { operatorsList } from "../../support/commands";
+import { crewList } from "../../fixtures/api/crewList";
+
 describe('Filter Bar - Interacting with the mouse', () => {
-  it('should allow filters deletion', () => {
+  it('should allow the user to delete existing filters', () => {
     cy.visitWithFilters('filters-full.json');
 
     cy.deleteFilter(9);
@@ -21,5 +24,26 @@ describe('Filter Bar - Interacting with the mouse', () => {
 
     cy.deleteFilter(1);
     cy.filterBarShouldBeEmpty();
+  });
+
+  describe('when there is already a partial filter', () => {
+    it('should automatically display the partial suggestions after deleting', () => {
+      cy.visitWithFilters('filters-triple.json');
+
+      cy.clickOnSearchInput();
+
+      cy.selectLogicalOperator('AND');
+      cy.selectAttribute('Crew');
+
+      cy.deleteFilter(1);
+
+      cy.suggestionsShouldBe(operatorsList);
+
+      cy.selectOperator('=');
+
+      cy.deleteFilter(1, true);
+
+      cy.suggestionsShouldBe(crewList);
+    });
   });
 });

@@ -71,3 +71,10 @@ Why? Because the `startInput` event comes from:
 The same hapens when removing a partial IN operator.
 
 State machine FTW! :D
+
+### Dropdown component warnings
+
+```text
+Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
+    at Dropdown (http://localhost:3000/static/js/bundle.js:52590:29)
+```

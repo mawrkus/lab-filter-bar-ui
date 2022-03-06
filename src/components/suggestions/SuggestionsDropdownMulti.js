@@ -46,9 +46,7 @@ export const SuggestionsDropdownMulti = ({
 
   const onCustomClose = (e, data) => {
     if (!data.value.length) {
-      // setTimeout to prevent warning in the Dropdown component:
-      // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
-      setTimeout(() => onClose(e, data), 0);
+      onClose(e, data);
       return;
     }
 
@@ -72,9 +70,7 @@ export const SuggestionsDropdownMulti = ({
       label: itemLabels.join(", "),
     };
 
-    // setTimeout to prevent warning in the Dropdown component:
-    // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
-    setTimeout(() => onSelectItem(e, item), 0);
+    onSelectItem(e, item);
   };
 
   return (

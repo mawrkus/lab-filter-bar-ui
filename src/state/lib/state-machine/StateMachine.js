@@ -28,7 +28,7 @@ export class StateMachine {
     this._onTransition = onTransition;
     this._onTransitionContext = this._buildOnTransitionContext();
 
-    const startEvent = null;
+    const startEvent = { name: Symbol('init') };
 
     this._execTransition(startEvent, {
       fromStateId: null,

@@ -1,13 +1,12 @@
 export const transitionLogger = (transition, ctx) => {
-  console.log('📟', new Date());
+  console.log("📟", new Date());
+  console.log("  📥 %s(%o)", transition.event.name, transition.event.data);
 
-  if (transition.event) {
-    console.log('  📥 %s(%o)', transition.event?.name, transition.event?.data);
+  if (transition.isValid) {
+    console.log("  ✔ %s → %s", transition.fromStateId, transition.toStateId);
+  } else {
+    console.log("  💥 %s → %s", transition.fromStateId, transition.toStateId);
   }
 
-  console.log('  %s %s → %s', transition.isValid
-    ? '✔'
-    : '💥', transition.fromStateId, transition.toStateId);
-
-  console.log('  🔎', JSON.stringify(ctx.get()));
+  console.log("  🔎", JSON.stringify(ctx.get()));
 };

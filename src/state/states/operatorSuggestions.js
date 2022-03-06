@@ -35,7 +35,7 @@ export const loadOperatorSuggestions = {
   },
 };
 
-export const hasPresetValue = (operator) => typeof operator.presetValue !== 'undefined';
+export const hasPresetValue = (operator) => typeof operator.presetValue !== "undefined";
 
 export const chooseOperator = {
   events: {
@@ -44,14 +44,14 @@ export const chooseOperator = {
       {
         cond: (event) => !hasPresetValue(event.data),
         targetId: "loadValueSuggestions",
-        action:(event, ctx) => {
+        action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
         },
       },
       {
         cond: (event) => hasPresetValue(event.data),
         targetId: "idle",
-        action:(event, ctx) => {
+        action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
 
           const filterValue = {
@@ -60,7 +60,7 @@ export const chooseOperator = {
             label: String(event.data.presetValue),
           };
 
-          ctx.completePartialFilter(filterValue, 'attribute-operator');
+          ctx.completePartialFilter(filterValue, "attribute-operator");
         },
       },
     ],
@@ -84,14 +84,14 @@ export const editPartialOperator = {
       {
         cond: (event, ctx) => !hasPresetValue(event.data),
         targetId: "loadValueSuggestions",
-        action:(event, ctx) => {
+        action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
         },
       },
       {
         cond: (event, ctx) => hasPresetValue(event.data),
         targetId: "idle",
-        action:(event, ctx) => {
+        action: (event, ctx) => {
           ctx.completePartialAttributeOperatorFilter(event.data);
         },
       },
@@ -101,30 +101,35 @@ export const editPartialOperator = {
 
 export const editOperator = {
   events: {
-    discardSuggestions: "idle",
+    discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
       // Existing filter edition, e.g.:
-        // = -> !=
-        // IS NULL -> IS NOT NULL
-        // = -> IS NULL
+      // = -> !=
+      // IS NULL -> IS NOT NULL
+      // = -> IS NULL
       {
         cond: (event, ctx) => {
           const { filterUnderEdition } = ctx.get();
 
-          return (hasPresetValue(filterUnderEdition.operator) === hasPresetValue(event.data))
-            || (!hasPresetValue(filterUnderEdition.operator) && hasPresetValue(event.data));
+          return (
+            hasPresetValue(filterUnderEdition.operator) ===
+              hasPresetValue(event.data) ||
+            (!hasPresetValue(filterUnderEdition.operator) &&
+              hasPresetValue(event.data))
+          );
         },
         targetId: "displayPartialFilterSuggestions",
-        action:(event, ctx) => {
+        action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
         },
       },
       // Existing filter edition, e.g.: IS NULL -> =
       {
-        cond: (event, ctx) => !hasPresetValue(event.data)
-          && hasPresetValue(ctx.get().filterUnderEdition.operator),
+        cond: (event, ctx) =>
+          !hasPresetValue(event.data) &&
+          hasPresetValue(ctx.get().filterUnderEdition.operator),
         targetId: "loadValueSuggestions",
-        action:(event, ctx) => {
+        action: (event, ctx) => {
           const { filterUnderEdition } = ctx.get();
 
           ctx.setFilterOperator(event.data);

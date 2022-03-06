@@ -3,7 +3,8 @@ export const loadLogicalOperatorSuggestions = {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
-      const logicalOperators = await toolkit.suggestionService.loadLogicalOperators();
+      const logicalOperators =
+        await toolkit.suggestionService.loadLogicalOperators();
 
       ctx.doneLoading(logicalOperators);
 
@@ -20,7 +21,7 @@ export const loadLogicalOperatorSuggestions = {
       {
         cond: (event, ctx) => ctx.isEditing(),
         targetId: "editLogicalOperator",
-      }
+      },
     ],
   },
 };
@@ -30,20 +31,20 @@ export const chooseLogicalOperator = {
     discardSuggestions: "idle",
     selectItem: {
       targetId: "loadAttributeSuggestions",
-      action:(event, ctx) => {
+      action: (event, ctx) => {
         ctx.createLogicalOperatorFilter(event.data);
       },
     },
     createItem: {
       targetId: "idle",
       action(event, ctx) {
-        ctx.createLogicalOperatorFilter({ value: 'and', label: 'AND' });
+        ctx.createLogicalOperatorFilter({ value: "and", label: "AND" });
         ctx.createSearchTextFilter(event.data);
       },
     },
     // On backspace
     removeLastFilter: {
-      targetId: 'idle',
+      targetId: "idle",
       action(event, ctx) {
         ctx.removeFilter(ctx.getLastFilter());
       },
@@ -53,10 +54,10 @@ export const chooseLogicalOperator = {
 
 export const editLogicalOperator = {
   events: {
-    discardSuggestions: "idle",
-    selectItem:  {
+    discardSuggestions: "displayPartialFilterSuggestions",
+    selectItem: {
       targetId: "displayPartialFilterSuggestions",
-      action:(event, ctx) => {
+      action: (event, ctx) => {
         ctx.setFilterOperator(event.data);
       },
     },

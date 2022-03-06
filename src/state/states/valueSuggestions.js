@@ -4,7 +4,7 @@ export const loadValueSuggestions = {
       const ctxValue = ctx.get();
       const { partialFilter, filterUnderEdition } = ctxValue;
 
-      if (filterUnderEdition?.type === 'search-text') {
+      if (filterUnderEdition?.type === "search-text") {
         ctx.doneLoading([filterUnderEdition.value]);
         return toolkit.sendEvent("valueSuggestionsLoaded");
       }
@@ -17,8 +17,8 @@ export const loadValueSuggestions = {
         : partialFilter.attribute.value;
 
       const selectionType = filterUnderEdition
-        ? filterUnderEdition.operator.selectionType || 'single'
-        : partialFilter.operator.selectionType || 'single';
+        ? filterUnderEdition.operator.selectionType || "single"
+        : partialFilter.operator.selectionType || "single";
 
       ctx.startLoading(selectionType);
 
@@ -30,7 +30,7 @@ export const loadValueSuggestions = {
           // nothing to do here as the cancellation was initiated when entering the "idle" state
           return;
         } else {
-          console.error('💥 Ooops!', e);
+          console.error("💥 Ooops!", e);
           error = e;
         }
       }
@@ -51,7 +51,7 @@ export const loadValueSuggestions = {
       {
         cond: (event, ctx) => ctx.isEditing(),
         targetId: "editValue",
-      }
+      },
     ],
   },
 };
@@ -67,7 +67,7 @@ export const chooseValue = {
     discardSuggestions: "idle",
     selectItem: {
       targetId: "idle",
-      action:(event, ctx) => {
+      action: (event, ctx) => {
         ctx.completePartialFilter(event.data);
       },
     },
@@ -98,10 +98,10 @@ export const editValue = {
     },
   },
   events: {
-    discardSuggestions: "idle",
+    discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
-      action:(event, ctx) => {
+      action: (event, ctx) => {
         ctx.setFilterValue(event.data);
       },
     },

@@ -3,7 +3,7 @@ export const idle = {
     onEntry(event, ctx, toolkit) {
       toolkit.suggestionService.cancelLoad();
 
-      const resetError = event?.name === 'discardSuggestions';
+      const resetError = event?.name === "discardSuggestions";
       ctx.reset(resetError);
     },
   },
@@ -11,13 +11,17 @@ export const idle = {
     discardSuggestions: "idle",
     startInput: [
       {
-        cond: (event, ctx) => !ctx.hasPartialFilter()
-          && (ctx.getLastFilter() && ctx.getLastFilter().type !== 'logical-operator'),
+        cond: (event, ctx) =>
+          !ctx.hasPartialFilter() &&
+          ctx.getLastFilter() &&
+          ctx.getLastFilter().type !== "logical-operator",
         targetId: "loadLogicalOperatorSuggestions",
       },
       {
-        cond: (event, ctx) => !ctx.hasPartialFilter()
-          && (!ctx.getLastFilter() || ctx.getLastFilter().type === 'logical-operator'),
+        cond: (event, ctx) =>
+          !ctx.hasPartialFilter() &&
+          (!ctx.getLastFilter() ||
+            ctx.getLastFilter().type === "logical-operator"),
         targetId: "loadAttributeSuggestions",
       },
       {

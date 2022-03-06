@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 export const useKeyboardActions = () => {
   useEffect(() => {
-    document.addEventListener('keydown', (e) => {
-      if (['Enter', 'ArrowDown'].includes(e.code)) {
-        if (document.activeElement.closest('.chiclet')) {
+    document.addEventListener("keydown", (e) => {
+      if (document.activeElement.closest(".chiclet")) {
+        if (["Enter", "ArrowDown"].includes(e.code)) {
           document.activeElement.click();
         }
       }

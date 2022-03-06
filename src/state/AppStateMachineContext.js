@@ -16,6 +16,7 @@ export class AppStateMachineContext extends StateMachineContext {
         loading: false,
         error: null,
         items: [],
+        selectionType: 'single',
       },
       filterUnderEdition: null,
       isEditing: false,
@@ -35,6 +36,7 @@ export class AppStateMachineContext extends StateMachineContext {
         loading: false,
         error: resetError ? null : lastLoadingError,
         items: [],
+        selectionType: 'single',
       },
       filterUnderEdition: null,
       isEditing: false,
@@ -42,7 +44,7 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   // loading states
-  startLoading() {
+  startLoading(selectionType = 'single') {
     this.set({
       ...this.get(),
       suggestions: {
@@ -50,11 +52,12 @@ export class AppStateMachineContext extends StateMachineContext {
         loading: true,
         error: null,
         items: [],
+        selectionType,
       },
     });
   }
 
-  doneLoading(items, error = null) {
+  doneLoading(items, selectionType = 'single', error = null) {
     this.set({
       ...this.get(),
       suggestions: {
@@ -62,6 +65,7 @@ export class AppStateMachineContext extends StateMachineContext {
         loading: false,
         error,
         items,
+        selectionType,
       },
     });
   }

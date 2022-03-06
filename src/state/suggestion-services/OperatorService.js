@@ -26,6 +26,16 @@ export class OperatorService {
       value: 'is-not-null',
       label: 'IS NOT NULL',
       presetValue: null,
+    }, {
+      id: 7,
+      value: 'in',
+      label: 'IN',
+      selectionType: 'multiple',
+    }, {
+      id: 8,
+      value: 'not-in',
+      label: 'NOT IN',
+      selectionType: 'multiple',
     }];
   }
 };

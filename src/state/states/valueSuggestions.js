@@ -5,25 +5,28 @@ export const loadValueSuggestions = {
       const { partialFilter, filterUnderEdition } = ctxValue;
 
       if (filterUnderEdition?.type === 'search-text') {
-        ctx.doneLoading([filterUnderEdition.value], null);
-
+        ctx.doneLoading([filterUnderEdition.value]);
         return toolkit.sendEvent("valueSuggestionsLoaded");
       }
-
-      const type = filterUnderEdition
-        ? filterUnderEdition.attribute.value
-        : partialFilter.attribute.value;
 
       let values = [];
       let error = null;
 
-      ctx.startLoading();
+      const valuesType = filterUnderEdition
+        ? filterUnderEdition.attribute.value
+        : partialFilter.attribute.value;
+
+      const selectionType = filterUnderEdition
+        ? filterUnderEdition.operator.selectionType || 'single'
+        : partialFilter.operator.selectionType || 'single';
+
+      ctx.startLoading(selectionType);
 
       try {
-        values = await toolkit.suggestionService.loadValues({ type });
+        values = await toolkit.suggestionService.loadValues({ type: valuesType });
       } catch (e) {
         if (toolkit.suggestionService.isCancelError(e)) {
-          console.log('🗑️ "%s" suggestions request cancelled.', type);
+          console.log('🗑️ Request cancelled for "%s" values.', valuesType);
           // nothing to do here as the cancellation was initiated when entering the "idle" state
           return;
         } else {
@@ -32,7 +35,7 @@ export const loadValueSuggestions = {
         }
       }
 
-      ctx.doneLoading(values, error);
+      ctx.doneLoading(values, selectionType, error);
 
       toolkit.sendEvent("valueSuggestionsLoaded");
     },

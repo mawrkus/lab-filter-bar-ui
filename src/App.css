@@ -78,17 +78,26 @@
 
 /* suggestions dropdown */
 
-.ui.dropdown.search {
+.ui.dropdown.search:not(.multiple) {
   min-height: auto;
   max-height: 24px;
 }
 
-.ui.dropdown.search:not(.loading) > .dropdown.icon {
+.ui.dropdown.search.multiple {
+  min-height: 26px;
+}
+
+.ui.dropdown.search:not(.loading) > .dropdown.icon:not(.clear) {
   display: none;
 }
 
-.ui.dropdown.search.loading > .dropdown.icon {
+/* loader + clear */
+.ui.dropdown.search > .dropdown.icon {
   margin: -14px -12px 0;
+}
+
+.ui.dropdown>.clear.icon:before {
+  font-size: 9px;
 }
 
 .ui.dropdown.search:not(.error) .menu {
@@ -123,3 +132,15 @@
   color: rgba(115,115,115,.87);
 }
 
+.ui.dropdown.search.multiple > .ui.label {
+  font-size: 10px;
+  padding: 4px 6px;
+}
+
+.ui.dropdown.search.multiple > .ui.label .icon.delete {
+  margin-left: 5px
+}
+
+.ui.dropdown.search.multiple > .ui.label .icon.delete::before {
+  font-size: 8px;
+}

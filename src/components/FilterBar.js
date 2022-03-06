@@ -3,47 +3,48 @@ import { memo, useCallback } from 'react';
 
 import { Chiclet } from './Chiclet';
 import { PartialChiclet } from './PartialChiclet';
-import { SuggestionsDropdown } from './SuggestionsDropdown';
+import { SuggestionsDropdown } from './suggestions/SuggestionsDropdown';
 import { useStateMachine, useKeyboardActions, useDropdownEdition } from '../hooks';
 
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
 
   const [
-    dropdownValue,
-    setDropdownPosAndValue,
-  ] = useDropdownEdition(props.suggestions.visible, props.isEditing, props.suggestions.selectionType);
+    selectedDropdownItem,
+    setSelectedDropdownItem,
+    setSelectedDropdownItemAndPosition,
+  ] = useDropdownEdition(props.suggestions.visible, props.isEditing);
 
   useKeyboardActions();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editPartialOperator");
     }
-  }, [setDropdownPosAndValue, stateMachine]);
+  }, [setSelectedDropdownItemAndPosition, stateMachine]);
 
   const onClickChiclet = useCallback((event, filter, part) => {
     if (part === 'operator') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
-      setDropdownPosAndValue(event.currentTarget, filter, part);
+      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
-      setDropdownPosAndValue(event.currentTarget, filter, 'operator');
+      setSelectedDropdownItemAndPosition(filter, 'operator', event.currentTarget);
       return stateMachine.sendEvent("editLogicalOperator", filter);
     }
-  }, [stateMachine, setDropdownPosAndValue]);
+  }, [stateMachine, setSelectedDropdownItemAndPosition]);
 
   const onRemoveChiclet = useCallback((event, filter) => {
     stateMachine.sendEvent("removeFilter", filter);
@@ -58,10 +59,12 @@ const FilterBarComponent = ({ stateMachine }) => {
   };
 
   const onSelectSuggestionItem = (event, item) => {
+    setSelectedDropdownItem(null);
     stateMachine.sendEvent("selectItem", item);
   };
 
   const onCreateSuggestionItem = (event, item) => {
+    setSelectedDropdownItem(null);
     stateMachine.sendEvent("createItem", item);
   };
 
@@ -89,7 +92,8 @@ const FilterBarComponent = ({ stateMachine }) => {
 
       <div className="suggestions">
         <SuggestionsDropdown
-          value={dropdownValue}
+          multiple={props.suggestions.selectionType === 'multiple'}
+          selectedItem={selectedDropdownItem}
           open={props.suggestions.visible}
           loading={props.suggestions.loading}
           error={props.suggestions.error}

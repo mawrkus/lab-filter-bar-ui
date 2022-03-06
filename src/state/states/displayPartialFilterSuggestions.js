@@ -8,7 +8,6 @@ export const displayPartialFilterSuggestions = {
         return;
       }
 
-      toolkit.suggestionService.cancelLoad();
       ctx.reset();
 
       // we introduce a delay to prevent the dropdown that we will open now to be closed

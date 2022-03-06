@@ -27,7 +27,7 @@ const FilterBarComponent = ({ stateMachine }) => {
       setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editPartialOperator");
     }
-  }, [setSelectedDropdownItemAndPosition, stateMachine]);
+  }, [stateMachine, setSelectedDropdownItemAndPosition]);
 
   const onClickChiclet = useCallback((event, filter, part) => {
     if (part === 'operator') {

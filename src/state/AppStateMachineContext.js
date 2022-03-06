@@ -120,18 +120,9 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  setFilterOperator(filterOperator) {
+  setFilterOperator(filterOperator, startEditing = false) {
     const ctxValue = this.get();
-    const { partialFilter, filterUnderEdition } = ctxValue;
-
-    if (!filterUnderEdition) {
-      partialFilter.operator = filterOperator;
-      ctxValue.isEditing = false;
-
-      this.set(ctxValue);
-      return;
-    }
-
+    const { filterUnderEdition } = ctxValue;
     const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
     const prevFilter = copy(filter);
 
@@ -155,8 +146,11 @@ export class AppStateMachineContext extends StateMachineContext {
       filter.type = 'attribute-operator';
     }
 
+    // TODO: NOT IN -> =
+
     if (filterOperator.selectionType === 'multiple') {
-      if (hasPresetValue(filterUnderEdition.operator)) {
+      // handles IS (NOT) NULL and search text values
+      if (hasPresetValue(filterUnderEdition.operator) || filterUnderEdition.value.id === null) {
         filter.value = null;
       } else {
         filter.value.id = [filter.value.id];
@@ -164,8 +158,13 @@ export class AppStateMachineContext extends StateMachineContext {
       }
     }
 
-    ctxValue.filterUnderEdition = null;
-    ctxValue.isEditing = false;
+    if (startEditing) {
+      ctxValue.filterUnderEdition = filter;
+      ctxValue.isEditing = true;
+    } else {
+      ctxValue.filterUnderEdition = null;
+      ctxValue.isEditing = false;
+    }
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: 'edit',
@@ -173,6 +172,16 @@ export class AppStateMachineContext extends StateMachineContext {
       filter,
       part: 'operator',
     });
+
+    this.set(ctxValue);
+  }
+
+  setPartialFilterOperator(filterOperator) {
+    const ctxValue = this.get();
+    const { partialFilter } = ctxValue;
+
+    partialFilter.operator = filterOperator;
+    ctxValue.isEditing = false;
 
     this.set(ctxValue);
   }
@@ -242,7 +251,7 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   completePartialAttributeOperatorFilter(filterOperator) {
-    this.setFilterOperator(filterOperator);
+    this.setPartialFilterOperator(filterOperator);
 
     const filterValue = {
       id: null,

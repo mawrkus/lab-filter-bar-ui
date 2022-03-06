@@ -45,22 +45,14 @@ export const chooseOperator = {
         cond: (event) => !hasPresetValue(event.data),
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
-          ctx.setFilterOperator(event.data);
+          ctx.setPartialFilterOperator(event.data);
         },
       },
       {
         cond: (event) => hasPresetValue(event.data),
         targetId: "idle",
         action: (event, ctx) => {
-          ctx.setFilterOperator(event.data);
-
-          const filterValue = {
-            id: null,
-            value: event.data.presetValue,
-            label: String(event.data.presetValue),
-          };
-
-          ctx.completePartialFilter(filterValue, "attribute-operator");
+          ctx.completePartialAttributeOperatorFilter(event.data);
         },
       },
     ],
@@ -85,7 +77,7 @@ export const editPartialOperator = {
         cond: (event, ctx) => !hasPresetValue(event.data),
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
-          ctx.setFilterOperator(event.data);
+          ctx.setPartialFilterOperator(event.data);
         },
       },
       {

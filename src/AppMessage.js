@@ -4,7 +4,10 @@ import { Message, Button } from "semantic-ui-react";
 export const AppMessage = ({ stateId, filters }) => {
   return (
     <Message size="tiny" style={{ marginTop: "24px", boxShadow: "none" }}>
-      <Message.Header style={{ display: "flex" }}>
+      <Message.Header
+        as="h1"
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <span>
           Filters in "{stateId}" state ({filters.length})
         </span>
@@ -15,7 +18,7 @@ export const AppMessage = ({ stateId, filters }) => {
           circular
           icon="linkify"
           size="mini"
-          style={{ marginLeft: "12px", fontSize: "7px" }}
+          style={{ marginLeft: "12px", fontSize: "8px" }}
           title="Open in new tab"
           href={window.location.href}
         />
@@ -25,8 +28,8 @@ export const AppMessage = ({ stateId, filters }) => {
           circular
           icon="trash alternate outline"
           size="mini"
-          style={{ fontSize: "7px" }}
-          title="Reset filters"
+          style={{ fontSize: "8px" }}
+          title="Reset all filters"
           href="/"
         />
       </Message.Header>

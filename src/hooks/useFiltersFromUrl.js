@@ -4,8 +4,9 @@ export const parseUrlFilters = () => {
   const parsedUrl = new URL(window.location.href);
   const jsonFilters = parsedUrl.searchParams.get("filters");
   const urlFilters = JSON.parse(jsonFilters);
+  const parsedFilters = Array.isArray(urlFilters) ? urlFilters : [];
 
-  return Array.isArray(urlFilters) ? urlFilters : [];
+  return parsedFilters.map((filter, i) => ({ ...filter, id: i + 1 }))
 }
 
 export const useFiltersFromUrl = () => {

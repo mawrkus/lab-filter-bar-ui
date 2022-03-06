@@ -2,7 +2,7 @@
   {
     "id": 1,
     "attribute": { "id": 1, "value": "season", "label": "Season" },
-    "operator": { "id": 2, "value": "!=", "label": "!=" },
+    "operator": { "id": 1, "value": "=", "label": "=" },
     "value": {
       "id": 882,
       "value": 1,

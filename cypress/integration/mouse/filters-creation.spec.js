@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { attributesList } from "../../support/commands";
+import { attributesList, logicalOperatorsList } from "../../support/commands";
 import { seasonsList } from "../../fixtures/api/seasonsList";
 import { episodesList } from "../../fixtures/api/episodesList";
 import { crewList } from "../../fixtures/api/crewList";
@@ -9,8 +9,8 @@ import { charactersList } from "../../fixtures/api/charactersList";
 describe('Filter Bar - Interacting with the mouse', () => {
   beforeEach(() => cy.visit('/'));
 
-  it('should allow the creation of a diverse selection of filters', () => {
-    // 1
+  it.only('should allow the user to create a diverse selection of filters', () => {
+    // 1 -> attribute-operator-value
     cy.clickOnSearchInput();
 
     cy.selectSuggestion('Season');
@@ -19,8 +19,9 @@ describe('Filter Bar - Interacting with the mouse', () => {
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)');
 
-    // 2 + 3
+    // 2 + 3 -> AND + attribute-operator-value
     cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(logicalOperatorsList);
 
     cy.selectSuggestion('AND');
     cy.selectSuggestion('Episode');
@@ -29,18 +30,20 @@ describe('Filter Bar - Interacting with the mouse', () => {
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)');
 
-    // 4 + 5
+    // 4 + 5 -> OR + attribute-operator-value (search text)
     cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(logicalOperatorsList);
 
     cy.selectSuggestion('OR');
     cy.selectSuggestion('Character');
     cy.selectSuggestion('LIKE', true);
-    cy.typeInSearchInput('smith{enter}');
+    cy.clickOnSearchInput().type('smith{enter}');
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"');
 
-    // 6 + 7
+    // 6 + 7 -> AND + attribute-operator (preset value)
     cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(logicalOperatorsList);
 
     cy.selectSuggestion('AND');
     cy.selectSuggestion('Crew');
@@ -48,20 +51,34 @@ describe('Filter Bar - Interacting with the mouse', () => {
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULL');
 
-    // 8 + 9
+    // 8 + 9 -> AND + search text
     cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(logicalOperatorsList);
 
     cy.selectSuggestion('AND');
-    cy.typeInSearchInput('adult{enter}');
+    cy.clickOnSearchInput().type('adult{enter}');
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"');
 
-    // 10 + 11
+    // 10 + 11 -> search text with automatic AND
     cy.clickOnSearchInput();
 
-    cy.typeInSearchInput('swim{enter}');
+    cy.clickOnSearchInput().type('swim{enter}');
 
     cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"AND"swim"');
+
+    // 12 + 13 -> OR + attribute-operator-value (multiple selections)
+    cy.clickOnSearchInput();
+    cy.suggestionsShouldBe(logicalOperatorsList);
+
+    cy.selectSuggestion('OR');
+
+    cy.selectSuggestion('Season');
+    cy.selectSuggestion('IN', true);
+    // note: the order of the array passed will not be respected
+    cy.selectMultipleSuggestions(['2 (10 episodes)', '1 (11 episodes)']);
+
+    cy.filterBarShouldHaveText('Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"AND"swim"ORSeasonIN1 (11 episodes), 2 (10 episodes)');
   });
 
   it('should allow the user to edit the partial filter attribute', () => {

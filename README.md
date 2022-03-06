@@ -47,3 +47,23 @@ Using the mouse or keyboard:
 
 - Request cancellation
 - Error: selection blocked, search text creation allowed
+
+## 🙈 Quirks
+
+Choosing "Crew" then the "IN" operator:
+
+- sends a `selectItem` event with selectionType = "multiple"
+- transitions from `chooseOperator` → `loadValueSuggestions`
+- sends a `startInput` event (!)
+- 💥 which triggers an invalid transition `loadValueSuggestions` → `undefined`
+- (...then a bit later) sends a `valueSuggestionsLoaded` event
+- (...then a bit later) everything is all good
+
+Why? Because the `startInput` event comes from:
+
+- unmounting `<SuggestionDropdownSingle />`
+- mounting `<SuggestionDropdowMulti />` with `open` = true
+- which calls the `onOpen` prop
+- which sends the `startInput` event
+
+State machine FTW! :D

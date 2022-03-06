@@ -15,9 +15,6 @@ export const useHandleMultiBackspaceKey = (onBackspace, selectedValue) => {
       return;
     }
 
-    const searchInput = document.querySelector(
-      ".ui.dropdown.search > input.search"
-    );
 
     const onKeyDown = (e) => {
       if (e.code === "Backspace" && e.target.value === "") {
@@ -25,10 +22,14 @@ export const useHandleMultiBackspaceKey = (onBackspace, selectedValue) => {
       }
     };
 
-    searchInput.addEventListener("keydown", onKeyDown);
+    const searchInputElement = document.querySelector(
+      ".ui.dropdown.search > input.search"
+    );
+
+    searchInputElement.addEventListener("keydown", onKeyDown);
 
     return () => {
-      searchInput.removeEventListener("keydown", onKeyDown);
+      searchInputElement.removeEventListener("keydown", onKeyDown);
     };
   }, [onBackspace, selectedValue.length, enable]);
 };

@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
 
-const getDropdownPosition = (chicletElement, filterType) => {
+const getDropdownPosition = (chicletElement, filter) => {
   const { top, bottom, left } = chicletElement.getBoundingClientRect();
-  const leftDec = filterType === 'search-text' ? 27 : 31;
+  let leftDec = 31;
+
+  if (filter.type === 'search-text') {
+    leftDec = 22;
+  } else if (filter.value?.id?.length) { // multi values
+    leftDec = 26;
+  }
+
   return { top: bottom - top, left: left - leftDec };
 };
 
@@ -11,29 +18,31 @@ export const useDropdownEdition = (open, editing) => {
   const [position, setPosition] = useState(null);
 
   useEffect(() => {
+    const dropdownElement = document.querySelector('.ui.search.dropdown');
+
     if (!open || !editing) {
       setSelectedItem(null);
 
-      document.querySelector('.ui.search.dropdown').style.position = null;
-      document.querySelector('.ui.search.dropdown').style.top = null;
-      document.querySelector('.ui.search.dropdown').style.left = null;
+      dropdownElement.style.position = null;
+      dropdownElement.style.top = null;
+      dropdownElement.style.left = null;
     }
 
     if (editing && position) {
-      document.querySelector('.ui.search.dropdown').style.position = 'absolute';
-      document.querySelector('.ui.search.dropdown').style.top = `${position.top}px`;
-      document.querySelector('.ui.search.dropdown').style.left = `${position.left}px`;
+      dropdownElement.style.position = 'absolute';
+      dropdownElement.style.top = `${position.top}px`;
+      dropdownElement.style.left = `${position.left}px`;
     }
 
     if (open) {
       // force a click to work when a chiclet is removed and a partial filter exists
-      document.querySelector('.ui.search.dropdown > input.search').click();
+      dropdownElement.querySelector('input.search').click();
     }
   }, [open, editing, position]);
 
   const setSelectedItemAndPosition = (filter, part, chicletElement) => {
     setSelectedItem(filter[part]);
-    setPosition(getDropdownPosition(chicletElement, filter.type));
+    setPosition(getDropdownPosition(chicletElement, filter));
   };
 
   return [

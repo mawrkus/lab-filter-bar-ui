@@ -1,19 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+export const parseUrlFilters = () => {
+  const parsedUrl = new URL(window.location.href);
+  const jsonFilters = parsedUrl.searchParams.get("filters");
+  const urlFilters = JSON.parse(jsonFilters);
+
+  return Array.isArray(urlFilters) ? urlFilters : [];
+}
 
 export const useFiltersFromUrl = () => {
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState(parseUrlFilters());
 
-  useEffect(() => {
-    const parsedUrl = new URL(window.location.href);
-    const jsonFilters = parsedUrl.searchParams.get("filters");
-    const urlFilters = JSON.parse(jsonFilters);
-    const initFilters = Array.isArray(urlFilters) ? urlFilters : [];
+  const setUrlFilters = (newFilters) => {
+    const url = new URL(window.location);
 
-    if (initFilters.length) {
-      setFilters(initFilters);
-    }
-  }, [setFilters]);
+    url.searchParams.set('filters', JSON.stringify(newFilters));
+    window.history.pushState({}, '', url);
 
-  // TOOD: set -> change URL search param?
-  return [filters];
+    setFilters(newFilters);
+  };
+
+  return [filters, setUrlFilters];
 };

@@ -5,16 +5,15 @@ import { Form, Header } from "semantic-ui-react";
 
 import { FilterBar } from "./components/FilterBar";
 import { buildAppStateMachine } from "./state";
-import { useFiltersFromUrl } from "./hooks/useFiltersFromUrl";
+import { useFiltersFromUrl } from "./hooks";
 import { AppMessage } from "./AppMessage";
 
 export const App = () => {
-  const [initFilters] = useFiltersFromUrl();
-  const [filters, setFilters] = useState(initFilters);
+  const [filters, setFilters] = useFiltersFromUrl();
   const [stateId, setStateId] = useState(null);
 
   const appStateMachine = useMemo(() => buildAppStateMachine({
-    initFilters,
+    initFilters: filters,
     onTransition: (transition) => {
       setStateId(transition.toStateId);
     },
@@ -31,7 +30,8 @@ export const App = () => {
 
       setFilters(newFilters);
     },
-  }), [initFilters]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), []);
 
   return (
     <div className="container">

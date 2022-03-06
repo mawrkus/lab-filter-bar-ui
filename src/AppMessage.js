@@ -15,9 +15,19 @@ export const AppMessage = ({ stateId, filters }) => {
           circular
           icon="linkify"
           size="mini"
-          style={{ marginLeft: "10px", fontSize: "7px" }}
+          style={{ marginLeft: "12px", fontSize: "7px" }}
           title="Open in new tab"
-          href={`/?filters=${encodeURIComponent(JSON.stringify(filters))}`}
+          href={window.location.href}
+        />
+
+        <Button
+          as="a"
+          circular
+          icon="trash alternate outline"
+          size="mini"
+          style={{ fontSize: "7px" }}
+          title="Reset filters"
+          href="/"
         />
       </Message.Header>
 

@@ -5,6 +5,7 @@ export const displayPartialFilterSuggestions = {
     async onEntry(event, ctx, toolkit) {
       if (!ctx.hasPartialFilter()) {
         toolkit.sendEvent("redirectToIdle");
+        return;
       }
 
       toolkit.suggestionService.cancelLoad();

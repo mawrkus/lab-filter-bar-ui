@@ -8,43 +8,33 @@ import { useStateMachine, useKeyboardActions, useDropdownEdition } from '../hook
 
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
-
-  const [
-    selectedDropdownItem,
-    setSelectedDropdownItem,
-    setSelectedDropdownItemAndPosition,
-  ] = useDropdownEdition(props.suggestions.visible, props.filterUnderEdition !== null);
+  const [selectedDropdownItem] = useDropdownEdition(props.suggestions.visible, props.edition);
 
   useKeyboardActions();
 
   const onClickPartialChiclet = useCallback((event, filter, part) => {
     if (part === 'attribute') {
-      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editPartialAttribute");
     }
 
     if (part === 'operator') {
-      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editPartialOperator");
     }
-  }, [stateMachine, setSelectedDropdownItemAndPosition]);
+  }, [stateMachine]);
 
   const onClickChiclet = useCallback((event, filter, part) => {
     if (part === 'operator') {
-      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editOperator", filter);
     }
 
     if (part === 'value') {
-      setSelectedDropdownItemAndPosition(filter, part, event.currentTarget);
       return stateMachine.sendEvent("editValue", filter);
     }
 
     if (part === 'logical-operator') {
-      setSelectedDropdownItemAndPosition(filter, 'operator', event.currentTarget);
       return stateMachine.sendEvent("editLogicalOperator", filter);
     }
-  }, [stateMachine, setSelectedDropdownItemAndPosition]);
+  }, [stateMachine]);
 
   const onRemoveChiclet = useCallback((event, filter) => {
     stateMachine.sendEvent("removeFilter", filter);
@@ -59,12 +49,10 @@ const FilterBarComponent = ({ stateMachine }) => {
   };
 
   const onSelectSuggestionItem = (event, item) => {
-    setSelectedDropdownItem(null);
     stateMachine.sendEvent("selectItem", item);
   };
 
   const onCreateSuggestionItem = (event, item) => {
-    setSelectedDropdownItem(null);
     stateMachine.sendEvent("createItem", item);
   };
 

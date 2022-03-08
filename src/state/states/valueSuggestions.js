@@ -2,7 +2,8 @@ export const loadValueSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
       const ctxValue = ctx.get();
-      const { partialFilter, filterUnderEdition } = ctxValue;
+      const { partialFilter, edition } = ctxValue;
+      const filterUnderEdition = edition?.filter || null;
 
       if (filterUnderEdition?.type === "search-text") {
         ctx.doneLoading([filterUnderEdition.value]);

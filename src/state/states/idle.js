@@ -36,31 +36,31 @@ export const idle = {
     editPartialAttribute: {
       targetId: "loadAttributeSuggestions",
       action(event, ctx) {
-        ctx.startEditing();
+        ctx.startEditing("attribute");
       },
     },
     editPartialOperator: {
       targetId: "loadOperatorSuggestions",
       action(event, ctx) {
-        ctx.startEditing();
+        ctx.startEditing("operator");
       },
     },
     editOperator: {
       targetId: "loadOperatorSuggestions",
       action(event, ctx) {
-        ctx.startEditing(event.data);
+        ctx.startEditing("operator", event.data);
       },
     },
     editValue: {
       targetId: "loadValueSuggestions",
       action(event, ctx) {
-        ctx.startEditing(event.data);
+        ctx.startEditing("value", event.data);
       },
     },
     editLogicalOperator: {
       targetId: "loadLogicalOperatorSuggestions",
       action(event, ctx) {
-        ctx.startEditing(event.data);
+        ctx.startEditing("operator", event.data);
       },
     },
     removeFilter: {

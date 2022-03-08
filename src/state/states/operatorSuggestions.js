@@ -90,21 +90,21 @@ export const editOperator = {
   events: {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
-      // E.g.:
-      // = -> !=
-      // IS NULL -> IS NOT NULL
-      // = -> IS NULL
-      // = -> IN
-      // IS NULL -> IN
+      // E.g.
+      //  = -> !=
+      //  IN -> =
+      //  IS NULL -> IS NOT NULL
+      //  = -> IS NULL
       {
         cond: (event, ctx) => {
-          const { filterUnderEdition } = ctx.get();
+          const { filter: filterUnderEdition } = ctx.get().edition;
 
           return (
-            hasPresetValue(filterUnderEdition.operator) ===
+            event.data.selectionType !== "multiple" &&
+            (hasPresetValue(filterUnderEdition.operator) ===
               hasPresetValue(event.data) ||
-            (!hasPresetValue(filterUnderEdition.operator) &&
-              hasPresetValue(event.data))
+              (!hasPresetValue(filterUnderEdition.operator) &&
+                hasPresetValue(event.data)))
           );
         },
         targetId: "displayPartialFilterSuggestions",
@@ -112,17 +112,31 @@ export const editOperator = {
           ctx.setFilterOperator(event.data);
         },
       },
-      // E.g.: IS NULL -> =
+
+      // TODO: NOT IN -> =
+
+      // E.g.
+      //  = -> IN
+      //  = "xxx" -> IN
+      {
+        cond: (event, ctx) =>
+          event.data.selectionType === "multiple" &&
+          !hasPresetValue(ctx.get().edition.filter.operator),
+        targetId: "loadValueSuggestions",
+        action: (event, ctx) => {
+          ctx.setFilterOperator(event.data, true);
+        },
+      },
+      // E.g.
+      //  IS NULL -> =
+      //  IS NULL -> IN
       {
         cond: (event, ctx) =>
           !hasPresetValue(event.data) &&
-          hasPresetValue(ctx.get().filterUnderEdition.operator),
+          hasPresetValue(ctx.get().edition.filter.operator),
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
-          const { filterUnderEdition } = ctx.get();
-
-          ctx.setFilterOperator(event.data);
-          ctx.startEditing(filterUnderEdition);
+          ctx.setFilterOperator(event.data, true);
         },
       },
     ],

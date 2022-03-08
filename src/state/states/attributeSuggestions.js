@@ -22,7 +22,7 @@ export const chooseAttribute = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.setFilterAttribute(event.data);
+        ctx.setPartialFilterAttribute(event.data);
       },
     },
     createItem: {

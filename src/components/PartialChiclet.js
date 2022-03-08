@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import areEqual from 'fast-deep-equal';
-import { Label } from 'semantic-ui-react'
+import { memo } from "react";
+import areEqual from "fast-deep-equal";
+import { Label } from "semantic-ui-react";
 
 const PartialChicletComponent = ({ filter, onClick }) => {
   const { attribute, operator } = filter;
@@ -10,28 +10,32 @@ const PartialChicletComponent = ({ filter, onClick }) => {
   }
 
   return (
-    <div className="chiclet partial">
-      {attribute && <Label
-        as='a'
-        size="small"
-        title={`Click to change "${attribute.label}"`}
-        className="left attribute"
-        onClick={(e) => onClick(e, filter, 'attribute')}
-        tabIndex="0"
-      >
-        {attribute.label}
-      </Label>}
+    <div className="chiclet partial" id={`f-${filter.id}`}>
+      {attribute && (
+        <Label
+          as="a"
+          size="small"
+          title={`Click to change "${attribute.label}"`}
+          className="left attribute"
+          onClick={(e) => onClick(e, filter, "attribute")}
+          tabIndex="0"
+        >
+          {attribute.label}
+        </Label>
+      )}
 
-      {operator && <Label
-        as='a'
-        size="small"
-        title={`Click to change "${operator.label}"`}
-        className="middle operator"
-        onClick={(e) => onClick(e, filter, 'operator')}
-        tabIndex="0"
-      >
-        {operator.label}
-      </Label>}
+      {operator && (
+        <Label
+          as="a"
+          size="small"
+          title={`Click to change "${operator.label}"`}
+          className="middle operator"
+          onClick={(e) => onClick(e, filter, "operator")}
+          tabIndex="0"
+        >
+          {operator.label}
+        </Label>
+      )}
     </div>
   );
 };

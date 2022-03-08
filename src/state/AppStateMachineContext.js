@@ -6,6 +6,7 @@ export class AppStateMachineContext extends StateMachineContext {
   constructor({ initFilters, onUpdateFilters }) {
     super({
       partialFilter: {
+        id: 'partial',
         attribute: null,
         operator: null,
       },

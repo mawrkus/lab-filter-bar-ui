@@ -1,24 +1,24 @@
-import { Icon, Label } from 'semantic-ui-react'
+import { Icon, Label } from "semantic-ui-react";
 
 export const ChicletSearchText = ({ filter, onClick, onRemove }) => {
   const { value } = filter;
 
   return (
-    <div className="chiclet search-text">
+    <div className="chiclet search-text" id={`f-${filter.id}`}>
       <Label
-        as='a'
+        as="a"
         color="blue"
         size="small"
         title={`Click to change "${value.label}"`}
         className="left value"
-        onClick={(e) => onClick(e, filter, 'value')}
+        onClick={(e) => onClick(e, filter, "value")}
         tabIndex="0"
       >
         "{value.label}"
       </Label>
 
       <Label
-        as='a'
+        as="a"
         color="blue"
         size="small"
         title={`Click to remove "${value.label}"`}
@@ -26,7 +26,7 @@ export const ChicletSearchText = ({ filter, onClick, onRemove }) => {
         onClick={(e) => onRemove(e, filter)}
         tabIndex="0"
       >
-        <Icon name='delete' />
+        <Icon name="delete" />
       </Label>
     </div>
   );

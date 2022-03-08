@@ -8,7 +8,7 @@ export const ChicletAttributeOperatorValue = ({
   const { attribute, operator, value } = filter;
 
   return (
-    <div className="chiclet attribute-operator-value">
+    <div className="chiclet attribute-operator-value" id={`f-${filter.id}`}>
       <Label
         as="span"
         color="blue"
@@ -35,7 +35,9 @@ export const ChicletAttributeOperatorValue = ({
         as="a"
         color="blue"
         size="small"
-        title={value ? `Click to change "${value.label}"` : "Click to choose a value"}
+        title={
+          value ? `Click to change "${value.label}"` : "Click to choose a value"
+        }
         className="middle value"
         onClick={(e) => onClick(e, filter, "value")}
         tabIndex="0"
@@ -49,7 +51,9 @@ export const ChicletAttributeOperatorValue = ({
         as="a"
         color="blue"
         size="small"
-        title={`Click to remove "${attribute.label} ${operator.label}${value?.label ? ` ${value.label}` : ""}"`}
+        title={`Click to remove "${attribute.label} ${operator.label}${
+          value?.label ? ` ${value.label}` : ""
+        }"`}
         className="right"
         onClick={(e) => onRemove(e, filter)}
         tabIndex="0"

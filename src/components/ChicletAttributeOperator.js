@@ -1,12 +1,12 @@
-import { Icon, Label } from 'semantic-ui-react'
+import { Icon, Label } from "semantic-ui-react";
 
 export const ChicletAttributeOperator = ({ filter, onClick, onRemove }) => {
   const { attribute, operator } = filter;
 
   return (
-    <div className="chiclet attribute-operator">
+    <div className="chiclet attribute-operator" id={`f-${filter.id}`}>
       <Label
-        as='span'
+        as="span"
         color="blue"
         size="small"
         title={`Cannot change "${attribute.label}"`}
@@ -16,19 +16,19 @@ export const ChicletAttributeOperator = ({ filter, onClick, onRemove }) => {
       </Label>
 
       <Label
-        as='a'
+        as="a"
         color="blue"
         size="small"
         title={`Click to change "${operator.label}"`}
         className="middle operator"
-        onClick={(e) => onClick(e, filter, 'operator')}
+        onClick={(e) => onClick(e, filter, "operator")}
         tabIndex="0"
       >
         {operator.label}
       </Label>
 
       <Label
-        as='a'
+        as="a"
         color="blue"
         size="small"
         title={`Click to remove "${attribute.label} ${operator.label}"`}
@@ -36,7 +36,7 @@ export const ChicletAttributeOperator = ({ filter, onClick, onRemove }) => {
         onClick={(e) => onRemove(e, filter)}
         tabIndex="0"
       >
-        <Icon name='delete' />
+        <Icon name="delete" />
       </Label>
     </div>
   );

@@ -18,24 +18,19 @@ export const loadOperatorSuggestions = {
         targetId: "chooseOperator",
       },
       {
-        cond: (event, ctx) => {
-          const { isEditing, filterUnderEdition } = ctx.get();
-          return isEditing && !filterUnderEdition;
-        },
+        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialFilter(),
         targetId: "editPartialOperator",
       },
       {
-        cond: (event, ctx) => {
-          const { isEditing, filterUnderEdition } = ctx.get();
-          return isEditing && filterUnderEdition;
-        },
+        cond: (event, ctx) => ctx.isEditing() && !ctx.hasPartialFilter(),
         targetId: "editOperator",
       },
     ],
   },
 };
 
-export const hasPresetValue = (operator) => typeof operator.presetValue !== "undefined";
+export const hasPresetValue = (operator) =>
+  typeof operator.presetValue !== "undefined";
 
 export const chooseOperator = {
   events: {

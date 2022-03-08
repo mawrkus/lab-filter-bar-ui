@@ -13,7 +13,7 @@ const FilterBarComponent = ({ stateMachine }) => {
     selectedDropdownItem,
     setSelectedDropdownItem,
     setSelectedDropdownItemAndPosition,
-  ] = useDropdownEdition(props.suggestions.visible, props.isEditing);
+  ] = useDropdownEdition(props.suggestions.visible, props.filterUnderEdition !== null);
 
   useKeyboardActions();
 

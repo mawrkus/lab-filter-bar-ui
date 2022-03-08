@@ -20,7 +20,6 @@ export class AppStateMachineContext extends StateMachineContext {
         selectionType: 'single',
       },
       filterUnderEdition: null,
-      isEditing: false,
     });
 
     this._nofityFiltersUpdate = onUpdateFilters;
@@ -40,7 +39,6 @@ export class AppStateMachineContext extends StateMachineContext {
         selectionType: 'single',
       },
       filterUnderEdition: null,
-      isEditing: false,
     });
   }
 
@@ -116,7 +114,6 @@ export class AppStateMachineContext extends StateMachineContext {
 
     partialFilter.attribute = filterAttribute;
     ctxValue.filterUnderEdition = null;
-    ctxValue.isEditing = false;
 
     this.set(ctxValue);
   }
@@ -159,13 +156,7 @@ export class AppStateMachineContext extends StateMachineContext {
       }
     }
 
-    if (startEditing) {
-      ctxValue.filterUnderEdition = filter;
-      ctxValue.isEditing = true;
-    } else {
-      ctxValue.filterUnderEdition = null;
-      ctxValue.isEditing = false;
-    }
+    ctxValue.filterUnderEdition = startEditing ? filter : null;
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: 'edit',
@@ -182,7 +173,7 @@ export class AppStateMachineContext extends StateMachineContext {
     const { partialFilter } = ctxValue;
 
     partialFilter.operator = filterOperator;
-    ctxValue.isEditing = false;
+    ctxValue.filterUnderEdition = null;
 
     this.set(ctxValue);
   }
@@ -205,7 +196,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
     if (!filterUnderEdition) {
       partialFilter.value = filterValue;
-      ctxValue.isEditing = false;
+      ctxValue.filterUnderEdition = null;
 
       this.set(ctxValue);
       return;
@@ -216,7 +207,6 @@ export class AppStateMachineContext extends StateMachineContext {
 
     filter.value = filterValue;
     ctxValue.filterUnderEdition = null;
-    ctxValue.isEditing = false;
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: 'edit',
@@ -246,6 +236,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
     partialFilter.attribute = null;
     partialFilter.operator = null;
+    ctxValue.filterUnderEdition = null;
 
     this._nofityFiltersUpdate(filters, { action: 'create', filter: newFilter });
     this.set(ctxValue);
@@ -278,6 +269,7 @@ export class AppStateMachineContext extends StateMachineContext {
     filters.push(newFilter);
 
     ctxValue.filterId += 1;
+    ctxValue.filterUnderEdition = null;
 
     this._nofityFiltersUpdate(filters, { action: 'create', filter: newFilter });
     this.set(ctxValue);
@@ -298,6 +290,7 @@ export class AppStateMachineContext extends StateMachineContext {
     filters.push(newFilter);
 
     ctxValue.filterId += 1;
+    ctxValue.filterUnderEdition = null;
 
     this._nofityFiltersUpdate(filters, { action: 'create', filter: newFilter });
     this.set(ctxValue);
@@ -305,23 +298,24 @@ export class AppStateMachineContext extends StateMachineContext {
 
   // editing states
   startEditing(completedFilter) {
+    const ctxValue = this.get();
+    const targetFilter = completedFilter || ctxValue.partialFilter;
+
     this.set({
-      ...this.get(),
-      isEditing: true,
-      filterUnderEdition: completedFilter,
+      ...ctxValue,
+      filterUnderEdition: targetFilter,
     });
   }
 
   stopEditing() {
     this.set({
       ...this.get(),
-      isEditing: false,
       filterUnderEdition: null,
     });
   }
 
   isEditing() {
-    return this.get().isEditing;
+    return this.get().filterUnderEdition !== null;
   }
 
   // filter deletion

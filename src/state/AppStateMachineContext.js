@@ -154,16 +154,21 @@ export class AppStateMachineContext extends StateMachineContext {
       filter.type = 'attribute-operator';
     }
 
-    // TODO: NOT IN -> =
+    // TODO: REFACTOR!!!
 
+    // = -> IN
     if (filterOperator.selectionType === 'multiple') {
       // handles IS (NOT) NULL and search text values
       if (hasPresetValue(filterUnderEdition.operator) || filterUnderEdition.value.id === null) {
         filter.value = null;
-      } else {
-        filter.value.id = [filter.value.id];
-        filter.value.value = [filter.value.value];
+      } else if (filterUnderEdition.operator.selectionType !== 'multiple') {
+        filter.value.id = [filterUnderEdition.value.id];
+        filter.value.value = [filterUnderEdition.value.value];
       }
+    } else if (filterUnderEdition?.operator?.selectionType === 'multiple') {
+      filter.value.id = filterUnderEdition.value.id[0];
+      filter.value.value = filterUnderEdition.value.value[0];
+      filter.value.label = filterUnderEdition.value.label.split(',')[0];
     }
 
     ctxValue.edition = startEditing ? { filter, part: 'value' } : null;

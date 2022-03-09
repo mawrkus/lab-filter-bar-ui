@@ -91,8 +91,21 @@ export const editOperator = {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
       // E.g.
+      //  IS NULL -> =
+      //  IS NULL -> IN
+      {
+        cond: (event, ctx) =>
+          event.data.selectionType === "multiple" &&
+          ctx.get().edition.filter.operator.selectionType ===
+            "multiple",
+        targetId: "displayPartialFilterSuggestions",
+        action: (event, ctx) => {
+          ctx.setFilterOperator(event.data);
+        },
+      },
+      // E.g.
       //  = -> !=
-      //  IN -> =
+      //  NOT IN -> =
       //  IS NULL -> IS NOT NULL
       //  = -> IS NULL
       {
@@ -112,8 +125,6 @@ export const editOperator = {
           ctx.setFilterOperator(event.data);
         },
       },
-
-      // TODO: NOT IN -> =
 
       // E.g.
       //  = -> IN

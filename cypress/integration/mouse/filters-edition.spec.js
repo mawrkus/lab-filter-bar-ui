@@ -76,6 +76,8 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.chicletShouldValue("1 (11 episodes), 2 (10 episodes)");
 
         cy.filterBarShouldHaveText("SeasonIN1 (11 episodes), 2 (10 episodes)");
+
+        // TODO: IN -> =, IN -> NOT IN
       });
 
       // TODO

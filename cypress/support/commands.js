@@ -116,28 +116,35 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("editLogicalFilterOperator", (from, to, checkForLoading = false) => {
-  cy.log(`🕹️ Changing logical operator from "${from}" to "${to}"`);
+Cypress.Commands.add(
+  "editLogicalFilterOperator",
+  (from, to, checkForLoading = false) => {
+    cy.log(`🕹️ Changing logical operator from "${from}" to "${to}"`);
 
-  cy.get(".filter-bar .chiclets .chiclet .operator").contains(from).click();
+    cy.get(".filter-bar .chiclets .chiclet .operator").contains(from).click();
 
-  cy.suggestionsShouldBe(logicalOperatorsList);
+    cy.suggestionsShouldBe(logicalOperatorsList);
 
-  return cy.selectSuggestion(to, checkForLoading);
-});
+    return cy.selectSuggestion(to, checkForLoading);
+  }
+);
 
-Cypress.Commands.add("editFilterValue", (from, to, checkForLoading = false) => {
-  cy.log(`🕹️ Changing value from "${from}" to "${to}"`);
-
+Cypress.Commands.add("clickOnChicletValue", (valueLabel) => {
   cy.log(`📡 Intercepting "${apiHost}" requests`);
 
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.intercept(`${apiHost}/**`).as("fetchData").wait(500);
 
-  cy.get(".filter-bar .chiclets .chiclet .value").contains(from).click();
+  cy.get(".filter-bar .chiclets .chiclet .value").contains(valueLabel).click();
 
   cy.log("⏳ Waiting for request...");
   cy.wait("@fetchData");
+});
+
+Cypress.Commands.add("editFilterValue", (from, to, checkForLoading = false) => {
+  cy.log(`🕹️ Changing value from "${from}" to "${to}"`);
+
+  cy.clickOnChicletValue(from);
 
   if (to.includes("{enter}")) {
     return cy.typeInSearchInput(to);
@@ -160,13 +167,18 @@ Cypress.Commands.add("clickOnPartialOperator", () => {
 
 Cypress.Commands.add("filterBarShouldHaveText", (expectedText) => {
   cy.log(`🔍 The filter bar text should be "${expectedText}"`);
-  cy.get(".filter-bar .chiclets").invoke('text').then((text) => cy.log(`🔎 Current text="${text}"`));
-  return cy.get(".filter-bar .chiclets").contains(expectedText);
+
+  cy.get(".filter-bar .chiclets")
+    .invoke("text")
+    .then((text) => cy.log(`🔎 Current text="${text}"`));
+
+  cy.get(".filter-bar .chiclets").contains(expectedText);
 });
 
 Cypress.Commands.add("filterBarShouldBeEmpty", () => {
   cy.log("🔍 The filter bar should be empty");
-  return cy.get(".filter-bar .chiclets .chiclet").should("have.length", 0);
+
+  cy.get(".filter-bar .chiclets .chiclet").should("have.length", 0);
 });
 
 Cypress.Commands.add("suggestionsShouldBe", (expectedLabels) => {
@@ -174,7 +186,7 @@ Cypress.Commands.add("suggestionsShouldBe", (expectedLabels) => {
     `🔍 The suggestions should have the expected labels (${expectedLabels.length})`
   );
 
-  return cy
+  cy
     .get('.suggestions [role="listbox"] [role="option"]')
     .then(($options) => {
       const labels = $options.map((i, $option) => $option.textContent);
@@ -182,10 +194,25 @@ Cypress.Commands.add("suggestionsShouldBe", (expectedLabels) => {
     });
 });
 
+Cypress.Commands.add("multiSuggestionsShouldBe", ({ selected, list }) => {
+  cy.log(
+    `🔍 The mulit-suggestions should have the expected selected (${selected.length}) and suggestions labels (${list.length})`
+  );
+
+  cy
+    .get('.suggestions [role="combobox"] .label')
+    .then(($labels) => {
+      const labels = $labels.map((i, $option) => $option.textContent);
+      expect(labels.get()).to.deep.equal(selected);
+    });
+
+  cy.suggestionsShouldBe(list);
+});
+
 Cypress.Commands.add("suggestionsShouldBeHidden", () => {
   cy.log("🔍 The suggestions should be hidden");
 
-  return cy
+  cy
     .get('.suggestions [role="listbox"] [role="option"]')
     .should("not.exist");
 });
@@ -193,7 +220,7 @@ Cypress.Commands.add("suggestionsShouldBeHidden", () => {
 Cypress.Commands.add("chicletShouldValue", (expectedValue) => {
   cy.log(`🔍 The chiclet should have value "${expectedValue}"`);
 
-  return cy
+  cy
     .get(".filter-bar .chiclets .chiclet .value")
     .contains(expectedValue);
 });

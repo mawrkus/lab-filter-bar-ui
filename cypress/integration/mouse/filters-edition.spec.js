@@ -1,8 +1,7 @@
 /// <reference types="cypress" />
 
 import { operatorsList } from "../../support/commands";
-import { seasonsList } from "../../fixtures/api/seasonsList";
-import { crewList } from "../../fixtures/api/crewList";
+import { seasonsList, crewList } from "../../fixtures/api";
 
 describe("Filter Bar - Edition with the mouse", () => {
   it("should allow the user to edit a filter value", () => {
@@ -77,7 +76,26 @@ describe("Filter Bar - Edition with the mouse", () => {
 
         cy.filterBarShouldHaveText("SeasonIN1 (11 episodes), 2 (10 episodes)");
 
-        // TODO: IN -> =, IN -> NOT IN
+        cy.editFilterOperator("IN", "NOT IN");
+
+        cy.filterBarShouldHaveText(
+          "SeasonNOT IN1 (11 episodes), 2 (10 episodes)"
+        );
+
+        cy.clickOnChicletValue("1 (11 episodes), 2 (10 episodes)");
+
+        cy.multiSuggestionsShouldBe({
+          selected: ["1 (11 episodes)", "2 (10 episodes)"],
+          list: ["3 (10 episodes)", "4 (10 episodes)", "5 (10 episodes)"],
+        });
+
+        cy.editFilterOperator("NOT IN", "LIKE");
+
+        cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)");
+
+        cy.clickOnChicletValue("1 (11 episodes)");
+
+        cy.suggestionsShouldBe(seasonsList);
       });
 
       // TODO
@@ -98,7 +116,7 @@ describe("Filter Bar - Edition with the mouse", () => {
           cy.selectAttribute("Crew");
 
           cy.editFilterOperator("=", "LIKE");
-          cy.suggestionsShouldBe(operatorsList)
+          cy.suggestionsShouldBe(operatorsList);
 
           cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)ANDCrew");
         });
@@ -114,7 +132,7 @@ describe("Filter Bar - Edition with the mouse", () => {
 
           cy.editFilterValue("1 (11 episodes)", "2 (10 episodes)");
 
-          cy.suggestionsShouldBe(operatorsList)
+          cy.suggestionsShouldBe(operatorsList);
 
           cy.filterBarShouldHaveText("Season=2 (10 episodes)ANDCrew");
         });
@@ -130,7 +148,7 @@ describe("Filter Bar - Edition with the mouse", () => {
 
           cy.editLogicalFilterOperator("AND", "OR");
 
-          cy.suggestionsShouldBe(operatorsList)
+          cy.suggestionsShouldBe(operatorsList);
 
           cy.filterBarShouldHaveText("Season=1 (11 episodes)ORCrew");
         });
@@ -149,7 +167,7 @@ describe("Filter Bar - Edition with the mouse", () => {
 
           cy.editFilterOperator("=", "LIKE", true);
 
-          cy.suggestionsShouldBe(crewList)
+          cy.suggestionsShouldBe(crewList);
 
           cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)ANDCrew!=");
         });
@@ -166,7 +184,7 @@ describe("Filter Bar - Edition with the mouse", () => {
 
           cy.editFilterValue("1 (11 episodes)", "2 (10 episodes)", true);
 
-          cy.suggestionsShouldBe(crewList)
+          cy.suggestionsShouldBe(crewList);
 
           cy.filterBarShouldHaveText("Season=2 (10 episodes)ANDCrew!=");
         });
@@ -183,7 +201,7 @@ describe("Filter Bar - Edition with the mouse", () => {
 
           cy.editLogicalFilterOperator("AND", "OR", true);
 
-          cy.suggestionsShouldBe(crewList)
+          cy.suggestionsShouldBe(crewList);
 
           cy.filterBarShouldHaveText("Season=1 (11 episodes)ORCrew!=");
         });

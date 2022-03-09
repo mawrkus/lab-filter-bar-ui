@@ -1,10 +1,12 @@
 /// <reference types="cypress" />
 
 import { attributesList, logicalOperatorsList } from "../../support/commands";
-import { seasonsList } from "../../fixtures/api/seasonsList";
-import { episodesList } from "../../fixtures/api/episodesList";
-import { crewList } from "../../fixtures/api/crewList";
-import { charactersList } from "../../fixtures/api/charactersList";
+import {
+  seasonsList,
+  episodesList,
+  charactersList,
+  crewList,
+} from "../../fixtures/api";
 
 describe("Filter Bar - Creation with the mouse", () => {
   beforeEach(() => cy.visit("/"));

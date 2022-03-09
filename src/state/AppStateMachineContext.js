@@ -348,7 +348,6 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  //
   getLastFilter() {
     const { filters } = this.get();
     return filters[filters.length - 1];

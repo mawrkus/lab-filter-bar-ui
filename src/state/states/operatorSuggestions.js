@@ -18,11 +18,11 @@ export const loadOperatorSuggestions = {
         targetId: "chooseOperator",
       },
       {
-        cond: (event, ctx) => ctx.isEditing() && ctx.hasPartialFilter(),
+        cond: (event, ctx) => ctx.isEditingPartialFilter(),
         targetId: "editPartialOperator",
       },
       {
-        cond: (event, ctx) => ctx.isEditing() && !ctx.hasPartialFilter(),
+        cond: (event, ctx) => !ctx.isEditingPartialFilter(),
         targetId: "editOperator",
       },
     ],

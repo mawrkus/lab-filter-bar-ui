@@ -321,6 +321,10 @@ export class AppStateMachineContext extends StateMachineContext {
     return this.get().edition !== null;
   }
 
+  isEditingPartialFilter() {
+    return this.get().edition?.filter?.id === 'partial';
+  }
+
   // filter deletion
   removeFilter(filter) {
     const ctxValue = this.get();

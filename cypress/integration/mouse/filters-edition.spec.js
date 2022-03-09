@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
 
+import { operatorsList } from "../../support/commands";
 import { seasonsList } from "../../fixtures/api/seasonsList";
+import { crewList } from "../../fixtures/api/crewList";
 
 describe("Filter Bar - Edition with the mouse", () => {
   it("should allow the user to edit a filter value", () => {
@@ -79,6 +81,110 @@ describe("Filter Bar - Edition with the mouse", () => {
       // TODO
       it.skip("should allow the user to switch from operators with preset values to them and vice versa", () => {
         cy.visitWithFilters("filters-single.json");
+      });
+    });
+  });
+
+  describe("when editing filters", () => {
+    describe("when there is a partial filter attribute", () => {
+      describe("when editing the completed filter operator", () => {
+        it("should display automatically the partial filter attribute suggestions after edition", () => {
+          cy.visitWithFilters("filters-single.json");
+
+          cy.clickOnSearchInput();
+          cy.selectLogicalOperator("AND");
+          cy.selectAttribute("Crew");
+
+          cy.editFilterOperator("=", "LIKE");
+          cy.suggestionsShouldBe(operatorsList)
+
+          cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)ANDCrew");
+        });
+      });
+
+      describe("when editing the completed filter value", () => {
+        it("should display automatically the partial filter attribute suggestions after edition", () => {
+          cy.visitWithFilters("filters-single.json");
+
+          cy.clickOnSearchInput();
+          cy.selectLogicalOperator("AND");
+          cy.selectAttribute("Crew");
+
+          cy.editFilterValue("1 (11 episodes)", "2 (10 episodes)");
+
+          cy.suggestionsShouldBe(operatorsList)
+
+          cy.filterBarShouldHaveText("Season=2 (10 episodes)ANDCrew");
+        });
+      });
+
+      describe("when editing the logical operator", () => {
+        it("should display automatically the partial filter attribute suggestions after edition", () => {
+          cy.visitWithFilters("filters-single.json");
+
+          cy.clickOnSearchInput();
+          cy.selectLogicalOperator("AND");
+          cy.selectAttribute("Crew");
+
+          cy.editLogicalFilterOperator("AND", "OR");
+
+          cy.suggestionsShouldBe(operatorsList)
+
+          cy.filterBarShouldHaveText("Season=1 (11 episodes)ORCrew");
+        });
+      });
+    });
+
+    describe("when there is a partial filter attribute and operator", () => {
+      describe("when editing the completed filter operator", () => {
+        it("should display automatically the partial filter attribute suggestions after edition", () => {
+          cy.visitWithFilters("filters-single.json");
+
+          cy.clickOnSearchInput();
+          cy.selectLogicalOperator("AND");
+          cy.selectAttribute("Crew");
+          cy.selectOperator("!=");
+
+          cy.editFilterOperator("=", "LIKE", true);
+
+          cy.suggestionsShouldBe(crewList)
+
+          cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)ANDCrew!=");
+        });
+      });
+
+      describe("when editing the completed filter value", () => {
+        it("should display automatically the partial filter attribute suggestions after edition", () => {
+          cy.visitWithFilters("filters-single.json");
+
+          cy.clickOnSearchInput();
+          cy.selectLogicalOperator("AND");
+          cy.selectAttribute("Crew");
+          cy.selectOperator("!=");
+
+          cy.editFilterValue("1 (11 episodes)", "2 (10 episodes)", true);
+
+          cy.suggestionsShouldBe(crewList)
+
+          cy.filterBarShouldHaveText("Season=2 (10 episodes)ANDCrew!=");
+        });
+      });
+
+      describe("when editing the logical operator", () => {
+        it("should display automatically the partial filter attribute suggestions after edition", () => {
+          cy.visitWithFilters("filters-single.json");
+
+          cy.clickOnSearchInput();
+          cy.selectLogicalOperator("AND");
+          cy.selectAttribute("Crew");
+          cy.selectOperator("!=");
+
+          cy.editLogicalFilterOperator("AND", "OR", true);
+
+          cy.suggestionsShouldBe(crewList)
+
+          cy.filterBarShouldHaveText("Season=1 (11 episodes)ORCrew!=");
+        });
       });
     });
   });

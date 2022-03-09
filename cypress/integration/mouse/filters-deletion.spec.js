@@ -32,7 +32,7 @@ describe("Filter Bar - Deletion with the mouse", () => {
     cy.filterBarShouldBeEmpty();
   });
 
-  describe("if there is already a partial filter", () => {
+  describe("if there is a partial filter", () => {
     it("should automatically display the partial suggestions after deleting", () => {
       cy.visitWithFilters("filters-triple.json");
 

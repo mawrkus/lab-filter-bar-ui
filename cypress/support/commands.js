@@ -116,17 +116,17 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("editLogicalFilterOperator", (from, to) => {
+Cypress.Commands.add("editLogicalFilterOperator", (from, to, checkForLoading = false) => {
   cy.log(`🕹️ Changing logical operator from "${from}" to "${to}"`);
 
   cy.get(".filter-bar .chiclets .chiclet .operator").contains(from).click();
 
   cy.suggestionsShouldBe(logicalOperatorsList);
 
-  return cy.selectSuggestion(to);
+  return cy.selectSuggestion(to, checkForLoading);
 });
 
-Cypress.Commands.add("editFilterValue", (from, to) => {
+Cypress.Commands.add("editFilterValue", (from, to, checkForLoading = false) => {
   cy.log(`🕹️ Changing value from "${from}" to "${to}"`);
 
   cy.log(`📡 Intercepting "${apiHost}" requests`);
@@ -143,7 +143,7 @@ Cypress.Commands.add("editFilterValue", (from, to) => {
     return cy.typeInSearchInput(to);
   }
 
-  return cy.selectSuggestion(to);
+  return cy.selectSuggestion(to, checkForLoading);
 });
 
 Cypress.Commands.add("clickOnPartialAttribute", () => {
@@ -160,6 +160,7 @@ Cypress.Commands.add("clickOnPartialOperator", () => {
 
 Cypress.Commands.add("filterBarShouldHaveText", (expectedText) => {
   cy.log(`🔍 The filter bar text should be "${expectedText}"`);
+  cy.get(".filter-bar .chiclets").invoke('text').then((text) => cy.log(`🔎 Current text="${text}"`));
   return cy.get(".filter-bar .chiclets").contains(expectedText);
 });
 

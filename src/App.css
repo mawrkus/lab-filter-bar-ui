@@ -132,6 +132,10 @@
   color: rgba(115,115,115,.87);
 }
 
+.ui.dropdown.search.error > .text[role="alert"] {
+  display: none;
+}
+
 .ui.dropdown.search.multiple > .ui.label {
   font-size: 10px;
   padding: 4px 6px;

@@ -91,8 +91,7 @@ export const editOperator = {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
       // E.g.
-      //  IS NULL -> =
-      //  IS NULL -> IN
+      //  IN -> NOT IN
       {
         cond: (event, ctx) =>
           event.data.selectionType === "multiple" &&

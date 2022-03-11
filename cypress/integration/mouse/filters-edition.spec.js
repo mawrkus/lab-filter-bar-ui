@@ -97,11 +97,6 @@ describe("Filter Bar - Edition with the mouse", () => {
 
         cy.suggestionsShouldBe(seasonsList);
       });
-
-      // TODO
-      it.skip("should allow the user to switch from operators with preset values to them and vice versa", () => {
-        cy.visitWithFilters("filters-single.json");
-      });
     });
   });
 

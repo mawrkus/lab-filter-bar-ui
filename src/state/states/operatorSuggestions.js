@@ -88,19 +88,19 @@ export const editPartialOperator = {
 
 /*
   simple operators:
-    = -> != (only change operator)
-    = -> IS NULL (change operator and value)
-    = -> IN (change operator and value becomes an array)
+    = -> != (only change operator) => displayPartialFilterSuggestions
+    = -> IS NULL (change operator and value) => displayPartialFilterSuggestions
+    = -> IN (change operator and value becomes an array) => loadValueSuggestions
 
   preset operators:
-    IS NULL -> IS NOT NULL (only change operator)
-    IS NULL -> = (change operator and value)
-    IS NULL -> IN (change operator and value and value becomes an array)
+    IS NULL -> IS NOT NULL (only change operator) => displayPartialFilterSuggestions
+    IS NULL -> = (change operator and value) => loadValueSuggestions
+    IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
 
   multiple operators
-    IN -> NOT IN (only change operator)
-    IN -> = (change operator and value becomes a primitive)
-    IN -> IS NULL (change operator and value and value becomes a primitive)
+    IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
+    IN -> = (change operator and value becomes a primitive) => displayPartialFilterSuggestions
+    IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
 */
 
 export const editOperator = {

@@ -97,6 +97,23 @@ describe("Filter Bar - Edition with the mouse", () => {
 
         cy.suggestionsShouldBe(seasonsList);
       });
+
+      it("should allow the user to switch from preset values operators to them and vice versa", () => {
+        cy.visitWithFilters("filters-single.json");
+
+        cy.editOperator("=", "IS NULL");
+        cy.editOperator("IS NULL", "IN", true);
+
+        cy.chicletShouldHaveValue("");
+
+        cy.suggestionsShouldBe(seasonsList);
+
+        cy.editOperator("IN", "IS NOT NULL");
+
+        cy.filterBarShouldHaveText(
+          "SeasonIS NOT NULL"
+        );
+      });
     });
   });
 

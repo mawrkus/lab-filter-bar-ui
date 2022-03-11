@@ -165,7 +165,7 @@ export class AppStateMachineContext extends StateMachineContext {
         filter.value.id = [filterUnderEdition.value.id];
         filter.value.value = [filterUnderEdition.value.value];
       }
-    } else if (filterUnderEdition?.operator?.selectionType === 'multiple') {
+    } else if (filterUnderEdition?.operator?.selectionType === 'multiple' && filterUnderEdition.value) {
       filter.value.id = filterUnderEdition.value.id[0];
       filter.value.value = filterUnderEdition.value.value[0];
       filter.value.label = filterUnderEdition.value.label.split(',')[0];

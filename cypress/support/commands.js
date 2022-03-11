@@ -157,7 +157,7 @@ Cypress.Commands.add("clickOnChicletValue", (valueLabel) => {
 
   cy.log("⏳ Waiting for request...");
   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.wait("@fetchData").wait(100); // why? IN/NOT IN tests
+  cy.wait("@fetchData").wait(postFetchDelay * 2); // why? IN/NOT IN tests
 });
 
 Cypress.Commands.add("clickOnPartialAttribute", () => {

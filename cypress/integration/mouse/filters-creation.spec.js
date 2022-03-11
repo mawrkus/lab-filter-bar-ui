@@ -176,7 +176,32 @@ describe("Filter Bar - Creation with the mouse", () => {
     });
 
     describe("if there is an error while fetching the suggestions", () => {
-      it("should display a fetch error", () => {
+      it("should display a fetch error that disappear when closing the suggestions", () => {
+        cy.clickOnSearchInput();
+        cy.suggestionsShouldBe(attributesList);
+
+        cy.intercept(`${ValueService.apiHost}/**`, { statusCode: 500 }).as(
+          "fetchData"
+        );
+
+        cy.selectAttribute("Season");
+        cy.selectOperator("=");
+
+        cy.get('.suggestions [role="listbox"] .message').contains(
+          "💥 Ooops! Fetch error."
+        );
+
+        cy.get('.suggestions [role="combobox"]').should("have.class", "error");
+
+        cy.get("body").click();
+
+        cy.get('.suggestions [role="combobox"]').should(
+          "not.have.class",
+          "error"
+        );
+      });
+
+      it("should allow the user to enter a free search text", () => {
         cy.clickOnSearchInput();
         cy.suggestionsShouldBe(attributesList);
 
@@ -185,7 +210,9 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.selectAttribute("Season");
         cy.selectOperator("=");
 
-        cy.get('.suggestions [role="listbox"] .message').contains("💥 Ooops! Fetch error.");
+        cy.typeInSearchInput("winter?{enter}");
+
+        cy.filterBarShouldHaveText('Season="winter?"');
       });
     });
   });

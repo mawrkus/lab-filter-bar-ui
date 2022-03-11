@@ -86,6 +86,23 @@ export const editPartialOperator = {
   },
 };
 
+/*
+  simple operators:
+    = -> != (only change operator)
+    = -> IS NULL (change operator and value)
+    = -> IN (change operator and value becomes an array)
+
+  preset operators:
+    IS NULL -> IS NOT NULL (only change operator)
+    IS NULL -> = (change operator and value)
+    IS NULL -> IN (change operator and value and value becomes an array)
+
+  multiple operators
+    IN -> NOT IN (only change operator)
+    IN -> = (change operator and value becomes a primitive)
+    IN -> IS NULL (change operator and value and value becomes a primitive)
+*/
+
 export const editOperator = {
   events: {
     discardSuggestions: "displayPartialFilterSuggestions",

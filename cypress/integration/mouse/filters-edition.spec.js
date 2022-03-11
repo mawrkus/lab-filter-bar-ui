@@ -37,7 +37,7 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.editOperator("=", "!=");
         cy.filterBarShouldHaveText("Season!=1 (11 episodes)");
 
-        cy.editOperator("=", "LIKE");
+        cy.editOperator("!=", "LIKE");
         cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)");
 
         cy.editOperator("LIKE", "NOT LIKE");

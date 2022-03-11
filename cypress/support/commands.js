@@ -1,6 +1,4 @@
-/* Actions */
-
-const apiHost = Cypress.env("apiHost");
+import { regx } from './helpers/regx'
 
 export const attributesList = ["Season", "Episode", "Character", "Crew"];
 
@@ -17,6 +15,9 @@ export const operatorsList = [
 
 export const logicalOperatorsList = ["AND", "OR"];
 
+/* Actions */
+
+const apiHost = Cypress.env("apiHost");
 const postFetchDelay = 300;
 
 Cypress.Commands.add("visitWithFilters", (fixturePath) => {
@@ -44,7 +45,7 @@ Cypress.Commands.add("selectSuggestion", (label, checkForLoading = false) => {
   }
 
   cy.get('.filter-bar .suggestions [role="listbox"] [role="option"]')
-    .contains(label)
+    .contains(regx(label))
     .click();
 
   if (checkForLoading) {
@@ -108,7 +109,9 @@ Cypress.Commands.add("deleteFilter", (index, checkForLoading = false) => {
 Cypress.Commands.add("editOperator", (from, to, checkForLoading = false) => {
   cy.log(`🕹️ Changing operator from "${from}" to "${to}"`);
 
-  cy.get(".filter-bar .chiclets .chiclet .operator").contains(from).click();
+  cy.get(".filter-bar .chiclets .chiclet .operator")
+    .contains(regx(from))
+    .click();
 
   cy.suggestionsShouldBe(operatorsList);
 
@@ -120,7 +123,9 @@ Cypress.Commands.add(
   (from, to, checkForLoading = false) => {
     cy.log(`🕹️ Changing logical operator from "${from}" to "${to}"`);
 
-    cy.get(".filter-bar .chiclets .chiclet .operator").contains(from).click();
+    cy.get(".filter-bar .chiclets .chiclet .operator")
+      .contains(regx(from))
+      .click();
 
     cy.suggestionsShouldBe(logicalOperatorsList);
 
@@ -146,7 +151,9 @@ Cypress.Commands.add("clickOnChicletValue", (valueLabel) => {
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.intercept(`${apiHost}/**`).as("fetchData").wait(postFetchDelay);
 
-  cy.get(".filter-bar .chiclets .chiclet .value").contains(valueLabel).click();
+  cy.get(".filter-bar .chiclets .chiclet .value")
+    .contains(regx(valueLabel))
+    .click();
 
   cy.log("⏳ Waiting for request...");
   // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -172,7 +179,7 @@ Cypress.Commands.add("filterBarShouldHaveText", (expectedText) => {
     .invoke("text")
     .then((text) => cy.log(`🔎 Current text="${text}"`));
 
-  cy.get(".filter-bar .chiclets").contains(expectedText);
+  cy.get(".filter-bar .chiclets").contains(regx(expectedText));
 });
 
 Cypress.Commands.add("filterBarShouldBeEmpty", () => {
@@ -214,5 +221,5 @@ Cypress.Commands.add("suggestionsShouldBeHidden", () => {
 Cypress.Commands.add("chicletShouldHaveValue", (expectedValue) => {
   cy.log(`🔍 The chiclet should have value "${expectedValue}"`);
 
-  cy.get(".filter-bar .chiclets .chiclet .value").contains(expectedValue);
+  cy.get(".filter-bar .chiclets .chiclet .value").contains(regx(expectedValue));
 });

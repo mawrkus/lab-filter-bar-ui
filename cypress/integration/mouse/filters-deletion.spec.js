@@ -19,11 +19,11 @@ describe("Filter Bar - Deletion with the mouse", () => {
 
     cy.deleteFilter(7);
     cy.filterBarShouldHaveText(
-      'Season=2 (10 episodes)ANDCharacterLIKE"smith"ANDCrewIS NOT NULL'
+      'Season=2 (10 episodes)ANDCharacterLIKE"smith"ANDCrewIS NOT NULLAND'
     );
 
     cy.deleteFilter(1);
-    cy.filterBarShouldHaveText('CharacterLIKE"smith"ANDCrewIS NOT NULL');
+    cy.filterBarShouldHaveText('CharacterLIKE"smith"ANDCrewIS NOT NULLAND');
 
     cy.deleteFilter(1);
     cy.filterBarShouldHaveText("CrewIS NOT NULL");

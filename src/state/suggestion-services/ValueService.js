@@ -1,4 +1,6 @@
 export class ValueService {
+  static apiHost = 'https://api.tvmaze.com';
+
   constructor({ httpClient }) {
     this._httpClient = httpClient;
   }
@@ -25,7 +27,7 @@ export class ValueService {
   }
 
   async loadCharacters() {
-    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/cast');
+    const response = await this._httpClient.fetch(`${ValueService.apiHost}/shows/216/cast`);
 
     const json = await response.json();
 
@@ -38,7 +40,7 @@ export class ValueService {
   }
 
   async loadSeasons() {
-    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/seasons');
+    const response = await this._httpClient.fetch(`${ValueService.apiHost}/shows/216/seasons`);
 
     const json = await response.json();
 
@@ -53,7 +55,7 @@ export class ValueService {
   }
 
   async loadEpisodes() {
-    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/episodes');
+    const response = await this._httpClient.fetch(`${ValueService.apiHost}/shows/216/episodes`);
 
     const json = await response.json();
 
@@ -66,7 +68,7 @@ export class ValueService {
   }
 
   async loadCrew() {
-    const response = await this._httpClient.fetch('https://api.tvmaze.com/shows/216/crew');
+    const response = await this._httpClient.fetch(`${ValueService.apiHost}/shows/216/crew`);
 
     const json = await response.json();
 

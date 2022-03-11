@@ -7,6 +7,7 @@ import {
   charactersList,
   crewList,
 } from "../../fixtures/api";
+import { ValueService } from "../../../src/state/suggestion-services/ValueService";
 
 describe("Filter Bar - Creation with the mouse", () => {
   beforeEach(() => cy.visit("/"));
@@ -171,6 +172,20 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.selectValue("Dan Harmon (Creator)");
 
         cy.filterBarShouldHaveText("Crew=Dan Harmon (Creator)");
+      });
+    });
+
+    describe("if there is an error while fetching the suggestions", () => {
+      it("should display a fetch error", () => {
+        cy.clickOnSearchInput();
+        cy.suggestionsShouldBe(attributesList);
+
+        cy.intercept(`${ValueService.apiHost}/**`, { statusCode: 500 });
+
+        cy.selectAttribute("Season");
+        cy.selectOperator("=");
+
+        cy.get('.suggestions [role="listbox"] .message').contains("💥 Ooops! Fetch error.");
       });
     });
   });

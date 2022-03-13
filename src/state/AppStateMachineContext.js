@@ -133,7 +133,114 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  // filters
+  completePartialFilter(filterValue, type = "attribute-operator-value") {
+    const ctxValue = this.get();
+    const { partialFilter, filters } = ctxValue;
+
+    const newFilter = {
+      id: ctxValue.filterId,
+      attribute: partialFilter.attribute,
+      operator: partialFilter.operator,
+      value: filterValue,
+      type,
+    };
+
+    filters.push(newFilter);
+
+    ctxValue.filterId += 1;
+
+    partialFilter.attribute = null;
+    partialFilter.operator = null;
+    ctxValue.edition = null;
+
+    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
+
+    this.set(ctxValue);
+  }
+
+  completePartialAttributeOperatorFilter(filterOperator) {
+    this.setPartialFilterOperator(filterOperator);
+
+    const filterValue = {
+      id: null,
+      value: filterOperator.presetValue,
+      label: String(filterOperator.presetValue),
+    };
+
+    this.completePartialFilter(filterValue, "attribute-operator");
+  }
+
+  createSearchTextFilter(filterValue) {
+    const ctxValue = this.get();
+    const { filters } = ctxValue;
+
+    const newFilter = {
+      id: ctxValue.filterId,
+      attribute: null,
+      operator: null,
+      value: filterValue,
+      type: "search-text",
+    };
+
+    filters.push(newFilter);
+
+    ctxValue.filterId += 1;
+    ctxValue.edition = null;
+
+    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
+    this.set(ctxValue);
+  }
+
+  createLogicalOperatorFilter(filterOperator) {
+    const ctxValue = this.get();
+    const { filters } = ctxValue;
+
+    const newFilter = {
+      id: ctxValue.filterId,
+      attribute: null,
+      operator: filterOperator,
+      value: null,
+      type: "logical-operator",
+    };
+
+    filters.push(newFilter);
+
+    ctxValue.filterId += 1;
+    ctxValue.edition = null;
+
+    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
+    this.set(ctxValue);
+  }
+
+  // filters edition
+  startEditing(part, completedFilter = null) {
+    const ctxValue = this.get();
+    const targetFilter = completedFilter || ctxValue.partialFilter;
+
+    this.set({
+      ...ctxValue,
+      edition: {
+        filter: targetFilter,
+        part,
+      },
+    });
+  }
+
+  stopEditing() {
+    this.set({
+      ...this.get(),
+      edition: null,
+    });
+  }
+
+  isEditing() {
+    return this.get().edition !== null;
+  }
+
+  isEditingPartialFilter() {
+    return this.get().edition?.filter?.id === "partial";
+  }
+
   editFilterOperator(newOperator, startEditing = false) {
     const ctxValue = this.get();
     const filterUnderEdition = ctxValue.edition.filter;
@@ -228,115 +335,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  completePartialFilter(filterValue, type = "attribute-operator-value") {
-    const ctxValue = this.get();
-    const { partialFilter, filters } = ctxValue;
-
-    const newFilter = {
-      id: ctxValue.filterId,
-      attribute: partialFilter.attribute,
-      operator: partialFilter.operator,
-      value: filterValue,
-      type,
-    };
-
-    filters.push(newFilter);
-
-    ctxValue.filterId += 1;
-
-    partialFilter.attribute = null;
-    partialFilter.operator = null;
-    ctxValue.edition = null;
-
-    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
-
-    this.set(ctxValue);
-  }
-
-  completePartialAttributeOperatorFilter(filterOperator) {
-    this.setPartialFilterOperator(filterOperator);
-
-    const filterValue = {
-      id: null,
-      value: filterOperator.presetValue,
-      label: String(filterOperator.presetValue),
-    };
-
-    this.completePartialFilter(filterValue, "attribute-operator");
-  }
-
-  createSearchTextFilter(filterValue) {
-    const ctxValue = this.get();
-    const { filters } = ctxValue;
-
-    const newFilter = {
-      id: ctxValue.filterId,
-      attribute: null,
-      operator: null,
-      value: filterValue,
-      type: "search-text",
-    };
-
-    filters.push(newFilter);
-
-    ctxValue.filterId += 1;
-    ctxValue.edition = null;
-
-    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
-    this.set(ctxValue);
-  }
-
-  createLogicalOperatorFilter(filterOperator) {
-    const ctxValue = this.get();
-    const { filters } = ctxValue;
-
-    const newFilter = {
-      id: ctxValue.filterId,
-      attribute: null,
-      operator: filterOperator,
-      value: null,
-      type: "logical-operator",
-    };
-
-    filters.push(newFilter);
-
-    ctxValue.filterId += 1;
-    ctxValue.edition = null;
-
-    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
-    this.set(ctxValue);
-  }
-
-  // editing states
-  startEditing(part, completedFilter = null) {
-    const ctxValue = this.get();
-    const targetFilter = completedFilter || ctxValue.partialFilter;
-
-    this.set({
-      ...ctxValue,
-      edition: {
-        filter: targetFilter,
-        part,
-      },
-    });
-  }
-
-  stopEditing() {
-    this.set({
-      ...this.get(),
-      edition: null,
-    });
-  }
-
-  isEditing() {
-    return this.get().edition !== null;
-  }
-
-  isEditingPartialFilter() {
-    return this.get().edition?.filter?.id === "partial";
-  }
-
-  // filter deletion
+  // filters deletion
   removeFilter(filter) {
     const ctxValue = this.get();
 

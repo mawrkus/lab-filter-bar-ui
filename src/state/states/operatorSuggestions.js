@@ -39,14 +39,14 @@ export const chooseOperator = {
       {
         cond: (event) => !hasPresetValue(event.data),
         targetId: "loadValueSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setPartialFilterOperator(event.data);
         },
       },
       {
         cond: (event) => hasPresetValue(event.data),
         targetId: "idle",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.completePartialAttributeOperatorFilter(event.data);
         },
       },
@@ -71,14 +71,14 @@ export const editPartialOperator = {
       {
         cond: (event, ctx) => !hasPresetValue(event.data),
         targetId: "loadValueSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.setPartialFilterOperator(event.data);
         },
       },
       {
         cond: (event, ctx) => hasPresetValue(event.data),
         targetId: "idle",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.completePartialAttributeOperatorFilter(event.data);
         },
       },
@@ -87,17 +87,17 @@ export const editPartialOperator = {
 };
 
 /*
-  simple operators:
+  single-value operators:
     = -> != (only change operator) => displayPartialFilterSuggestions
     = -> IS NULL (change operator and value) => displayPartialFilterSuggestions
     = -> IN (change operator and value becomes an array) => loadValueSuggestions
 
-  preset operators:
+  preset-value operators:
     IS NULL -> IS NOT NULL (only change operator) => displayPartialFilterSuggestions
     IS NULL -> = (change operator and value) => loadValueSuggestions
     IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
 
-  multiple operators
+  multiple-value operators
     IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
     IN -> = (change operator and value becomes a primitive) => displayPartialFilterSuggestions
     IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions

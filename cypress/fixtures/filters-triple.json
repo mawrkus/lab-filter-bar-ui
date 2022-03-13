@@ -2,7 +2,7 @@
   {
     "id": 1,
     "attribute": { "id": 1, "value": "season", "label": "Season" },
-    "operator": { "id": 1, "value": "=", "label": "=" },
+    "operator": { "id": 1, "value": "=", "label": "=", "type": "single-value" },
     "value": {
       "id": 882,
       "value": 1,
@@ -14,14 +14,19 @@
   {
     "id": 2,
     "attribute": null,
-    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "operator": { "id": 1, "value": "and", "label": "AND", "type": "logical" },
     "value": null,
     "type": "logical-operator"
   },
   {
     "id": 3,
     "attribute": { "id": 2, "value": "episode", "label": "Episode" },
-    "operator": { "id": 2, "value": "!=", "label": "!=" },
+    "operator": {
+      "id": 2,
+      "value": "!=",
+      "label": "!=",
+      "type": "single-value"
+    },
     "value": {
       "id": 14308,
       "value": "Pilot",

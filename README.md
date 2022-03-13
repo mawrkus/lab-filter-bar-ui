@@ -54,7 +54,7 @@ Using the mouse or keyboard:
 
 Choosing "Crew" then the "IN" operator:
 
-- sends a `selectItem` event with selectionType = "multiple"
+- sends a `selectItem` event with type = "multiple-value"
 - transitions from `chooseOperator` → `loadValueSuggestions`
 - sends a `startInput` event (!)
 - 💥 which triggers an invalid transition `loadValueSuggestions` → `undefined`

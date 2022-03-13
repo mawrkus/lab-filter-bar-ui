@@ -2,7 +2,7 @@
   {
     "id": 1,
     "attribute": { "id": 1, "value": "season", "label": "Season" },
-    "operator": { "id": 1, "value": "=", "label": "=" },
+    "operator": { "id": 1, "value": "=", "label": "=", "type": "single-value" },
     "value": {
       "id": 6906,
       "value": 2,
@@ -14,14 +14,19 @@
   {
     "id": 2,
     "attribute": null,
-    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "operator": { "id": 1, "value": "and", "label": "AND", "type": "logical" },
     "value": null,
     "type": "logical-operator"
   },
   {
     "id": 3,
     "attribute": { "id": 2, "value": "episode", "label": "Episode" },
-    "operator": { "id": 2, "value": "!=", "label": "!=" },
+    "operator": {
+      "id": 2,
+      "value": "!=",
+      "label": "!=",
+      "type": "single-value"
+    },
     "value": {
       "id": 14313,
       "value": "Rick Potion #9",
@@ -33,21 +38,26 @@
   {
     "id": 4,
     "attribute": null,
-    "operator": { "id": 2, "value": "or", "label": "OR" },
+    "operator": { "id": 2, "value": "or", "label": "OR", "type": "logical" },
     "value": null,
     "type": "logical-operator"
   },
   {
     "id": 5,
     "attribute": { "id": 3, "value": "character", "label": "Character" },
-    "operator": { "id": 3, "value": "like", "label": "LIKE" },
+    "operator": {
+      "id": 3,
+      "value": "like",
+      "label": "LIKE",
+      "type": "single-value"
+    },
     "value": { "id": null, "value": "smith", "label": "smith" },
     "type": "attribute-operator-value"
   },
   {
     "id": 6,
     "attribute": null,
-    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "operator": { "id": 1, "value": "and", "label": "AND", "type": "logical" },
     "value": null,
     "type": "logical-operator"
   },
@@ -58,6 +68,7 @@
       "id": 6,
       "value": "is-not-null",
       "label": "IS NOT NULL",
+      "type": "preset-value",
       "presetValue": null
     },
     "value": { "id": null, "value": null, "label": "null" },
@@ -66,7 +77,7 @@
   {
     "id": 8,
     "attribute": null,
-    "operator": { "id": 1, "value": "and", "label": "AND" },
+    "operator": { "id": 1, "value": "and", "label": "AND", "type": "logical" },
     "value": null,
     "type": "logical-operator"
   },
@@ -80,7 +91,7 @@
   {
     "id": 10,
     "attribute": null,
-    "operator": { "value": "and", "label": "AND" },
+    "operator": { "value": "and", "label": "AND", "type": "logical" },
     "value": null,
     "type": "logical-operator"
   },

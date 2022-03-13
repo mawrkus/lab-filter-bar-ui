@@ -29,8 +29,8 @@ export const loadOperatorSuggestions = {
   },
 };
 
-export const hasPresetValue = (operator) =>
-  typeof operator.presetValue !== "undefined";
+// TODO: refactor inline
+export const hasPresetValue = (operator) => operator.type === "preset-value";
 
 export const chooseOperator = {
   events: {
@@ -111,9 +111,8 @@ export const editOperator = {
       //  IN -> NOT IN
       {
         cond: (event, ctx) =>
-          event.data.selectionType === "multiple" &&
-          ctx.get().edition.filter.operator.selectionType ===
-            "multiple",
+          event.data.type === "multiple-value" &&
+          ctx.get().edition.filter.operator.type === "multiple-value",
         targetId: "displayPartialFilterSuggestions",
         action: (event, ctx) => {
           ctx.setFilterOperator(event.data);
@@ -129,7 +128,7 @@ export const editOperator = {
           const { filter: filterUnderEdition } = ctx.get().edition;
 
           return (
-            event.data.selectionType !== "multiple" &&
+            event.data.type !== "multiple-value" &&
             (hasPresetValue(filterUnderEdition.operator) ===
               hasPresetValue(event.data) ||
               (!hasPresetValue(filterUnderEdition.operator) &&
@@ -147,7 +146,7 @@ export const editOperator = {
       //  = "xxx" -> IN
       {
         cond: (event, ctx) =>
-          event.data.selectionType === "multiple" &&
+          event.data.type === "multiple-value" &&
           !hasPresetValue(ctx.get().edition.filter.operator),
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {

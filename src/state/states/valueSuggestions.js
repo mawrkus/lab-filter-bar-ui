@@ -17,14 +17,18 @@ export const loadValueSuggestions = {
         ? filterUnderEdition.attribute.value
         : partialFilter.attribute.value;
 
-      const selectionType = filterUnderEdition
-        ? filterUnderEdition.operator.selectionType || "single"
-        : partialFilter.operator.selectionType || "single";
+      const operatorType = filterUnderEdition
+        ? filterUnderEdition.operator.type
+        : partialFilter.operator.type;
+
+      const selectionType = operatorType === "multiple-value" ? "multiple" : "single";
 
       ctx.startLoading(selectionType);
 
       try {
-        values = await toolkit.suggestionService.loadValues({ type: valuesType });
+        values = await toolkit.suggestionService.loadValues({
+          type: valuesType,
+        });
       } catch (e) {
         if (toolkit.suggestionService.isCancelError(e)) {
           console.log('🗑️ Request cancelled for "%s" values.', valuesType);

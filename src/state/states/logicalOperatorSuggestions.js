@@ -31,7 +31,7 @@ export const chooseLogicalOperator = {
     discardSuggestions: "idle",
     selectItem: {
       targetId: "loadAttributeSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.createLogicalOperatorFilter(event.data);
       },
     },
@@ -57,7 +57,7 @@ export const editLogicalOperator = {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.editFilterOperator(event.data);
       },
     },

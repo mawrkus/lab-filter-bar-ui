@@ -72,7 +72,7 @@ export const chooseValue = {
     discardSuggestions: "idle",
     selectItem: {
       targetId: "idle",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.completePartialFilter(event.data);
       },
     },
@@ -106,7 +106,7 @@ export const editValue = {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
-      action: (event, ctx) => {
+      action(event, ctx) {
         ctx.editFilterValue(event.data);
       },
     },

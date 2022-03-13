@@ -115,7 +115,7 @@ export const editOperator = {
           ctx.get().edition.filter.operator.type === "multiple-value",
         targetId: "displayPartialFilterSuggestions",
         action: (event, ctx) => {
-          ctx.setFilterOperator(event.data);
+          ctx.editFilterOperator(event.data);
         },
       },
       // E.g.
@@ -137,7 +137,7 @@ export const editOperator = {
         },
         targetId: "displayPartialFilterSuggestions",
         action: (event, ctx) => {
-          ctx.setFilterOperator(event.data);
+          ctx.editFilterOperator(event.data);
         },
       },
 
@@ -150,7 +150,7 @@ export const editOperator = {
           !hasPresetValue(ctx.get().edition.filter.operator),
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
-          ctx.setFilterOperator(event.data, true);
+          ctx.editFilterOperator(event.data, true);
         },
       },
       // E.g.
@@ -162,7 +162,7 @@ export const editOperator = {
           hasPresetValue(ctx.get().edition.filter.operator),
         targetId: "loadValueSuggestions",
         action: (event, ctx) => {
-          ctx.setFilterOperator(event.data, true);
+          ctx.editFilterOperator(event.data, true);
         },
       },
     ],

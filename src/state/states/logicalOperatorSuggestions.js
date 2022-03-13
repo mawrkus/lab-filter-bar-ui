@@ -58,7 +58,7 @@ export const editLogicalOperator = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action: (event, ctx) => {
-        ctx.setFilterOperator(event.data);
+        ctx.editFilterOperator(event.data);
       },
     },
   },

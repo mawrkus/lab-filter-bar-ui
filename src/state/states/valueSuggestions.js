@@ -107,13 +107,13 @@ export const editValue = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action: (event, ctx) => {
-        ctx.setFilterValue(event.data);
+        ctx.editFilterValue(event.data);
       },
     },
     createItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.setFilterValue(event.data);
+        ctx.editFilterValue(event.data);
       },
     },
   },

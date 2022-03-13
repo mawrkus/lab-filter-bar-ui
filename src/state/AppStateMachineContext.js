@@ -134,17 +134,17 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   // filters
-  setFilterOperator(filterOperator, startEditing = false) {
+  editFilterOperator(newOperator, startEditing = false) {
     const ctxValue = this.get();
     const filterUnderEdition = ctxValue.edition.filter;
     const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
     const prevFilter = copy(filter);
 
-    filter.operator = filterOperator;
+    filter.operator = newOperator;
 
     if (
       hasPresetValue(filterUnderEdition.operator) &&
-      !hasPresetValue(filterOperator)
+      !hasPresetValue(newOperator)
     ) {
       filter.value = {
         id: null,
@@ -155,12 +155,12 @@ export class AppStateMachineContext extends StateMachineContext {
       filter.type = "attribute-operator-value";
     } else if (
       !hasPresetValue(filterUnderEdition.operator) &&
-      hasPresetValue(filterOperator)
+      hasPresetValue(newOperator)
     ) {
       filter.value = {
         id: null,
-        value: filterOperator.presetValue,
-        label: String(filterOperator.presetValue),
+        value: newOperator.presetValue,
+        label: String(newOperator.presetValue),
       };
 
       filter.type = "attribute-operator";
@@ -169,7 +169,7 @@ export class AppStateMachineContext extends StateMachineContext {
     // TODO: REFACTOR!!!
 
     // = -> IN
-    if (filterOperator.type === "multiple-value") {
+    if (newOperator.type === "multiple-value") {
       // handles IS (NOT) NULL and search text values
       if (
         hasPresetValue(filterUnderEdition.operator) ||
@@ -201,24 +201,12 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  setFilterAttributeOperator(filterOperator) {
-    this.setFilterOperator(filterOperator);
-
-    const filterValue = {
-      id: null,
-      value: filterOperator.presetValue,
-      label: String(filterOperator.presetValue),
-    };
-
-    this.setFilterValue(filterValue, "attribute-operator");
-  }
-
-  setFilterValue(filterValue) {
+  editFilterValue(newValue) {
     const ctxValue = this.get();
     const { partialFilter, edition } = ctxValue;
 
     if (!edition) {
-      partialFilter.value = filterValue;
+      partialFilter.value = newValue;
       ctxValue.edition = null;
       this.set(ctxValue);
       return;
@@ -227,7 +215,7 @@ export class AppStateMachineContext extends StateMachineContext {
     const filter = ctxValue.filters.find((f) => f.id === edition.filter.id);
     const prevFilter = copy(filter);
 
-    filter.value = filterValue;
+    filter.value = newValue;
     ctxValue.edition = null;
 
     this._nofityFiltersUpdate(ctxValue.filters, {

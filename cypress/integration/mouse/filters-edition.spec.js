@@ -89,13 +89,12 @@ describe("Filter Bar - Edition with the mouse", () => {
           list: ["3 (10 episodes)", "4 (10 episodes)", "5 (10 episodes)"],
         });
 
-        cy.editOperator("NOT IN", "LIKE");
-
-        cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)");
-
-        cy.clickOnChicletValue("1 (11 episodes)");
-
+        cy.editOperator("NOT IN", "LIKE", true);
         cy.suggestionsShouldBe(seasonsList);
+
+        cy.selectValue("2 (10 episodes)");
+
+        cy.filterBarShouldHaveText("SeasonLIKE2 (10 episodes)");
       });
 
       it("should allow the user to switch from preset values operators to them and vice versa", () => {

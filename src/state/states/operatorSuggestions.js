@@ -29,22 +29,19 @@ export const loadOperatorSuggestions = {
   },
 };
 
-// TODO: refactor inline
-export const hasPresetValue = (operator) => operator.type === "preset-value";
-
 export const chooseOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event) => !hasPresetValue(event.data),
+        cond: (event) => event.data.type !== "preset-value",
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.setPartialFilterOperator(event.data);
         },
       },
       {
-        cond: (event) => hasPresetValue(event.data),
+        cond: (event) => event.data.type === "preset-value",
         targetId: "idle",
         action(event, ctx) {
           ctx.completePartialAttributeOperatorFilter(event.data);
@@ -69,14 +66,14 @@ export const editPartialOperator = {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event, ctx) => !hasPresetValue(event.data),
+        cond: (event) => event.data.type !== "preset-value",
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.setPartialFilterOperator(event.data);
         },
       },
       {
-        cond: (event, ctx) => hasPresetValue(event.data),
+        cond: (event) => event.data.type === "preset-value",
         targetId: "idle",
         action(event, ctx) {
           ctx.completePartialAttributeOperatorFilter(event.data);
@@ -99,70 +96,36 @@ export const editPartialOperator = {
 
   multiple-value operators
     IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
-    IN -> = (change operator and value becomes a primitive) => displayPartialFilterSuggestions
+    IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
     IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
 */
-
 export const editOperator = {
   events: {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
-      // E.g.
-      //  IN -> NOT IN
-      {
-        cond: (event, ctx) =>
-          event.data.type === "multiple-value" &&
-          ctx.get().edition.filter.operator.type === "multiple-value",
-        targetId: "displayPartialFilterSuggestions",
-        action: (event, ctx) => {
-          ctx.editFilterOperator(event.data);
-        },
-      },
-      // E.g.
-      //  = -> !=
-      //  NOT IN -> =
-      //  IS NULL -> IS NOT NULL
-      //  = -> IS NULL
       {
         cond: (event, ctx) => {
-          const { filter: filterUnderEdition } = ctx.get().edition;
+          const typeUnderEdition = ctx.get().edition.filter.operator.type;
+          const newType = event.data.type;
 
           return (
-            event.data.type !== "multiple-value" &&
-            (hasPresetValue(filterUnderEdition.operator) ===
-              hasPresetValue(event.data) ||
-              (!hasPresetValue(filterUnderEdition.operator) &&
-                hasPresetValue(event.data)))
+            typeUnderEdition !== newType &&
+            (typeUnderEdition === "preset-value" ||
+              (typeUnderEdition === "multiple-value" &&
+                newType === "single-value") ||
+              newType === "multiple-value")
           );
         },
+        targetId: "loadValueSuggestions",
+        action(event, ctx) {
+          ctx.editFilterOperator(event.data, true);
+        },
+      },
+      {
+        cond: () => true,
         targetId: "displayPartialFilterSuggestions",
-        action: (event, ctx) => {
+        action(event, ctx) {
           ctx.editFilterOperator(event.data);
-        },
-      },
-
-      // E.g.
-      //  = -> IN
-      //  = "xxx" -> IN
-      {
-        cond: (event, ctx) =>
-          event.data.type === "multiple-value" &&
-          !hasPresetValue(ctx.get().edition.filter.operator),
-        targetId: "loadValueSuggestions",
-        action: (event, ctx) => {
-          ctx.editFilterOperator(event.data, true);
-        },
-      },
-      // E.g.
-      //  IS NULL -> =
-      //  IS NULL -> IN
-      {
-        cond: (event, ctx) =>
-          !hasPresetValue(event.data) &&
-          hasPresetValue(ctx.get().edition.filter.operator),
-        targetId: "loadValueSuggestions",
-        action: (event, ctx) => {
-          ctx.editFilterOperator(event.data, true);
         },
       },
     ],

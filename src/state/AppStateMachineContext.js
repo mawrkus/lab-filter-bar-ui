@@ -1,6 +1,5 @@
 import { copy } from "fastest-json-copy";
 import { StateMachineContext } from "./lib/state-machine";
-import { hasPresetValue } from "./states/operatorSuggestions";
 
 export class AppStateMachineContext extends StateMachineContext {
   constructor({ initFilters, onUpdateFilters }) {
@@ -241,29 +240,46 @@ export class AppStateMachineContext extends StateMachineContext {
     return this.get().edition?.filter?.id === "partial";
   }
 
-  editFilterOperator(newOperator, startEditing = false) {
+  /*
+    single-value operators:
+      = -> != (only change operator) => displayPartialFilterSuggestions
+      = -> IS NULL (change operator and value) => displayPartialFilterSuggestions
+      = -> IN (change operator and value becomes an array) => loadValueSuggestions
+
+    preset-value operators:
+      IS NULL -> IS NOT NULL (only change operator) => displayPartialFilterSuggestions
+      IS NULL -> = (change operator and value) => loadValueSuggestions
+      IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
+
+    multiple-value operators
+      IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
+      IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
+      IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
+  */
+  editFilterOperator(newOperator, startEditingValue = false) {
     const ctxValue = this.get();
     const filterUnderEdition = ctxValue.edition.filter;
+    const operatorUnderEdition = filterUnderEdition.operator;
     const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
     const prevFilter = copy(filter);
 
     filter.operator = newOperator;
 
-    if (
-      hasPresetValue(filterUnderEdition.operator) &&
-      !hasPresetValue(newOperator)
-    ) {
-      filter.value = {
-        id: null,
-        value: filterUnderEdition.operator.presetValue,
-        label: String(filterUnderEdition.operator.presetValue),
-      };
+    if (operatorUnderEdition.type === newOperator.type) {
+      this._nofityFiltersUpdate(ctxValue.filters, {
+        action: "edit",
+        prevFilter,
+        filter,
+        part: "operator",
+      });
 
-      filter.type = "attribute-operator-value";
-    } else if (
-      !hasPresetValue(filterUnderEdition.operator) &&
-      hasPresetValue(newOperator)
-    ) {
+      this.set(ctxValue);
+
+      return;
+    }
+
+    // = -> IS NULL
+    if (newOperator.type === "preset-value") {
       filter.value = {
         id: null,
         value: newOperator.presetValue,
@@ -271,32 +287,40 @@ export class AppStateMachineContext extends StateMachineContext {
       };
 
       filter.type = "attribute-operator";
-    }
-
-    // TODO: REFACTOR!!!
-
-    // = -> IN
-    if (newOperator.type === "multiple-value") {
-      // handles IS (NOT) NULL and search text values
-      if (
-        hasPresetValue(filterUnderEdition.operator) ||
-        filterUnderEdition.value.id === null
-      ) {
-        filter.value = null;
-      } else if (filterUnderEdition.operator.type !== "multiple-value") {
-        filter.value.id = [filterUnderEdition.value.id];
-        filter.value.value = [filterUnderEdition.value.value];
+    } else if (newOperator.type === "multiple-value") {
+      // = -> IN, IS NULL -> IN
+      if (operatorUnderEdition.type === "single-value") {
+        // = -> IN
+        if (filterUnderEdition.value.id === null) {
+          // search text
+          filter.value = null; // no search text support in multiple suggestions dropdown component :/
+        } else {
+          filter.value.id = [filterUnderEdition.value.id];
+          filter.value.value = [filterUnderEdition.value.value];
+        }
+      } else if (operatorUnderEdition.type === "preset-value") {
+        // IS NULL -> IN
+        filter.value = null; // no search text support in multiple suggestions dropdown component :/
+        filter.type = "attribute-operator-value";
       }
-    } else if (
-      filterUnderEdition?.operator?.type === "multiple-value" &&
-      filterUnderEdition.value
-    ) {
-      filter.value.id = filterUnderEdition.value.id[0];
-      filter.value.value = filterUnderEdition.value.value[0];
-      filter.value.label = filterUnderEdition.value.label.split(",")[0];
+    } else if (newOperator.type === "single-value") {
+      // IS NULL -> =, IN -> =
+      if (operatorUnderEdition.type === "preset-value") {
+        filter.value = {
+          id: null,
+          value: filterUnderEdition.operator.presetValue,
+          label: String(filterUnderEdition.operator.presetValue),
+        };
+
+        filter.type = "attribute-operator-value";
+      } else if (operatorUnderEdition.type === "multiple-value") { // IN -> =
+        filter.value.id = filterUnderEdition.value.id[0];
+        filter.value.value = filterUnderEdition.value.value[0];
+        filter.value.label = filterUnderEdition.value.label.split(",")[0];
+      }
     }
 
-    ctxValue.edition = startEditing ? { filter, part: "value" } : null;
+    ctxValue.edition = startEditingValue ? { filter, part: "value" } : null;
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: "edit",

@@ -104,10 +104,14 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.editOperator("IS NULL", "IN", true);
 
         cy.chicletShouldHaveValue("");
-
         cy.suggestionsShouldBe(seasonsList);
 
-        cy.editOperator("IN", "IS NOT NULL");
+        cy.editOperator("IN", "NOT IN", true);
+
+        cy.chicletShouldHaveValue("");
+        cy.suggestionsShouldBe(seasonsList);
+
+        cy.editOperator("NOT IN", "IS NOT NULL");
 
         cy.filterBarShouldHaveText(
           "SeasonIS NOT NULL"

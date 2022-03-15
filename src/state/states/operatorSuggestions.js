@@ -105,29 +105,38 @@ export const editOperator = {
     selectItem: [
       {
         cond: (event, ctx) => {
-          const typeUnderEdition = ctx.get().edition.filter.operator.type;
-          const newType = event.data.type;
-
-          return (
-            typeUnderEdition !== newType &&
-            (typeUnderEdition === "preset-value" ||
-              (typeUnderEdition === "multiple-value" &&
-                newType === "single-value") ||
-              newType === "multiple-value")
-          );
-        },
-        targetId: "loadValueSuggestions",
-        action(event, ctx) {
-          ctx.editFilterOperator(event.data, true);
-        },
-      },
-      // IN -> NOT IN without any selected value
-      {
-        cond: (event, ctx) => {
           const { operator, value } = ctx.get().edition.filter;
+          const typeUnderEdition = operator.type;
           const newType = event.data.type;
 
-          return operator.type === newType && value === null;
+          /* same types */
+
+          // IN -> NOT IN without any selected value
+          if (typeUnderEdition === newType) {
+            return value === null;
+          }
+
+          /* different types */
+
+          // IS NULL -> =
+          if (typeUnderEdition === "preset-value") {
+            return true;
+          }
+
+          // IN -> =
+          if (
+            typeUnderEdition === "multiple-value" &&
+            newType === "single-value"
+          ) {
+            return true;
+          }
+
+          // = -> IN
+          if (newType === "multiple-value") {
+            return true;
+          }
+
+          return false;
         },
         targetId: "loadValueSuggestions",
         action(event, ctx) {

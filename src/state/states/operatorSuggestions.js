@@ -104,13 +104,6 @@ export const editOperator = {
     discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
       {
-        cond: (event, ctx) => ctx.get().edition.filter.operator.type === event.data.type,
-        targetId: "displayPartialFilterSuggestions",
-        action(event, ctx) {
-          ctx.editFilterOperator(event.data);
-        },
-      },
-      {
         cond: (event, ctx) => {
           const typeUnderEdition = ctx.get().edition.filter.operator.type;
           const newType = event.data.type;
@@ -125,14 +118,27 @@ export const editOperator = {
         },
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.convertFilterOperator(event.data, true);
+          ctx.editFilterOperator(event.data, true);
+        },
+      },
+      // IN -> NOT IN without any selected value
+      {
+        cond: (event, ctx) => {
+          const { operator, value } = ctx.get().edition.filter;
+          const newType = event.data.type;
+
+          return operator.type === newType && value === null;
+        },
+        targetId: "loadValueSuggestions",
+        action(event, ctx) {
+          ctx.editFilterOperator(event.data, true);
         },
       },
       {
         cond: () => true,
         targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
-          ctx.convertFilterOperator(event.data);
+          ctx.editFilterOperator(event.data);
         },
       },
     ],

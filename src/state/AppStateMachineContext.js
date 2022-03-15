@@ -240,24 +240,6 @@ export class AppStateMachineContext extends StateMachineContext {
     return this.get().edition?.filter?.id === "partial";
   }
 
-  editFilterOperator(newOperator) {
-    const ctxValue = this.get();
-    const filterUnderEdition = ctxValue.edition.filter;
-    const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
-    const prevFilter = copy(filter)
-
-    filter.operator = newOperator;
-
-    this._nofityFiltersUpdate(ctxValue.filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "operator",
-    });
-
-    this.set(ctxValue);
-  }
-
   /*
     single-value operators:
       = -> != (only change operator) => displayPartialFilterSuggestions
@@ -274,7 +256,7 @@ export class AppStateMachineContext extends StateMachineContext {
       IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
       IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
   */
-  convertFilterOperator(newOperator, startEditingValue = false) {
+  editFilterOperator(newOperator, startEditingValue = false) {
     const ctxValue = this.get();
     const filterUnderEdition = ctxValue.edition.filter;
     const operatorUnderEdition = filterUnderEdition.operator;
@@ -282,6 +264,21 @@ export class AppStateMachineContext extends StateMachineContext {
     const prevFilter = copy(filter);
 
     filter.operator = newOperator;
+
+    ctxValue.edition = startEditingValue ? { filter, part: "value" } : null;
+
+    if (operatorUnderEdition.type === newOperator.type) {
+      this._nofityFiltersUpdate(ctxValue.filters, {
+        action: "edit",
+        prevFilter,
+        filter,
+        part: "operator",
+      });
+
+      this.set(ctxValue);
+
+      return;
+    }
 
     // = -> IS NULL
     if (newOperator.type === "preset-value") {
@@ -324,8 +321,6 @@ export class AppStateMachineContext extends StateMachineContext {
         filter.value.label = filterUnderEdition.value.label.split(",")[0];
       }
     }
-
-    ctxValue.edition = startEditingValue ? { filter, part: "value" } : null;
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: "edit",

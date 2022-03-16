@@ -4,6 +4,7 @@ export const idle = {
       toolkit.suggestionService.cancelLoad();
 
       const resetError = event?.name === "discardSuggestions";
+
       ctx.reset(resetError);
     },
   },
@@ -33,16 +34,10 @@ export const idle = {
         targetId: "loadValueSuggestions",
       },
     ],
-    editPartialAttribute: {
+    editAttribute: {
       targetId: "loadAttributeSuggestions",
       action(event, ctx) {
-        ctx.startEditing("attribute");
-      },
-    },
-    editPartialOperator: {
-      targetId: "loadOperatorSuggestions",
-      action(event, ctx) {
-        ctx.startEditing("operator");
+        ctx.startEditing("attribute", event.data);
       },
     },
     editOperator: {

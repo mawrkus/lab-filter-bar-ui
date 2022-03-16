@@ -2,7 +2,6 @@
 import { memo, useCallback } from 'react';
 
 import { Chiclet } from './Chiclet';
-import { PartialChiclet } from './PartialChiclet';
 import { SuggestionsDropdown } from './suggestions/SuggestionsDropdown';
 import { useStateMachine, useKeyboardActions, useDropdownEdition } from '../hooks';
 
@@ -12,17 +11,11 @@ const FilterBarComponent = ({ stateMachine }) => {
 
   useKeyboardActions();
 
-  const onClickPartialChiclet = useCallback((event, filter, part) => {
-    if (part === 'attribute') {
-      return stateMachine.sendEvent("editPartialAttribute");
-    }
-
-    if (part === 'operator') {
-      return stateMachine.sendEvent("editPartialOperator");
-    }
-  }, [stateMachine]);
-
   const onClickChiclet = useCallback((event, filter, part) => {
+    if (part === 'attribute') {
+      return stateMachine.sendEvent("editAttribute", filter);
+    }
+
     if (part === 'operator') {
       return stateMachine.sendEvent("editOperator", filter);
     }
@@ -71,11 +64,6 @@ const FilterBarComponent = ({ stateMachine }) => {
             onRemove={onRemoveChiclet}
           />
         ))}
-
-        <PartialChiclet
-          filter={props.partialFilter}
-          onClick={onClickPartialChiclet}
-        />
       </div>
 
       <div className="suggestions">

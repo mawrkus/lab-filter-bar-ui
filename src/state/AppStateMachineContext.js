@@ -4,11 +4,6 @@ import { StateMachineContext } from "./lib/state-machine";
 export class AppStateMachineContext extends StateMachineContext {
   constructor({ initFilters, onUpdateFilters }) {
     super({
-      partialFilter: {
-        id: "partial",
-        attribute: null,
-        operator: null,
-      },
       filters: initFilters,
       filterId: initFilters.length + 1,
       suggestions: {
@@ -74,59 +69,82 @@ export class AppStateMachineContext extends StateMachineContext {
 
   clearLoadingError() {
     const ctxValue = this.get();
+
     ctxValue.suggestions.error = null;
+
     this.set(ctxValue);
   }
 
   // partial filters
+  getPartialFilter(ctxValue = this.get()) {
+    return ctxValue.filters.find((f) => f.type === "partial");
+  }
+
   hasPartialFilter() {
-    const ctxValue = this.get();
-    return (
-      Boolean(ctxValue.partialFilter.attribute) ||
-      Boolean(ctxValue.partialFilter.operator)
-    );
+    return Boolean(this.getPartialFilter());
   }
 
   hasMissingPartialOperator() {
-    const ctxValue = this.get();
-    return !ctxValue.partialFilter.operator;
+    return this.getPartialFilter().operator === null;
   }
 
   hasMissingPartialValue() {
-    const ctxValue = this.get();
-    return (
-      Boolean(ctxValue.partialFilter.attribute) &&
-      Boolean(ctxValue.partialFilter.operator)
-    );
+    return this.getPartialFilter().value === null;
   }
 
   removePartialAttribute() {
     const ctxValue = this.get();
-    ctxValue.partialFilter.attribute = null;
+
+    ctxValue.filters = ctxValue.filters.filter((f) => f.type !== "partial");
+
     this.set(ctxValue);
   }
 
   removePartialOperator() {
     const ctxValue = this.get();
-    ctxValue.partialFilter.operator = null;
+
+    this.getPartialFilter(ctxValue).operator = null;
+
     this.set(ctxValue);
   }
 
   setPartialFilterAttribute(filterAttribute) {
     const ctxValue = this.get();
-    const { partialFilter } = ctxValue;
+    const { edition, filters } = ctxValue;
 
-    partialFilter.attribute = filterAttribute;
-    ctxValue.edition = null;
+    if (edition) {
+      const filterUnderEdition = ctxValue.filters.find(
+        (f) => f.id === edition.filter.id
+      );
+
+      filterUnderEdition.attribute = filterAttribute;
+      ctxValue.edition = null;
+
+      this.set(ctxValue);
+
+      return;
+    }
+
+    const newPartialFilter = {
+      id: ctxValue.filterId,
+      attribute: filterAttribute,
+      operator: null,
+      value: null,
+      type: "partial",
+    };
+
+    filters.push(newPartialFilter);
+
+    ctxValue.filterId += 1;
 
     this.set(ctxValue);
   }
 
   setPartialFilterOperator(filterOperator) {
     const ctxValue = this.get();
-    const { partialFilter } = ctxValue;
 
-    partialFilter.operator = filterOperator;
+    this.getPartialFilter(ctxValue).operator = filterOperator;
+
     ctxValue.edition = null;
 
     this.set(ctxValue);
@@ -134,25 +152,18 @@ export class AppStateMachineContext extends StateMachineContext {
 
   completePartialFilter(filterValue, type = "attribute-operator-value") {
     const ctxValue = this.get();
-    const { partialFilter, filters } = ctxValue;
+    const partialFilter = this.getPartialFilter(ctxValue);
+    const { filters } = ctxValue;
 
-    const newFilter = {
-      id: ctxValue.filterId,
-      attribute: partialFilter.attribute,
-      operator: partialFilter.operator,
-      value: filterValue,
-      type,
-    };
+    partialFilter.value = filterValue;
+    partialFilter.type = type;
 
-    filters.push(newFilter);
-
-    ctxValue.filterId += 1;
-
-    partialFilter.attribute = null;
-    partialFilter.operator = null;
     ctxValue.edition = null;
 
-    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
+    this._nofityFiltersUpdate(filters, {
+      action: "create",
+      filter: partialFilter,
+    });
 
     this.set(ctxValue);
   }
@@ -212,9 +223,8 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   // filters edition
-  startEditing(part, completedFilter = null) {
+  startEditing(part, targetFilter) {
     const ctxValue = this.get();
-    const targetFilter = completedFilter || ctxValue.partialFilter;
 
     this.set({
       ...ctxValue,
@@ -237,7 +247,7 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   isEditingPartialFilter() {
-    return this.get().edition?.filter?.id === "partial";
+    return this.get().edition?.filter?.type === "partial";
   }
 
   /*
@@ -315,7 +325,8 @@ export class AppStateMachineContext extends StateMachineContext {
         };
 
         filter.type = "attribute-operator-value";
-      } else if (operatorUnderEdition.type === "multiple-value") { // IN -> =
+      } else if (operatorUnderEdition.type === "multiple-value") {
+        // IN -> =
         filter.value.id = filterUnderEdition.value.id[0];
         filter.value.value = filterUnderEdition.value.value[0];
         filter.value.label = filterUnderEdition.value.label.split(",")[0];
@@ -334,11 +345,11 @@ export class AppStateMachineContext extends StateMachineContext {
 
   editFilterValue(newValue) {
     const ctxValue = this.get();
-    const { partialFilter, edition } = ctxValue;
+    const partialFilter = this.getPartialFilter(ctxValue);
+    const { edition } = ctxValue;
 
     if (!edition) {
       partialFilter.value = newValue;
-      ctxValue.edition = null;
       this.set(ctxValue);
       return;
     }
@@ -382,6 +393,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
   getLastFilter() {
     const { filters } = this.get();
+
     return filters[filters.length - 1];
   }
 }

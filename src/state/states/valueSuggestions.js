@@ -2,28 +2,24 @@ export const loadValueSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
       const ctxValue = ctx.get();
-      const { partialFilter, edition } = ctxValue;
-      const filterUnderEdition = edition?.filter || null;
+      const filterUnderEdition = ctxValue.edition?.filter || null;
 
       if (filterUnderEdition?.type === "search-text") {
         ctx.doneLoading([filterUnderEdition.value]);
         return toolkit.sendEvent("valueSuggestionsLoaded");
       }
 
-      let values = [];
-      let error = null;
+      const targetFilter = filterUnderEdition || ctx.getPartialFilter(ctxValue);
+      const valuesType = targetFilter.attribute.value;
+      const operatorType = targetFilter.operator.type;
 
-      const valuesType = filterUnderEdition
-        ? filterUnderEdition.attribute.value
-        : partialFilter.attribute.value;
-
-      const operatorType = filterUnderEdition
-        ? filterUnderEdition.operator.type
-        : partialFilter.operator.type;
-
-      const selectionType = operatorType === "multiple-value" ? "multiple" : "single";
+      const selectionType =
+        operatorType === "multiple-value" ? "multiple" : "single";
 
       ctx.startLoading(selectionType);
+
+      let values = [];
+      let error = null;
 
       try {
         values = await toolkit.suggestionService.loadValues({

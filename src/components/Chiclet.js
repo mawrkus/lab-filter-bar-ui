@@ -1,6 +1,7 @@
 import { memo } from "react";
 import areEqual from "fast-deep-equal";
 
+import { PartialChiclet } from "./PartialChiclet";
 import { ChicletAttributeOperatorValue } from "./ChicletAttributeOperatorValue";
 import { ChicletAttributeOperator } from "./ChicletAttributeOperator";
 import { ChicletLogicalOperator } from "./ChicletLogicalOperator";
@@ -8,6 +9,14 @@ import { ChicletSearchText } from "./ChicletSearchText";
 
 const ChicletComponent = ({ filter, onClick, onRemove }) => {
   switch (filter.type) {
+    case "partial":
+      return (
+        <PartialChiclet
+          filter={filter}
+          onClick={onClick}
+        />
+      );
+
     case "attribute-operator-value":
       return (
         <ChicletAttributeOperatorValue
@@ -27,12 +36,7 @@ const ChicletComponent = ({ filter, onClick, onRemove }) => {
       );
 
     case "logical-operator":
-      return (
-        <ChicletLogicalOperator
-          filter={filter}
-          onClick={onClick}
-        />
-      );
+      return <ChicletLogicalOperator filter={filter} onClick={onClick} />;
 
     case "search-text":
       return (

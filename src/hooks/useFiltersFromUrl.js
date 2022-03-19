@@ -9,7 +9,7 @@ export const parseUrlFilters = () => {
   // as the last filter index will be used to build the future filter ids
   // and the filter parsed from the URLs might have higher ids
   // (happens when some were deleted then more were created)
-  // we ensure to remap them
+  // we remap them to ensure uniqueness
   // TODO: use unique ids
   return parsedFilters.map((filter, i) => ({ ...filter, id: `f${i + 1}` }));
 };

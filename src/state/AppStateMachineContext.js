@@ -5,7 +5,6 @@ export class AppStateMachineContext extends StateMachineContext {
   constructor({ initFilters, onUpdateFilters }) {
     super({
       filters: initFilters,
-      filterId: initFilters.length + 1,
       suggestions: {
         visible: false,
         loading: false,
@@ -16,7 +15,12 @@ export class AppStateMachineContext extends StateMachineContext {
       edition: null,
     });
 
+    this._lastFilterIndex = initFilters.length + 1;
     this._nofityFiltersUpdate = onUpdateFilters;
+  }
+
+  getFilterId() {
+    return `f${this._lastFilterIndex++}`;
   }
 
   reset(resetError) {
@@ -126,7 +130,7 @@ export class AppStateMachineContext extends StateMachineContext {
     }
 
     const newPartialFilter = {
-      id: ctxValue.filterId,
+      id: this.getFilterId(),
       attribute: attributeItem,
       operator: null,
       value: null,
@@ -134,8 +138,6 @@ export class AppStateMachineContext extends StateMachineContext {
     };
 
     filters.push(newPartialFilter);
-
-    ctxValue.filterId += 1;
 
     this.set(ctxValue);
   }
@@ -185,7 +187,7 @@ export class AppStateMachineContext extends StateMachineContext {
     const { filters } = ctxValue;
 
     const newFilter = {
-      id: ctxValue.filterId,
+      id: this.getFilterId(),
       attribute: null,
       operator: null,
       value: valueItem,
@@ -194,7 +196,6 @@ export class AppStateMachineContext extends StateMachineContext {
 
     filters.push(newFilter);
 
-    ctxValue.filterId += 1;
     ctxValue.edition = null;
 
     this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
@@ -206,7 +207,7 @@ export class AppStateMachineContext extends StateMachineContext {
     const { filters } = ctxValue;
 
     const newFilter = {
-      id: ctxValue.filterId,
+      id: this.getFilterId(),
       attribute: null,
       operator: logicalOperatorItem,
       value: null,
@@ -215,7 +216,6 @@ export class AppStateMachineContext extends StateMachineContext {
 
     filters.push(newFilter);
 
-    ctxValue.filterId += 1;
     ctxValue.edition = null;
 
     this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
@@ -388,6 +388,7 @@ export class AppStateMachineContext extends StateMachineContext {
       action: "remove",
       filter: filterRemoved,
     });
+
     this.set(ctxValue);
   }
 

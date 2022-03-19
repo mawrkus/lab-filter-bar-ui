@@ -4,7 +4,7 @@ export const ChicletSearchText = ({ filter, onClick, onRemove }) => {
   const { value } = filter;
 
   return (
-    <div className="chiclet search-text" id={`f-${filter.id}`}>
+    <div className="chiclet search-text" id={filter.id}>
       <Label
         as="a"
         color="blue"

@@ -26,7 +26,7 @@ export const useDropdownEdition = (open, edition) => {
 
     if (open && edition) {
       // see <Chiclet /> & <PartialChiclet />
-      const chicletElement = document.querySelector(`#f-${edition.filter.id} .${edition.part}`);
+      const chicletElement = document.querySelector(`#${edition.filter.id} .${edition.part}`);
       const position = getDropdownPosition(chicletElement, edition.filter);
 
       dropdownElement.style.position = "absolute";

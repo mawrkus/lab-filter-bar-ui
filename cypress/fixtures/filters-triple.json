@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": "f1",
     "attribute": { "id": 1, "value": "season", "label": "Season" },
     "operator": { "id": 1, "value": "=", "label": "=", "type": "single-value" },
     "value": {
@@ -12,14 +12,14 @@
     "type": "attribute-operator-value"
   },
   {
-    "id": 2,
+    "id": "f2",
     "attribute": null,
     "operator": { "id": 1, "value": "and", "label": "AND", "type": "logical" },
     "value": null,
     "type": "logical-operator"
   },
   {
-    "id": 3,
+    "id": "f3",
     "attribute": { "id": 2, "value": "episode", "label": "Episode" },
     "operator": {
       "id": 2,

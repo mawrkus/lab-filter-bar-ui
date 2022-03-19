@@ -8,7 +8,7 @@ export const ChicletAttributeOperatorValue = ({
   const { attribute, operator, value } = filter;
 
   return (
-    <div className="chiclet attribute-operator-value" id={`f-${filter.id}`}>
+    <div className="chiclet attribute-operator-value" id={filter.id}>
       <Label
         as="span"
         color="blue"

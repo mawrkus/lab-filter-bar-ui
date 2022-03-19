@@ -4,7 +4,7 @@ export const ChicletLogicalOperator = ({ filter, onClick }) => {
   const { operator } = filter;
 
   return (
-    <div className="chiclet logical-operator" id={`f-${filter.id}`}>
+    <div className="chiclet logical-operator" id={filter.id}>
       <Label
         as="a"
         size="small"

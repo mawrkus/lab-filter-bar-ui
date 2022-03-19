@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": "f1",
     "attribute": { "id": 1, "value": "season", "label": "Season" },
     "operator": { "id": 1, "value": "=", "label": "=", "type": "single-value" },
     "value": {

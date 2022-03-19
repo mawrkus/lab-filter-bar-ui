@@ -10,7 +10,7 @@ const PartialChicletComponent = ({ filter, onClick }) => {
   }
 
   return (
-    <div className="chiclet partial" id={`f-${filter.id}`}>
+    <div className="chiclet partial" id={filter.id}>
       {attribute && (
         <Label
           as="a"

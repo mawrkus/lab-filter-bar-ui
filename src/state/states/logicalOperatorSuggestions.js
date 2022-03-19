@@ -32,14 +32,14 @@ export const chooseLogicalOperator = {
     selectItem: {
       targetId: "loadAttributeSuggestions",
       action(event, ctx) {
-        ctx.createLogicalOperatorFilter(event.data);
+        ctx.createLogicalOperatorFilter(event.data.item);
       },
     },
     createItem: {
       targetId: "idle",
       action(event, ctx) {
         ctx.createLogicalOperatorFilter({ value: "and", label: "AND" });
-        ctx.createSearchTextFilter(event.data);
+        ctx.createSearchTextFilter(event.data.item);
       },
     },
     // On backspace
@@ -58,7 +58,7 @@ export const editLogicalOperator = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.editFilterOperator(event.data);
+        ctx.editFilterOperator(event.data.item);
       },
     },
   },

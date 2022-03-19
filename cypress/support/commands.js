@@ -217,9 +217,3 @@ Cypress.Commands.add("suggestionsShouldBeHidden", () => {
 
   cy.get('.suggestions [role="listbox"] [role="option"]').should("not.exist");
 });
-
-Cypress.Commands.add("chicletShouldHaveValue", (expectedValue) => {
-  cy.log(`🔍 The chiclet should have value "${expectedValue}"`);
-
-  cy.get(".filter-bar .chiclets .chiclet .value").contains(regx(expectedValue));
-});

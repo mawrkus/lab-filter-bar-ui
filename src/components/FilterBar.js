@@ -1,37 +1,35 @@
+import { memo, useCallback } from "react";
 
-import { memo, useCallback } from 'react';
-
-import { Chiclet } from './Chiclet';
-import { SuggestionsDropdown } from './suggestions/SuggestionsDropdown';
-import { useStateMachine, useKeyboardActions, useDropdownEdition } from '../hooks';
+import { Chiclet } from "./Chiclet";
+import { SuggestionsDropdown } from "./suggestions/SuggestionsDropdown";
+import {
+  useStateMachine,
+  useKeyboardActions,
+  useDropdownEdition,
+} from "../hooks";
 
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
-  const [selectedDropdownItem] = useDropdownEdition(props.suggestions.visible, props.edition);
+  const [selectedDropdownItem] = useDropdownEdition(
+    props.suggestions.visible,
+    props.edition
+  );
 
   useKeyboardActions();
 
-  const onClickChiclet = useCallback((event, filter, part) => {
-    if (part === 'attribute') {
-      return stateMachine.sendEvent("editAttribute", filter);
-    }
+  const onClickChiclet = useCallback(
+    (event, filter, part) => {
+      stateMachine.sendEvent("editFilter", { filter, part });
+    },
+    [stateMachine]
+  );
 
-    if (part === 'operator') {
-      return stateMachine.sendEvent("editOperator", filter);
-    }
-
-    if (part === 'value') {
-      return stateMachine.sendEvent("editValue", filter);
-    }
-
-    if (part === 'logical-operator') {
-      return stateMachine.sendEvent("editLogicalOperator", filter);
-    }
-  }, [stateMachine]);
-
-  const onRemoveChiclet = useCallback((event, filter) => {
-    stateMachine.sendEvent("removeFilter", filter);
-  }, [stateMachine]);
+  const onRemoveChiclet = useCallback(
+    (event, filter) => {
+      stateMachine.sendEvent("removeFilter", { filter });
+    },
+    [stateMachine]
+  );
 
   const onOpenSuggestionsDropdown = () => {
     stateMachine.sendEvent("startInput");
@@ -42,11 +40,11 @@ const FilterBarComponent = ({ stateMachine }) => {
   };
 
   const onSelectSuggestionItem = (event, item) => {
-    stateMachine.sendEvent("selectItem", item);
+    stateMachine.sendEvent("selectItem", { item });
   };
 
   const onCreateSuggestionItem = (event, item) => {
-    stateMachine.sendEvent("createItem", item);
+    stateMachine.sendEvent("createItem", { item });
   };
 
   const onBackspace = () => {
@@ -56,7 +54,7 @@ const FilterBarComponent = ({ stateMachine }) => {
   return (
     <div className="filter-bar">
       <div className="chiclets">
-        {props.filters.map((filter, i) => (
+        {props.filters.map((filter) => (
           <Chiclet
             key={filter.id}
             filter={filter}
@@ -68,7 +66,7 @@ const FilterBarComponent = ({ stateMachine }) => {
 
       <div className="suggestions">
         <SuggestionsDropdown
-          multiple={props.suggestions.selectionType === 'multiple'}
+          multiple={props.suggestions.selectionType === "multiple"}
           selectedItem={selectedDropdownItem}
           open={props.suggestions.visible}
           loading={props.suggestions.loading}
@@ -83,6 +81,6 @@ const FilterBarComponent = ({ stateMachine }) => {
       </div>
     </div>
   );
-}
+};
 
 export const FilterBar = memo(FilterBarComponent);

@@ -25,8 +25,10 @@ describe("Filter Bar - Creation with the mouse", () => {
     // 2 + 3 -> AND + attribute-operator-value
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
-
     cy.selectLogicalOperator("AND");
+
+    cy.filterBarShouldHaveText("Season=2 (10 episodes)AND");
+
     cy.selectAttribute("Episode");
     cy.selectOperator("!=");
     cy.selectValue("Rick Potion #9 (S1E6)");
@@ -38,8 +40,12 @@ describe("Filter Bar - Creation with the mouse", () => {
     // 4 + 5 -> OR + attribute-operator-value (search text)
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
-
     cy.selectLogicalOperator("OR");
+
+    cy.filterBarShouldHaveText(
+      "Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)OR"
+    );
+
     cy.selectAttribute("Character");
     cy.selectOperator("LIKE");
     cy.clickOnSearchInput().type("smith{enter}");
@@ -51,8 +57,12 @@ describe("Filter Bar - Creation with the mouse", () => {
     // 6 + 7 -> AND + attribute-operator (preset value)
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
-
     cy.selectLogicalOperator("AND");
+
+    cy.filterBarShouldHaveText(
+      'Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"AND'
+    );
+
     cy.selectAttribute("Crew");
     cy.selectOperator("IS NOT NULL");
 
@@ -63,8 +73,12 @@ describe("Filter Bar - Creation with the mouse", () => {
     // 8 + 9 -> AND + search text
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
-
     cy.selectLogicalOperator("AND");
+
+    cy.filterBarShouldHaveText(
+      'Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND'
+    );
+
     cy.clickOnSearchInput().type("adult{enter}");
 
     cy.filterBarShouldHaveText(
@@ -83,8 +97,11 @@ describe("Filter Bar - Creation with the mouse", () => {
     // 12 + 13 -> OR + attribute-operator-value (multiple selections)
     cy.clickOnSearchInput();
     cy.suggestionsShouldBe(logicalOperatorsList);
-
     cy.selectLogicalOperator("OR");
+
+    cy.filterBarShouldHaveText(
+      'Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"AND"swim"OR'
+    );
 
     cy.selectAttribute("Season");
     cy.selectOperator("IN");

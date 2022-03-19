@@ -34,34 +34,44 @@ export const idle = {
         targetId: "loadValueSuggestions",
       },
     ],
-    editAttribute: {
-      targetId: "loadAttributeSuggestions",
-      action(event, ctx) {
-        ctx.startEditing("attribute", event.data);
+    editFilter: [
+      {
+        cond: (event) => event.data.part === "attribute",
+        targetId: "loadAttributeSuggestions",
+        action(event, ctx) {
+          ctx.startEditing(event.data.filter, event.data.part);
+        },
       },
-    },
-    editOperator: {
-      targetId: "loadOperatorSuggestions",
-      action(event, ctx) {
-        ctx.startEditing("operator", event.data);
+      {
+        cond: (event) =>
+          event.data.filter.type !== "logical-operator" &&
+          event.data.part === "operator",
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.startEditing(event.data.filter, event.data.part);
+        },
       },
-    },
-    editValue: {
-      targetId: "loadValueSuggestions",
-      action(event, ctx) {
-        ctx.startEditing("value", event.data);
+      {
+        cond: (event) =>
+          event.data.filter.type === "logical-operator" &&
+          event.data.part === "operator",
+        targetId: "loadLogicalOperatorSuggestions",
+        action(event, ctx) {
+          ctx.startEditing(event.data.filter, event.data.part);
+        },
       },
-    },
-    editLogicalOperator: {
-      targetId: "loadLogicalOperatorSuggestions",
-      action(event, ctx) {
-        ctx.startEditing("operator", event.data);
+      {
+        cond: (event) => event.data.part === "value",
+        targetId: "loadValueSuggestions",
+        action(event, ctx) {
+          ctx.startEditing(event.data.filter, event.data.part);
+        },
       },
-    },
+    ],
     removeFilter: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.removeFilter(event.data);
+        ctx.removeFilter(event.data.filter);
       },
     },
     removeLastFilter: {

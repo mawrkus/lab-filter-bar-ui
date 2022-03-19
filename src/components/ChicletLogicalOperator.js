@@ -10,7 +10,7 @@ export const ChicletLogicalOperator = ({ filter, onClick }) => {
         size="small"
         title={`Click to change "${operator.label}"`}
         className="operator"
-        onClick={(e) => onClick(e, filter, "logical-operator")}
+        onClick={(e) => onClick(e, filter, "operator")}
         tabIndex="0"
       >
         {operator.label}

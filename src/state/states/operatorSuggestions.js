@@ -34,17 +34,17 @@ export const chooseOperator = {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event) => event.data.type !== "preset-value",
+        cond: (event) => event.data.item.type !== "preset-value",
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.setPartialFilterOperator(event.data);
+          ctx.setPartialFilterOperator(event.data.item);
         },
       },
       {
-        cond: (event) => event.data.type === "preset-value",
+        cond: (event) => event.data.item.type === "preset-value",
         targetId: "idle",
         action(event, ctx) {
-          ctx.completePartialAttributeOperatorFilter(event.data);
+          ctx.completePartialAttributeOperatorFilter(event.data.item);
         },
       },
     ],
@@ -66,17 +66,17 @@ export const editPartialOperator = {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event) => event.data.type !== "preset-value",
+        cond: (event) => event.data.item.type !== "preset-value",
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.setPartialFilterOperator(event.data);
+          ctx.setPartialFilterOperator(event.data.item);
         },
       },
       {
-        cond: (event) => event.data.type === "preset-value",
+        cond: (event) => event.data.item.type === "preset-value",
         targetId: "idle",
         action(event, ctx) {
-          ctx.completePartialAttributeOperatorFilter(event.data);
+          ctx.completePartialAttributeOperatorFilter(event.data.item);
         },
       },
     ],
@@ -107,7 +107,7 @@ export const editOperator = {
         cond: (event, ctx) => {
           const { operator, value } = ctx.get().edition.filter;
           const typeUnderEdition = operator.type;
-          const newType = event.data.type;
+          const newType = event.data.item.type;
 
           /* same types */
 
@@ -140,14 +140,14 @@ export const editOperator = {
         },
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator(event.data, true);
+          ctx.editFilterOperator(event.data.item, true);
         },
       },
       {
         cond: () => true,
         targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator(event.data);
+          ctx.editFilterOperator(event.data.item);
         },
       },
     ],

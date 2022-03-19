@@ -108,7 +108,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  setPartialFilterAttribute(filterAttribute) {
+  setPartialFilterAttribute(attributeItem) {
     const ctxValue = this.get();
     const { edition, filters } = ctxValue;
 
@@ -117,7 +117,7 @@ export class AppStateMachineContext extends StateMachineContext {
         (f) => f.id === edition.filter.id
       );
 
-      filterUnderEdition.attribute = filterAttribute;
+      filterUnderEdition.attribute = attributeItem;
       ctxValue.edition = null;
 
       this.set(ctxValue);
@@ -127,7 +127,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
     const newPartialFilter = {
       id: ctxValue.filterId,
-      attribute: filterAttribute,
+      attribute: attributeItem,
       operator: null,
       value: null,
       type: "partial",
@@ -140,22 +140,22 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  setPartialFilterOperator(filterOperator) {
+  setPartialFilterOperator(operatorItem) {
     const ctxValue = this.get();
 
-    this.getPartialFilter(ctxValue).operator = filterOperator;
+    this.getPartialFilter(ctxValue).operator = operatorItem;
 
     ctxValue.edition = null;
 
     this.set(ctxValue);
   }
 
-  completePartialFilter(filterValue, type = "attribute-operator-value") {
+  completePartialFilter(valueItem, type = "attribute-operator-value") {
     const ctxValue = this.get();
     const partialFilter = this.getPartialFilter(ctxValue);
     const { filters } = ctxValue;
 
-    partialFilter.value = filterValue;
+    partialFilter.value = valueItem;
     partialFilter.type = type;
 
     ctxValue.edition = null;
@@ -168,19 +168,19 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  completePartialAttributeOperatorFilter(filterOperator) {
-    this.setPartialFilterOperator(filterOperator);
+  completePartialAttributeOperatorFilter(operatorItem) {
+    this.setPartialFilterOperator(operatorItem);
 
     const filterValue = {
       id: null,
-      value: filterOperator.presetValue,
-      label: String(filterOperator.presetValue),
+      value: operatorItem.presetValue,
+      label: String(operatorItem.presetValue),
     };
 
     this.completePartialFilter(filterValue, "attribute-operator");
   }
 
-  createSearchTextFilter(filterValue) {
+  createSearchTextFilter(valueItem) {
     const ctxValue = this.get();
     const { filters } = ctxValue;
 
@@ -188,7 +188,7 @@ export class AppStateMachineContext extends StateMachineContext {
       id: ctxValue.filterId,
       attribute: null,
       operator: null,
-      value: filterValue,
+      value: valueItem,
       type: "search-text",
     };
 
@@ -201,14 +201,14 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  createLogicalOperatorFilter(filterOperator) {
+  createLogicalOperatorFilter(logicalOperatorItem) {
     const ctxValue = this.get();
     const { filters } = ctxValue;
 
     const newFilter = {
       id: ctxValue.filterId,
       attribute: null,
-      operator: filterOperator,
+      operator: logicalOperatorItem,
       value: null,
       type: "logical-operator",
     };
@@ -223,13 +223,13 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   // filters edition
-  startEditing(part, targetFilter) {
+  startEditing(filter, part) {
     const ctxValue = this.get();
 
     this.set({
       ...ctxValue,
       edition: {
-        filter: targetFilter,
+        filter,
         part,
       },
     });
@@ -266,18 +266,18 @@ export class AppStateMachineContext extends StateMachineContext {
       IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
       IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
   */
-  editFilterOperator(newOperator, startEditingValue = false) {
+  editFilterOperator(newOperatorItem, startEditingValue = false) {
     const ctxValue = this.get();
     const filterUnderEdition = ctxValue.edition.filter;
     const operatorUnderEdition = filterUnderEdition.operator;
     const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
     const prevFilter = copy(filter);
 
-    filter.operator = newOperator;
+    filter.operator = newOperatorItem;
 
     ctxValue.edition = startEditingValue ? { filter, part: "value" } : null;
 
-    if (operatorUnderEdition.type === newOperator.type) {
+    if (operatorUnderEdition.type === newOperatorItem.type) {
       this._nofityFiltersUpdate(ctxValue.filters, {
         action: "edit",
         prevFilter,
@@ -291,15 +291,15 @@ export class AppStateMachineContext extends StateMachineContext {
     }
 
     // = -> IS NULL
-    if (newOperator.type === "preset-value") {
+    if (newOperatorItem.type === "preset-value") {
       filter.value = {
         id: null,
-        value: newOperator.presetValue,
-        label: String(newOperator.presetValue),
+        value: newOperatorItem.presetValue,
+        label: String(newOperatorItem.presetValue),
       };
 
       filter.type = "attribute-operator";
-    } else if (newOperator.type === "multiple-value") {
+    } else if (newOperatorItem.type === "multiple-value") {
       // = -> IN, IS NULL -> IN
       if (operatorUnderEdition.type === "single-value") {
         // = -> IN
@@ -315,7 +315,7 @@ export class AppStateMachineContext extends StateMachineContext {
         filter.value = null; // no search text support in multiple suggestions dropdown component :/
         filter.type = "attribute-operator-value";
       }
-    } else if (newOperator.type === "single-value") {
+    } else if (newOperatorItem.type === "single-value") {
       // IS NULL -> =, IN -> =
       if (operatorUnderEdition.type === "preset-value") {
         filter.value = {
@@ -343,13 +343,13 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  editFilterValue(newValue) {
+  editFilterValue(newValueItem) {
     const ctxValue = this.get();
     const partialFilter = this.getPartialFilter(ctxValue);
     const { edition } = ctxValue;
 
     if (!edition) {
-      partialFilter.value = newValue;
+      partialFilter.value = newValueItem;
       this.set(ctxValue);
       return;
     }
@@ -357,7 +357,7 @@ export class AppStateMachineContext extends StateMachineContext {
     const filter = ctxValue.filters.find((f) => f.id === edition.filter.id);
     const prevFilter = copy(filter);
 
-    filter.value = newValue;
+    filter.value = newValueItem;
     ctxValue.edition = null;
 
     this._nofityFiltersUpdate(ctxValue.filters, {

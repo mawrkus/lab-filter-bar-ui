@@ -22,13 +22,13 @@ export const chooseAttribute = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.setPartialFilterAttribute(event.data);
+        ctx.setPartialFilterAttribute(event.data.item);
       },
     },
     createItem: {
       targetId: "idle",
       action(event, ctx) {
-        ctx.createSearchTextFilter(event.data);
+        ctx.createSearchTextFilter(event.data.item);
       },
     },
     // On backspace

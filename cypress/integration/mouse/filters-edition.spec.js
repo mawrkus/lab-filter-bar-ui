@@ -56,8 +56,8 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.filterBarShouldHaveText("SeasonIS NOT NULL");
 
         cy.editOperator("IS NOT NULL", "=", true);
-        cy.chicletShouldHaveValue('"null"');
         cy.suggestionsShouldBe(seasonsList);
+        cy.filterBarShouldHaveText('Season="null"');
 
         cy.selectValue("1 (11 episodes)");
         cy.filterBarShouldHaveText("Season=1 (11 episodes)");
@@ -69,15 +69,12 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.visitWithFilters("filters-single.json");
 
         cy.editOperator("=", "IN", true);
-        cy.chicletShouldHaveValue("1 (11 episodes)");
+        cy.filterBarShouldHaveText("SeasonIN1 (11 episodes)");
 
         cy.selectMultipleSuggestions(["1 (11 episodes)", "2 (10 episodes)"]);
-        cy.chicletShouldHaveValue("1 (11 episodes), 2 (10 episodes)");
-
         cy.filterBarShouldHaveText("SeasonIN1 (11 episodes), 2 (10 episodes)");
 
         cy.editOperator("IN", "NOT IN");
-
         cy.filterBarShouldHaveText(
           "SeasonNOT IN1 (11 episodes), 2 (10 episodes)"
         );
@@ -91,9 +88,9 @@ describe("Filter Bar - Edition with the mouse", () => {
 
         cy.editOperator("NOT IN", "LIKE", true);
         cy.suggestionsShouldBe(seasonsList);
+        cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)");
 
         cy.selectValue("2 (10 episodes)");
-
         cy.filterBarShouldHaveText("SeasonLIKE2 (10 episodes)");
       });
 
@@ -101,18 +98,17 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.visitWithFilters("filters-single.json");
 
         cy.editOperator("=", "IS NULL");
-        cy.editOperator("IS NULL", "IN", true);
+        cy.filterBarShouldHaveText("SeasonIS NULL");
 
-        cy.chicletShouldHaveValue("");
+        cy.editOperator("IS NULL", "IN", true);
         cy.suggestionsShouldBe(seasonsList);
+        cy.filterBarShouldHaveText("SeasonIN");
 
         cy.editOperator("IN", "NOT IN", true);
-
-        cy.chicletShouldHaveValue("");
         cy.suggestionsShouldBe(seasonsList);
+        cy.filterBarShouldHaveText("SeasonNOT IN");
 
         cy.editOperator("NOT IN", "IS NOT NULL");
-
         cy.filterBarShouldHaveText(
           "SeasonIS NOT NULL"
         );

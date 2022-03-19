@@ -69,13 +69,13 @@ export const chooseValue = {
     selectItem: {
       targetId: "idle",
       action(event, ctx) {
-        ctx.completePartialFilter(event.data);
+        ctx.completePartialFilter(event.data.item);
       },
     },
     createItem: {
       targetId: "idle",
       action(event, ctx) {
-        ctx.completePartialFilter(event.data);
+        ctx.completePartialFilter(event.data.item);
       },
     },
     // On backspace
@@ -103,13 +103,13 @@ export const editValue = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.editFilterValue(event.data);
+        ctx.editFilterValue(event.data.item);
       },
     },
     createItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.editFilterValue(event.data);
+        ctx.editFilterValue(event.data.item);
       },
     },
   },

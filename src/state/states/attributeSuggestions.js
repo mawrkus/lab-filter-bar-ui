@@ -12,7 +12,16 @@ export const loadAttributeSuggestions = {
   },
   events: {
     discardSuggestions: "idle",
-    attributeSuggestionsLoaded: "chooseAttribute",
+    attributeSuggestionsLoaded: [
+      {
+        cond: (event, ctx) => !ctx.isEditing(),
+        targetId: "chooseAttribute",
+      },
+      {
+        cond: (event, ctx) => ctx.isEditing(),
+        targetId: "editAttribute",
+      },
+    ],
   },
 };
 
@@ -20,7 +29,7 @@ export const chooseAttribute = {
   events: {
     discardSuggestions: "idle",
     selectItem: {
-      targetId: "displayPartialFilterSuggestions",
+      targetId: "loadOperatorSuggestions",
       action(event, ctx) {
         ctx.setPartialFilterAttribute(event.data.item);
       },
@@ -36,6 +45,24 @@ export const chooseAttribute = {
       targetId: "idle",
       action(event, ctx) {
         ctx.removeFilter(ctx.getLastFilter());
+      },
+    },
+  },
+};
+
+export const editAttribute = {
+  events: {
+    discardSuggestions: "displayPartialFilterSuggestions",
+    selectItem: {
+      targetId: "displayPartialFilterSuggestions",
+      action(event, ctx) {
+        ctx.setPartialFilterAttribute(event.data.item);
+      },
+    },
+    createItem: {
+      targetId: "displayPartialFilterSuggestions",
+      action(event, ctx) {
+        ctx.createSearchTextFilter(event.data.item);
       },
     },
   },

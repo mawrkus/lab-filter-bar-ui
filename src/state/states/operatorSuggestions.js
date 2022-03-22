@@ -67,14 +67,14 @@ export const editPartialOperator = {
     selectItem: [
       {
         cond: (event) => event.data.item.type !== "preset-value",
-        targetId: "loadValueSuggestions",
+        targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
           ctx.setPartialFilterOperator(event.data.item);
         },
       },
       {
         cond: (event) => event.data.item.type === "preset-value",
-        targetId: "idle",
+        targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
           ctx.completePartialAttributeOperatorFilter(event.data.item);
         },
@@ -138,9 +138,14 @@ export const editOperator = {
 
           return false;
         },
+        // only exception: we don't go to "displayPartialFilterSuggestions" because:
+        //  - we know that the value has to be edited
+        //  - if we go to "displayPartialFilterSuggestions", the state will be resetted (no more edition)
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator(event.data.item, true);
+          const newFilter = ctx.editFilterOperator(event.data.item, true);
+
+          ctx.startEditing({ filter: newFilter, part: "value" });
         },
       },
       {

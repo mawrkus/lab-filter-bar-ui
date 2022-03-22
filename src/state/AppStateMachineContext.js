@@ -4,15 +4,15 @@ import { StateMachineContext } from "./lib/state-machine";
 export class AppStateMachineContext extends StateMachineContext {
   constructor({ initFilters, onUpdateFilters }) {
     super({
+      edition: null,
       filters: initFilters,
       suggestions: {
+        selectionType: "single", // "single" or "multiple"
         visible: false,
         loading: false,
         error: null,
         items: [],
-        selectionType: "single", // "single" or "multiple"
       },
-      edition: null,
     });
 
     this._lastFilterIndex = initFilters.length + 1;
@@ -27,44 +27,46 @@ export class AppStateMachineContext extends StateMachineContext {
     const ctxValue = this.get();
     const lastLoadingError = ctxValue.suggestions.error;
 
-    this.set({
-      ...ctxValue,
-      suggestions: {
-        visible: resetError ? false : Boolean(lastLoadingError),
-        loading: false,
-        error: resetError ? null : lastLoadingError,
-        items: [],
-        selectionType: "single",
-      },
-      edition: null,
-    });
+    ctxValue.suggestions = {
+      selectionType: "single",
+      visible: resetError ? false : Boolean(lastLoadingError),
+      loading: false,
+      error: resetError ? null : lastLoadingError,
+      items: [],
+    };
+
+    ctxValue.edition = null;
+
+    this.set(ctxValue);
   }
 
   // loading states
   startLoading(selectionType = "single") {
-    this.set({
-      ...this.get(),
-      suggestions: {
-        visible: true,
-        loading: true,
-        error: null,
-        items: [],
-        selectionType,
-      },
-    });
+    const ctxValue = this.get();
+
+    ctxValue.suggestions = {
+      selectionType,
+      visible: true,
+      loading: true,
+      error: null,
+      items: [],
+    };
+
+    this.set(ctxValue);
   }
 
   doneLoading(items, selectionType = "single", error = null) {
-    this.set({
-      ...this.get(),
-      suggestions: {
-        visible: true,
-        loading: false,
-        error,
-        items,
-        selectionType,
-      },
-    });
+    const ctxValue = this.get();
+
+    ctxValue.suggestions = {
+      selectionType,
+      visible: true,
+      loading: false,
+      error,
+      items,
+    };
+
+    this.set(ctxValue);
   }
 
   hasLoadingError() {
@@ -122,19 +124,17 @@ export class AppStateMachineContext extends StateMachineContext {
       );
 
       filterUnderEdition.attribute = attributeItem;
-      ctxValue.edition = null;
 
       this.set(ctxValue);
-
       return;
     }
 
     const newPartialFilter = {
       id: this.getFilterId(),
+      type: "partial",
       attribute: attributeItem,
       operator: null,
       value: null,
-      type: "partial",
     };
 
     filters.push(newPartialFilter);
@@ -147,8 +147,6 @@ export class AppStateMachineContext extends StateMachineContext {
 
     this.getPartialFilter(ctxValue).operator = operatorItem;
 
-    ctxValue.edition = null;
-
     this.set(ctxValue);
   }
 
@@ -159,8 +157,6 @@ export class AppStateMachineContext extends StateMachineContext {
 
     partialFilter.value = valueItem;
     partialFilter.type = type;
-
-    ctxValue.edition = null;
 
     this._nofityFiltersUpdate(filters, {
       action: "create",
@@ -188,15 +184,13 @@ export class AppStateMachineContext extends StateMachineContext {
 
     const newFilter = {
       id: this.getFilterId(),
+      type: "search-text",
       attribute: null,
       operator: null,
       value: valueItem,
-      type: "search-text",
     };
 
     filters.push(newFilter);
-
-    ctxValue.edition = null;
 
     this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
     this.set(ctxValue);
@@ -208,10 +202,10 @@ export class AppStateMachineContext extends StateMachineContext {
 
     const newFilter = {
       id: this.getFilterId(),
+      type: "logical-operator",
       attribute: null,
       operator: logicalOperatorItem,
       value: null,
-      type: "logical-operator",
     };
 
     filters.push(newFilter);
@@ -223,31 +217,35 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   // filters edition
-  startEditing(filter, part) {
+  startEditing({ filter, part }) {
     const ctxValue = this.get();
 
-    this.set({
-      ...ctxValue,
-      edition: {
-        filter,
-        part,
-      },
-    });
+    ctxValue.edition = {
+      filter,
+      part,
+    };
+
+    this.set(ctxValue);
   }
 
   stopEditing() {
-    this.set({
-      ...this.get(),
-      edition: null,
-    });
+    const ctxValue = this.get();
+
+    ctxValue.edition = null;
+
+    this.set(ctxValue);
   }
 
   isEditing() {
-    return this.get().edition !== null;
+    return this.getEdition() !== null;
   }
 
   isEditingPartialFilter() {
-    return this.get().edition?.filter?.type === "partial";
+    return this.getEdition()?.filter?.type === "partial";
+  }
+
+  getEdition() {
+    return this.get().edition;
   }
 
   /*
@@ -275,8 +273,6 @@ export class AppStateMachineContext extends StateMachineContext {
 
     filter.operator = newOperatorItem;
 
-    ctxValue.edition = startEditingValue ? { filter, part: "value" } : null;
-
     if (operatorUnderEdition.type === newOperatorItem.type) {
       this._nofityFiltersUpdate(ctxValue.filters, {
         action: "edit",
@@ -287,7 +283,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
       this.set(ctxValue);
 
-      return;
+      return filter;
     }
 
     // = -> IS NULL
@@ -341,6 +337,8 @@ export class AppStateMachineContext extends StateMachineContext {
     });
 
     this.set(ctxValue);
+
+    return filter;
   }
 
   editFilterValue(newValueItem) {
@@ -358,7 +356,6 @@ export class AppStateMachineContext extends StateMachineContext {
     const prevFilter = copy(filter);
 
     filter.value = newValueItem;
-    ctxValue.edition = null;
 
     this._nofityFiltersUpdate(ctxValue.filters, {
       action: "edit",

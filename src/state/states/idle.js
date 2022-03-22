@@ -39,7 +39,7 @@ export const idle = {
         cond: (event) => event.data.part === "attribute",
         targetId: "loadAttributeSuggestions",
         action(event, ctx) {
-          ctx.startEditing(event.data.filter, event.data.part);
+          ctx.startEditing(event.data);
         },
       },
       {
@@ -48,7 +48,7 @@ export const idle = {
           event.data.part === "operator",
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
-          ctx.startEditing(event.data.filter, event.data.part);
+          ctx.startEditing(event.data);
         },
       },
       {
@@ -57,14 +57,14 @@ export const idle = {
           event.data.part === "operator",
         targetId: "loadLogicalOperatorSuggestions",
         action(event, ctx) {
-          ctx.startEditing(event.data.filter, event.data.part);
+          ctx.startEditing(event.data);
         },
       },
       {
         cond: (event) => event.data.part === "value",
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.startEditing(event.data.filter, event.data.part);
+          ctx.startEditing(event.data);
         },
       },
     ],

@@ -78,3 +78,18 @@ State machine FTW! :D
 Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
     at Dropdown (http://localhost:3000/static/js/bundle.js:52590:29)
 ```
+
+### Editing IN/NOT IN values with a partial filter present
+
+The items of the multi-dropdown are selected on close.
+When editing a multi dropdown and closing it by clicking on the document:
+
+- the mouse down closes the multi dropdown,
+- the partial suggestions dropdown is open and
+- 💥 the mouse up closes it immediately
+
+..resulting in poor UX (see node_modules/semantic-ui-react/src/modules/Dropdown/Dropdown.js L160)
+
+We've tried to introduce a 100ms delay in the `displayPartialFilterSuggestions` state to prevent the
+dropdown that opens for the partial filter to be closed on mouse up but it produced wrong dropdown
+placements when editing completed filter values and a partial filter is present.

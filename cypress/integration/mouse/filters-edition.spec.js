@@ -127,9 +127,15 @@ describe("Filter Bar - Edition with the mouse", () => {
           cy.selectAttribute("Crew");
 
           cy.editOperator("=", "LIKE");
-          cy.suggestionsShouldBe(operatorsList);
 
+          cy.suggestionsShouldBe(operatorsList);
           cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)ANDCrew");
+
+          cy.editOperator("LIKE", "IN");
+          cy.get("body").click();
+
+          cy.suggestionsShouldBe(operatorsList);
+          cy.filterBarShouldHaveText("SeasonIN1 (11 episodes)ANDCrew");
         });
       });
 
@@ -179,8 +185,14 @@ describe("Filter Bar - Edition with the mouse", () => {
           cy.editOperator("=", "LIKE", true);
 
           cy.suggestionsShouldBe(crewList);
-
           cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)ANDCrew!=");
+
+          cy.editOperator("LIKE", "IN", true);
+          cy.get("body").click();
+
+          // does not happen - see README (Quirks)
+          // cy.suggestionsShouldBe(crewList);
+          cy.filterBarShouldHaveText("SeasonIN1 (11 episodes)ANDCrew!=");
         });
       });
 

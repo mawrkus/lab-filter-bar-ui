@@ -144,7 +144,12 @@ export class AppFiltersTree {
   removePartialFilter() {
     const filters = this.getFilters();
 
-    filters.pop();
+    const filter = filters.pop();
+
+    this._nofityFiltersUpdate(filters, {
+      action: "remove",
+      filter,
+    });
 
     return filters;
   }

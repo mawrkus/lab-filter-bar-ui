@@ -41,6 +41,7 @@ export const chooseAttribute = {
         targetId: "loadAttributeSuggestions",
         action(event, ctx) {
           const parensFilter = ctx.createParensFilter(event.data.item);
+
           ctx.startInserting(parensFilter);
         },
       },

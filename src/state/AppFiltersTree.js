@@ -89,7 +89,13 @@ export class AppFiltersTree {
     return this._insertion;
   }
 
-  resetInsertion() {
+  startInserting(filter) {
+    this._insertion = { filter };
+
+    return this._insertion;
+  }
+
+  stopInserting() {
     this._insertion = { filter: this._rootFilter };
 
     return this._insertion;
@@ -109,7 +115,10 @@ export class AppFiltersTree {
       });
     }
 
-    return this._rootFilter.filters;
+    return {
+      filters: this._rootFilter.filters,
+      newFilter,
+    };
   }
 
   // deletion

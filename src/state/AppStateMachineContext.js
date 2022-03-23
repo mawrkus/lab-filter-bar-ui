@@ -37,8 +37,8 @@ export class AppStateMachineContext extends StateMachineContext {
       items: [],
     };
 
-    ctxValue.edition = this.stopEditing();
-    ctxValue.insertion = this._filtersTree.resetInsertion();
+    ctxValue.edition = this._filtersTree.stopEditing();
+    ctxValue.insertion = this._filtersTree.stopInserting();
 
     this.set(ctxValue);
   }
@@ -97,12 +97,14 @@ export class AppStateMachineContext extends StateMachineContext {
   createSearchTextFilter(valueItem) {
     const ctxValue = this.get();
 
-    ctxValue.filters = this._filtersTree.insertFilter({
+    const { filters } = this._filtersTree.insertFilter({
       type: "search-text",
       attribute: null,
       operator: null,
       value: valueItem,
     });
+
+    ctxValue.filters = filters;
 
     this.set(ctxValue);
   }
@@ -110,12 +112,14 @@ export class AppStateMachineContext extends StateMachineContext {
   createPartialFilter(attributeItem) {
     const ctxValue = this.get();
 
-    ctxValue.filters = this._filtersTree.insertFilter({
+    const { filters } = this._filtersTree.insertFilter({
       type: "partial",
       attribute: attributeItem,
       operator: null,
       value: null,
     });
+
+    ctxValue.filters = filters;
 
     this.set(ctxValue);
   }
@@ -139,12 +143,14 @@ export class AppStateMachineContext extends StateMachineContext {
   createLogicalOperatorFilter(logicalOperatorItem) {
     const ctxValue = this.get();
 
-    ctxValue.filters = this._filtersTree.insertFilter({
+    const { filters } = this._filtersTree.insertFilter({
       type: "logical-operator",
       attribute: null,
       operator: logicalOperatorItem,
       value: null,
     });
+
+    ctxValue.filters = filters;
 
     this.set(ctxValue);
   }

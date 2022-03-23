@@ -3,16 +3,18 @@ import { memo, useCallback } from "react";
 import { Chiclet } from "./Chiclet";
 import { SuggestionsDropdown } from "./suggestions/SuggestionsDropdown";
 import {
-  useStateMachine,
   useKeyboardActions,
-  useDropdownEdition,
+  useDropdownPosition,
+  useStateMachine,
 } from "../hooks";
 
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);
-  const [selectedDropdownItem] = useDropdownEdition(
+
+  useDropdownPosition(
     props.suggestions.visible,
-    props.edition
+    props.edition,
+    props.insertion
   );
 
   useKeyboardActions();
@@ -67,7 +69,7 @@ const FilterBarComponent = ({ stateMachine }) => {
       <div className="suggestions">
         <SuggestionsDropdown
           multiple={props.suggestions.selectionType === "multiple"}
-          selectedItem={selectedDropdownItem}
+          selectedItem={props.edition?.filter?.[props.edition?.part]}
           open={props.suggestions.visible}
           loading={props.suggestions.loading}
           error={props.suggestions.error}

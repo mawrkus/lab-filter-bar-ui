@@ -86,9 +86,9 @@ When editing a multi dropdown and closing it by clicking on the document:
 
 - the mouse down closes the multi dropdown,
 - the partial suggestions dropdown is open and
-- 💥 the mouse up closes it immediately
+- 💥 the mouse up closes it immediately (node_modules/semantic-ui-react/src/modules/Dropdown/Dropdown.js L160)
 
-..resulting in poor UX (see node_modules/semantic-ui-react/src/modules/Dropdown/Dropdown.js L160)
+..resulting in poor UX :/
 
 We've tried to introduce a 100ms delay in the `displayPartialFilterSuggestions` state to prevent the
 dropdown that opens for the partial filter to be closed on mouse up but it produced wrong dropdown

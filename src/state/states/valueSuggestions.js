@@ -1,15 +1,15 @@
 export const loadValueSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
-      const ctxValue = ctx.get();
-      const filterUnderEdition = ctxValue.edition?.filter || null;
+      const filterUnderEdition = ctx.getEdition()?.filter;
 
       if (filterUnderEdition?.type === "search-text") {
         ctx.doneLoading([filterUnderEdition.value]);
+
         return toolkit.sendEvent("valueSuggestionsLoaded");
       }
 
-      const targetFilter = filterUnderEdition || ctx.getPartialFilter(ctxValue);
+      const targetFilter = filterUnderEdition || ctx.getPartialFilter();
       const valuesType = targetFilter.attribute.value;
       const operatorType = targetFilter.operator.type;
 
@@ -81,7 +81,7 @@ export const chooseValue = {
     // On backspace
     removeLastFilter: [
       {
-        cond: (event, ctx) => ctx.hasPartialFilter(),
+        cond: (event, ctx) => ctx.getPartialFilter(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.removePartialOperator();

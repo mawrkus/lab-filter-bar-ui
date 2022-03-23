@@ -3,8 +3,14 @@ export const loadLogicalOperatorSuggestions = {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
+      const { edition, insertion } = ctx.get();
+
+      const parens =
+        insertion.filter.id === "root" &&
+        edition?.filter?.type === "logical-operator";
+
       const logicalOperators =
-        await toolkit.suggestionService.loadLogicalOperators();
+        await toolkit.suggestionService.loadLogicalOperators({ parens });
 
       ctx.doneLoading(logicalOperators);
 

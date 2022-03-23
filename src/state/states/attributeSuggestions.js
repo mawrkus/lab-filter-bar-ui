@@ -28,12 +28,23 @@ export const loadAttributeSuggestions = {
 export const chooseAttribute = {
   events: {
     discardSuggestions: "idle",
-    selectItem: {
-      targetId: "loadOperatorSuggestions",
-      action(event, ctx) {
-        ctx.setPartialFilterAttribute(event.data.item);
+    selectItem: [
+      {
+        cond: (event, ctx) => event.data.item.type !== 'parens',
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.createPartialFilter(event.data.item);
+        },
       },
-    },
+      {
+        cond: (event, ctx) => event.data.item.type === 'parens',
+        targetId: "loadAttributeSuggestions",
+        action(event, ctx) {
+          const parensFilter = ctx.createParensFilter(event.data.item);
+          ctx.startInserting(parensFilter);
+        },
+      },
+    ],
     createItem: {
       targetId: "idle",
       action(event, ctx) {
@@ -56,7 +67,7 @@ export const editAttribute = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.setPartialFilterAttribute(event.data.item);
+        ctx.editPartialFilterAttribute(event.data.item);
       },
     },
     createItem: {

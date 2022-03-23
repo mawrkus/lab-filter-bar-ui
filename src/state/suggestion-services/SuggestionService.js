@@ -23,8 +23,8 @@ export class SuggestionService {
     return this._valueService.load({ type });
   }
 
-  loadLogicalOperators() {
-    return this._logicalOperatorService.load();
+  loadLogicalOperators({ parens }) {
+    return this._logicalOperatorService.load({ parens });
   }
 
   cancelLoad() {

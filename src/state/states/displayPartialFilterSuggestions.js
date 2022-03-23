@@ -8,7 +8,9 @@
 export const displayPartialFilterSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
-      if (!ctx.hasPartialFilter()) {
+      const partialFilter = ctx.getPartialFilter();
+
+      if (!partialFilter) {
         toolkit.sendEvent("redirectToIdle");
         return;
       }
@@ -16,14 +18,10 @@ export const displayPartialFilterSuggestions = {
       // no more edition & empty suggestions list
       ctx.reset();
 
-      if (ctx.hasMissingPartialOperator()) {
+      if (partialFilter.operator === null) {
         toolkit.sendEvent("redirectToLoadOperatorSuggestions");
-        return;
-      }
-
-      if (ctx.hasMissingPartialValue()) {
+      } else if (partialFilter.value === null) {
         toolkit.sendEvent("redirectToLoadValueSuggestions");
-        return;
       }
     },
   },

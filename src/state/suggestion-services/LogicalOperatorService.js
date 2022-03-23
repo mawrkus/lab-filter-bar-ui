@@ -1,6 +1,6 @@
 export class LogicalOperatorService {
-  load() {
-    return [
+  load({ parens }) {
+    const items = [
       {
         id: 1,
         value: "and",
@@ -14,5 +14,16 @@ export class LogicalOperatorService {
         type: "logical",
       },
     ];
+
+    if (parens) {
+      // items.push({
+      //   id: 3,
+      //   value: "parens",
+      //   label: "( ... )",
+      //   type: "parens",
+      // });
+    }
+
+    return items;
   }
 }

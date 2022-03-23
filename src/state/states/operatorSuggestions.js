@@ -44,17 +44,17 @@ export const chooseOperator = {
         cond: (event) => event.data.item.type === "preset-value",
         targetId: "idle",
         action(event, ctx) {
-          ctx.completePartialAttributeOperatorFilter(event.data.item);
+          ctx.completePartialFilter(event.data.item, "attribute-operator");
         },
       },
     ],
     // On backspace
     removeLastFilter: [
       {
-        cond: (event, ctx) => ctx.hasPartialFilter(),
+        cond: (event, ctx) => ctx.getPartialFilter(),
         targetId: "idle",
         action(event, ctx) {
-          ctx.removePartialAttribute();
+          ctx.removePartialFilter();
         },
       },
     ],
@@ -76,7 +76,7 @@ export const editPartialOperator = {
         cond: (event) => event.data.item.type === "preset-value",
         targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
-          ctx.completePartialAttributeOperatorFilter(event.data.item);
+          ctx.completePartialFilter(event.data.item, "attribute-operator");
         },
       },
     ],
@@ -105,7 +105,7 @@ export const editOperator = {
     selectItem: [
       {
         cond: (event, ctx) => {
-          const { operator, value } = ctx.get().edition.filter;
+          const { operator, value } = ctx.getEdition().filter;
           const typeUnderEdition = operator.type;
           const newType = event.data.item.type;
 
@@ -143,9 +143,8 @@ export const editOperator = {
         //  - if we go to "displayPartialFilterSuggestions", the state will be resetted (no more edition)
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          const newFilter = ctx.editFilterOperator(event.data.item, true);
-
-          ctx.startEditing({ filter: newFilter, part: "value" });
+          ctx.editFilterOperator(event.data.item);
+          ctx.setEditionPart("value");
         },
       },
       {

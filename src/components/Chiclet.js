@@ -1,21 +1,22 @@
 import { memo } from "react";
 import areEqual from "fast-deep-equal";
 
-import { PartialChiclet } from "./PartialChiclet";
-import { ChicletAttributeOperatorValue } from "./ChicletAttributeOperatorValue";
 import { ChicletAttributeOperator } from "./ChicletAttributeOperator";
+import { ChicletAttributeOperatorValue } from "./ChicletAttributeOperatorValue";
 import { ChicletLogicalOperator } from "./ChicletLogicalOperator";
 import { ChicletSearchText } from "./ChicletSearchText";
+import { ParensGroup } from "./ParensGroup";
+import { PartialChiclet } from "./PartialChiclet";
 
 const ChicletComponent = ({ filter, onClick, onRemove }) => {
   switch (filter.type) {
-    case "partial":
+    case "parens":
       return (
-        <PartialChiclet
-          filter={filter}
-          onClick={onClick}
-        />
+        <ParensGroup filter={filter} onClick={onClick} onRemove={onRemove} />
       );
+
+    case "partial":
+      return <PartialChiclet filter={filter} onClick={onClick} />;
 
     case "attribute-operator-value":
       return (

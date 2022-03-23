@@ -1,11 +1,18 @@
-import { copy } from "fastest-json-copy";
 import { StateMachineContext } from "./lib/state-machine";
+import { AppFiltersTree } from "./AppFiltersTree";
 
 export class AppStateMachineContext extends StateMachineContext {
   constructor({ initFilters, onUpdateFilters }) {
+    const filtersTree = new AppFiltersTree({ initFilters, onUpdateFilters });
+
+    const filters = filtersTree.getFilters();
+    const insertion = filtersTree.getInsertion(); // { filter }
+    const edition = filtersTree.getEdition(); // { filter, part }
+
     super({
-      edition: null,
-      filters: initFilters,
+      edition,
+      insertion,
+      filters,
       suggestions: {
         selectionType: "single", // "single" or "multiple"
         visible: false,
@@ -15,12 +22,7 @@ export class AppStateMachineContext extends StateMachineContext {
       },
     });
 
-    this._lastFilterIndex = initFilters.length + 1;
-    this._nofityFiltersUpdate = onUpdateFilters;
-  }
-
-  getFilterId() {
-    return `f${this._lastFilterIndex++}`;
+    this._filtersTree = filtersTree;
   }
 
   reset(resetError) {
@@ -35,12 +37,22 @@ export class AppStateMachineContext extends StateMachineContext {
       items: [],
     };
 
-    ctxValue.edition = null;
+    ctxValue.edition = this.stopEditing();
+    ctxValue.insertion = this._filtersTree.resetInsertion();
 
     this.set(ctxValue);
   }
 
-  // loading states
+  // filters accessors
+  getLastFilter() {
+    return this._filtersTree.getLastFilter();
+  }
+
+  getPartialFilter() {
+    return this._filtersTree.getPartialFilter();
+  }
+
+  // loading
   startLoading(selectionType = "single") {
     const ctxValue = this.get();
 
@@ -81,63 +93,29 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  // partial filters
-  getPartialFilter(ctxValue = this.get()) {
-    return ctxValue.filters.find((f) => f.type === "partial");
-  }
-
-  hasPartialFilter() {
-    return Boolean(this.getPartialFilter());
-  }
-
-  hasMissingPartialOperator() {
-    return this.getPartialFilter().operator === null;
-  }
-
-  hasMissingPartialValue() {
-    return this.getPartialFilter().value === null;
-  }
-
-  removePartialAttribute() {
+  // partial filters and filters creation
+  createSearchTextFilter(valueItem) {
     const ctxValue = this.get();
 
-    ctxValue.filters = ctxValue.filters.filter((f) => f.type !== "partial");
+    ctxValue.filters = this._filtersTree.insertFilter({
+      type: "search-text",
+      attribute: null,
+      operator: null,
+      value: valueItem,
+    });
 
     this.set(ctxValue);
   }
 
-  removePartialOperator() {
+  createPartialFilter(attributeItem) {
     const ctxValue = this.get();
 
-    this.getPartialFilter(ctxValue).operator = null;
-
-    this.set(ctxValue);
-  }
-
-  setPartialFilterAttribute(attributeItem) {
-    const ctxValue = this.get();
-    const { edition, filters } = ctxValue;
-
-    if (edition) {
-      const filterUnderEdition = ctxValue.filters.find(
-        (f) => f.id === edition.filter.id
-      );
-
-      filterUnderEdition.attribute = attributeItem;
-
-      this.set(ctxValue);
-      return;
-    }
-
-    const newPartialFilter = {
-      id: this.getFilterId(),
+    ctxValue.filters = this._filtersTree.insertFilter({
       type: "partial",
       attribute: attributeItem,
       operator: null,
       value: null,
-    };
-
-    filters.push(newPartialFilter);
+    });
 
     this.set(ctxValue);
   }
@@ -145,223 +123,27 @@ export class AppStateMachineContext extends StateMachineContext {
   setPartialFilterOperator(operatorItem) {
     const ctxValue = this.get();
 
-    this.getPartialFilter(ctxValue).operator = operatorItem;
+    ctxValue.filters = this._filtersTree.setPartialFilterOperator(operatorItem);
 
     this.set(ctxValue);
   }
 
-  completePartialFilter(valueItem, type = "attribute-operator-value") {
+  completePartialFilter(item, type = "attribute-operator-value") {
     const ctxValue = this.get();
-    const partialFilter = this.getPartialFilter(ctxValue);
-    const { filters } = ctxValue;
 
-    partialFilter.value = valueItem;
-    partialFilter.type = type;
+    ctxValue.filters = this._filtersTree.completePartialFilter(item, type);
 
-    this._nofityFiltersUpdate(filters, {
-      action: "create",
-      filter: partialFilter,
-    });
-
-    this.set(ctxValue);
-  }
-
-  completePartialAttributeOperatorFilter(operatorItem) {
-    this.setPartialFilterOperator(operatorItem);
-
-    const filterValue = {
-      id: null,
-      value: operatorItem.presetValue,
-      label: String(operatorItem.presetValue),
-    };
-
-    this.completePartialFilter(filterValue, "attribute-operator");
-  }
-
-  createSearchTextFilter(valueItem) {
-    const ctxValue = this.get();
-    const { filters } = ctxValue;
-
-    const newFilter = {
-      id: this.getFilterId(),
-      type: "search-text",
-      attribute: null,
-      operator: null,
-      value: valueItem,
-    };
-
-    filters.push(newFilter);
-
-    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
     this.set(ctxValue);
   }
 
   createLogicalOperatorFilter(logicalOperatorItem) {
     const ctxValue = this.get();
-    const { filters } = ctxValue;
 
-    const newFilter = {
-      id: this.getFilterId(),
+    ctxValue.filters = this._filtersTree.insertFilter({
       type: "logical-operator",
       attribute: null,
       operator: logicalOperatorItem,
       value: null,
-    };
-
-    filters.push(newFilter);
-
-    ctxValue.edition = null;
-
-    this._nofityFiltersUpdate(filters, { action: "create", filter: newFilter });
-    this.set(ctxValue);
-  }
-
-  // filters edition
-  startEditing({ filter, part }) {
-    const ctxValue = this.get();
-
-    ctxValue.edition = {
-      filter,
-      part,
-    };
-
-    this.set(ctxValue);
-  }
-
-  stopEditing() {
-    const ctxValue = this.get();
-
-    ctxValue.edition = null;
-
-    this.set(ctxValue);
-  }
-
-  isEditing() {
-    return this.getEdition() !== null;
-  }
-
-  isEditingPartialFilter() {
-    return this.getEdition()?.filter?.type === "partial";
-  }
-
-  getEdition() {
-    return this.get().edition;
-  }
-
-  /*
-    single-value operators:
-      = -> != (only change operator) => displayPartialFilterSuggestions
-      = -> IS NULL (change operator and value) => displayPartialFilterSuggestions
-      = -> IN (change operator and value becomes an array) => loadValueSuggestions
-
-    preset-value operators:
-      IS NULL -> IS NOT NULL (only change operator) => displayPartialFilterSuggestions
-      IS NULL -> = (change operator and value) => loadValueSuggestions
-      IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
-
-    multiple-value operators
-      IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
-      IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
-      IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
-  */
-  editFilterOperator(newOperatorItem, startEditingValue = false) {
-    const ctxValue = this.get();
-    const filterUnderEdition = ctxValue.edition.filter;
-    const operatorUnderEdition = filterUnderEdition.operator;
-    const filter = ctxValue.filters.find((f) => f.id === filterUnderEdition.id);
-    const prevFilter = copy(filter);
-
-    filter.operator = newOperatorItem;
-
-    if (operatorUnderEdition.type === newOperatorItem.type) {
-      this._nofityFiltersUpdate(ctxValue.filters, {
-        action: "edit",
-        prevFilter,
-        filter,
-        part: "operator",
-      });
-
-      this.set(ctxValue);
-
-      return filter;
-    }
-
-    // = -> IS NULL
-    if (newOperatorItem.type === "preset-value") {
-      filter.value = {
-        id: null,
-        value: newOperatorItem.presetValue,
-        label: String(newOperatorItem.presetValue),
-      };
-
-      filter.type = "attribute-operator";
-    } else if (newOperatorItem.type === "multiple-value") {
-      // = -> IN, IS NULL -> IN
-      if (operatorUnderEdition.type === "single-value") {
-        // = -> IN
-        if (filterUnderEdition.value.id === null) {
-          // search text
-          filter.value = null; // no search text support in multiple suggestions dropdown component :/
-        } else {
-          filter.value.id = [filterUnderEdition.value.id];
-          filter.value.value = [filterUnderEdition.value.value];
-        }
-      } else if (operatorUnderEdition.type === "preset-value") {
-        // IS NULL -> IN
-        filter.value = null; // no search text support in multiple suggestions dropdown component :/
-        filter.type = "attribute-operator-value";
-      }
-    } else if (newOperatorItem.type === "single-value") {
-      // IS NULL -> =, IN -> =
-      if (operatorUnderEdition.type === "preset-value") {
-        filter.value = {
-          id: null,
-          value: filterUnderEdition.operator.presetValue,
-          label: String(filterUnderEdition.operator.presetValue),
-        };
-
-        filter.type = "attribute-operator-value";
-      } else if (operatorUnderEdition.type === "multiple-value") {
-        // IN -> =
-        filter.value.id = filterUnderEdition.value.id[0];
-        filter.value.value = filterUnderEdition.value.value[0];
-        filter.value.label = filterUnderEdition.value.label.split(",")[0];
-      }
-    }
-
-    this._nofityFiltersUpdate(ctxValue.filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "operator",
-    });
-
-    this.set(ctxValue);
-
-    return filter;
-  }
-
-  editFilterValue(newValueItem) {
-    const ctxValue = this.get();
-    const partialFilter = this.getPartialFilter(ctxValue);
-    const { edition } = ctxValue;
-
-    if (!edition) {
-      partialFilter.value = newValueItem;
-      this.set(ctxValue);
-      return;
-    }
-
-    const filter = ctxValue.filters.find((f) => f.id === edition.filter.id);
-    const prevFilter = copy(filter);
-
-    filter.value = newValueItem;
-
-    this._nofityFiltersUpdate(ctxValue.filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "value",
     });
 
     this.set(ctxValue);
@@ -371,27 +153,154 @@ export class AppStateMachineContext extends StateMachineContext {
   removeFilter(filter) {
     const ctxValue = this.get();
 
-    if (!ctxValue.filters.length) {
-      return;
-    }
-
-    const filterId = filter.id;
-    const filterIndex = ctxValue.filters.findIndex((f) => f.id === filterId);
-    const filterRemoved = ctxValue.filters[filterIndex];
-
-    ctxValue.filters.splice(filterIndex, 2);
-
-    this._nofityFiltersUpdate(ctxValue.filters, {
-      action: "remove",
-      filter: filterRemoved,
-    });
+    ctxValue.filters = this._filtersTree.removeFilter(filter);
 
     this.set(ctxValue);
   }
 
-  getLastFilter() {
-    const { filters } = this.get();
+  removePartialFilter() {
+    const ctxValue = this.get();
 
-    return filters[filters.length - 1];
+    ctxValue.filters = this._filtersTree.removePartialFilter();
+
+    this.set(ctxValue);
   }
+
+  removePartialOperator() {
+    const ctxValue = this.get();
+
+    ctxValue.filters = this._filtersTree.removePartialOperator();
+
+    this.set(ctxValue);
+  }
+
+  // edition
+  getEdition() {
+    return this._filtersTree.getEdition();
+  }
+
+  isEditing() {
+    return Boolean(this._filtersTree.getEdition());
+  }
+
+  isEditingPartialFilter() {
+    return this._filtersTree.isEditingPartialFilter();
+  }
+
+  startEditing({ filter, part }) {
+    const ctxValue = this.get();
+
+    ctxValue.edition = this._filtersTree.startEditing(filter, part);
+
+    this.set(ctxValue);
+  }
+
+  stopEditing() {
+    const ctxValue = this.get();
+
+    ctxValue.edition = this._filtersTree.stopEditing();
+
+    this.set(ctxValue);
+  }
+
+  setEditionPart(part) {
+    const ctxValue = this.get();
+
+    ctxValue.edition = this._filtersTree.setEditionPart(part);
+
+    this.set(ctxValue);
+  }
+
+  editPartialFilterAttribute(newAttributeItem) {
+    const ctxValue = this.get();
+
+    ctxValue.filters =
+      this._filtersTree.setPartialFilterAttribute(newAttributeItem);
+
+    this.set(ctxValue);
+  }
+
+  editFilterOperator(newOperatorItem) {
+    const ctxValue = this.get();
+
+    ctxValue.filters = this._filtersTree.editFilterOperator(newOperatorItem);
+
+    this.set(ctxValue);
+  }
+
+  editFilterValue(newValueItem) {
+    const ctxValue = this.get();
+
+    ctxValue.filters = this._filtersTree.editFilterValue(newValueItem);
+
+    this.set(ctxValue);
+  }
+
+  // // parentheses
+  // createParensFilter() {
+  //   const ctxValue = this.get();
+  //   const { filters } = ctxValue.filtersTree;
+
+  //   const newFilter = {
+  //     id: this.getFilterId(),
+  //     type: "parens",
+  //     filters: [],
+  //   };
+
+  //   filters.push(newFilter);
+
+  //   this._nofityFiltersUpdate(filters, {
+  //     action: "create",
+  //     filter: newFilter,
+  //   });
+
+  //   this.set(ctxValue);
+
+  //   return newFilter;
+  // }
+
+  // groupFiltersInParens() {
+  //   const ctxValue = this.get();
+  //   const { edition, filters } = ctxValue;
+  //   const filterUnderEdition = edition.filter;
+  //   const filterIndex = filters.findIndex(
+  //     (f) => f.id === filterUnderEdition.id
+  //   );
+
+  //   const newParensGroup = {
+  //     id: this.getFilterId(),
+  //     type: "parens",
+  //     filters: [
+  //       { ...filters[filterIndex - 1], parentId: filterUnderEdition.id },
+  //       { ...filters[filterIndex], parentId: filterUnderEdition.id },
+  //       { ...filters[filterIndex + 1], parentId: filterUnderEdition.id },
+  //     ],
+  //   };
+
+  //   filters.splice(filterIndex - 1, 3, newParensGroup);
+
+  //   this._nofityFiltersUpdate(filters, {
+  //     action: "create",
+  //     filter: newParensGroup,
+  //   });
+
+  //   this.set(ctxValue);
+  // }
+
+  // // filters insertion
+  // startInserting(filter) {
+  //   const ctxValue = this.get();
+
+  //   ctxValue.insertion = { filter };
+
+  //   this.set(ctxValue);
+  // }
+
+  // stopInserting() {
+  //   const ctxValue = this.get();
+
+  //   ctxValue.insertion = { filter: this._filtersTreeRoot };
+
+  //   this.set(ctxValue);
+  // }
 }

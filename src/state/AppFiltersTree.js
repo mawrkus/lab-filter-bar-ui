@@ -124,6 +124,11 @@ export class AppFiltersTree {
   // deletion
   removeFilter(filter) {
     const filters = this.getFilters();
+
+    if (!filters.length) {
+      return filters;
+    }
+
     const index = filters.findIndex((f) => f.id === filter.id);
 
     filters.splice(index, 2);

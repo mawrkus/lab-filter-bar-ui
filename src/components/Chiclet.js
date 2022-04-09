@@ -55,4 +55,14 @@ const ChicletComponent = ({ filter, onClick, onRemove }) => {
   }
 };
 
-export const Chiclet = memo(ChicletComponent, areEqual);
+export const Chiclet = memo(ChicletComponent, (prevProps, nextProps) => {
+  // prevents stale partial chiclet when e.g.:
+  // removing a partial operator with backspace and selecting a new one
+  // this happens because 2 successive setProps() are batched in useStateMachine()
+  // resulting in a single render with the same prev/next props here
+  if (nextProps.filter.type === "partial") {
+    return false;
+  }
+
+  return areEqual(prevProps, nextProps);
+});

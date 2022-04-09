@@ -9,18 +9,16 @@ export const PartialChiclet = ({ filter, onClick }) => {
 
   return (
     <div className="chiclet partial" id={filter.id}>
-      {attribute && (
-        <Label
-          as="a"
-          size="small"
-          title={`Click to change "${attribute.label}"`}
-          className="left attribute"
-          onClick={(e) => onClick(e, filter, "attribute")}
-          tabIndex="0"
-        >
-          {attribute.label}
-        </Label>
-      )}
+      <Label
+        as="a"
+        size="small"
+        title={`Click to change "${attribute.label}"`}
+        className="left attribute"
+        onClick={(e) => onClick(e, filter, "attribute")}
+        tabIndex="0"
+      >
+        {attribute.label}
+      </Label>
 
       {operator && (
         <Label

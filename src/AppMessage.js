@@ -3,7 +3,7 @@ import { Message, Button } from "semantic-ui-react";
 
 export const AppMessage = ({ stateId, filters }) => {
   return (
-    <Message size="tiny" style={{ marginTop: "24px", boxShadow: "none" }}>
+    <Message size="tiny" style={{ marginTop: "42px", boxShadow: "none" }}>
       <Message.Header
         as="h1"
         style={{ display: "flex", alignItems: "center" }}

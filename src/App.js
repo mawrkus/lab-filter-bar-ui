@@ -35,7 +35,7 @@ export const App = () => {
 
   return (
     <div className="container">
-      <Header as='h1'>🧪 Rick &amp; Morty filter bar 🧪</Header>
+      <Header as='h1' dividing>🧪 Rick &amp; Morty filter bar 🧪</Header>
 
       <Form style={{ marginTop: '42px' }}>
         <FilterBar stateMachine={appStateMachine} />

@@ -16,12 +16,12 @@ export class LogicalOperatorService {
     ];
 
     if (parens) {
-      // items.push({
-      //   id: 3,
-      //   value: "parens",
-      //   label: "( ... )",
-      //   type: "parens",
-      // });
+      items.push({
+        id: 3,
+        value: "parens",
+        label: "( ... )",
+        type: "parens",
+      });
     }
 
     return items;

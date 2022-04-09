@@ -21,12 +21,12 @@ export class AttributeService {
         value: 'crew',
         label: 'Crew',
       },
-      // {
-      //   id: 5,
-      //   value: "parens",
-      //   label: "( ... )",
-      //   type: "parens",
-      // },
+      {
+        id: 5,
+        value: "parens",
+        label: "( ... )",
+        type: "parens",
+      },
     ];
   }
 };

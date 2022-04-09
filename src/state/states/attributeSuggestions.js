@@ -68,7 +68,7 @@ export const editAttribute = {
     selectItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
-        ctx.editPartialFilterAttribute(event.data.item);
+        ctx.setPartialFilterAttribute(event.data.item);
       },
     },
     createItem: {

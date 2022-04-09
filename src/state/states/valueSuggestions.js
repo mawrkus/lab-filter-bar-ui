@@ -84,7 +84,7 @@ export const chooseValue = {
         cond: (event, ctx) => ctx.getPartialFilter(),
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
-          ctx.removePartialOperator();
+          ctx.removePartialFilterOperator();
         },
       },
     ],

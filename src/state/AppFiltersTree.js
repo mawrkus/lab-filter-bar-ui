@@ -24,18 +24,35 @@ export class AppFiltersTree {
   }
 
   getLastFilter() {
-    const filters = this.getFilters();
+    const { filters } = this._rootFilter;
 
     return filters[filters.length - 1] || null;
   }
 
-  findFilterById(filterId) {
-    return this.getFilters().find(({ id }) => id === filterId);
+  findFilterById(filterId, filters = this._rootFilter.filters) {
+    for (let i = 0; i < filters.length; i += 1) {
+      let filter = filters[i];
+
+      if (filter.id === filterId) {
+        return filter;
+      }
+
+      if (filter.type === "parens") {
+        const childFilter = this.findFilterById(filterId, filter.filters);
+
+        if (childFilter) {
+          return childFilter;
+        }
+      }
+    }
+
+    return null;
   }
 
   // partial filters
   getPartialFilter() {
-    const lastFilter = this.getLastFilter();
+    const { filters } = this._insertion.filter;
+    const lastFilter = filters[filters.length - 1] || null;
 
     return lastFilter?.type === "partial" ? lastFilter : null;
   }
@@ -90,7 +107,7 @@ export class AppFiltersTree {
   }
 
   startInserting(filter) {
-    this._insertion = { filter };
+    this._insertion = { filter: this.findFilterById(filter.id) };
 
     return this._insertion;
   }
@@ -123,7 +140,7 @@ export class AppFiltersTree {
 
   // deletion
   removeFilter(filter) {
-    const filters = this.getFilters();
+    const { filters } = this._rootFilter;
 
     if (!filters.length) {
       return filters;
@@ -142,7 +159,7 @@ export class AppFiltersTree {
   }
 
   removePartialFilter() {
-    const filters = this.getFilters();
+    const { filters } = this._rootFilter;
 
     const filter = filters.pop();
 
@@ -154,19 +171,9 @@ export class AppFiltersTree {
     return filters;
   }
 
-  removePartialOperator() {
-    this.getPartialFilter().operator = null;
-
-    return this.getFilters();
-  }
-
   // edition
   getEdition() {
     return this._edition;
-  }
-
-  isEditingPartialFilter() {
-    return this.getEdition()?.filter?.type === "partial";
   }
 
   startEditing(filter, part) {
@@ -207,8 +214,8 @@ export class AppFiltersTree {
       IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
   */
   editFilterOperator(newOperatorItem) {
-    const filters = this.getFilters();
-    const { filter } = this.getEdition();
+    const { filters } = this._rootFilter;
+    const { filter } = this._edition;
     const prevFilter = copy(filter);
 
     filter.operator = newOperatorItem;
@@ -278,12 +285,12 @@ export class AppFiltersTree {
   }
 
   editFilterValue(newValueItem) {
-    const { filter } = this.getEdition();
+    const { filter } = this._edition;
     const prevFilter = copy(filter);
 
     filter.value = newValueItem;
 
-    this._nofityFiltersUpdate(this.getFilters(), {
+    this._nofityFiltersUpdate(this._rootFilter.filters, {
       action: "edit",
       prevFilter,
       filter,
@@ -291,5 +298,36 @@ export class AppFiltersTree {
     });
 
     return this._rootFilter.filters;
+  }
+
+  groupFiltersInParens() {
+    const { filter } = this._edition;
+    const { filters } = this._rootFilter;
+
+    const filterIndex = this._rootFilter.filters.findIndex(
+      (f) => f.id === filter.id
+    );
+
+    const newFilter = {
+      id: this._genFilterId(),
+      type: "parens",
+      filters: [
+        filters[filterIndex - 1],
+        filters[filterIndex],
+        filters[filterIndex + 1],
+      ],
+    };
+
+    filters.splice(filterIndex - 1, 3, newFilter);
+
+    this._nofityFiltersUpdate(filters, {
+      action: "create",
+      filter: newFilter,
+    });
+
+    return {
+      filters,
+      newFilter,
+    };
   }
 }

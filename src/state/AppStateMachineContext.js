@@ -124,6 +124,15 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
+  setPartialFilterAttribute(newAttributeItem) {
+    const ctxValue = this.get();
+
+    ctxValue.filters =
+      this._filtersTree.setPartialFilterAttribute(newAttributeItem);
+
+    this.set(ctxValue);
+  }
+
   setPartialFilterOperator(operatorItem) {
     const ctxValue = this.get();
 
@@ -172,10 +181,10 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  removePartialOperator() {
+  removePartialFilterOperator() {
     const ctxValue = this.get();
 
-    ctxValue.filters = this._filtersTree.removePartialOperator();
+    ctxValue.filters = this._filtersTree.setPartialFilterOperator(null);
 
     this.set(ctxValue);
   }
@@ -190,7 +199,7 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   isEditingPartialFilter() {
-    return this._filtersTree.isEditingPartialFilter();
+    return this._filtersTree.getEdition()?.filter?.type === "partial";
   }
 
   startEditing({ filter, part }) {
@@ -217,15 +226,6 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  editPartialFilterAttribute(newAttributeItem) {
-    const ctxValue = this.get();
-
-    ctxValue.filters =
-      this._filtersTree.setPartialFilterAttribute(newAttributeItem);
-
-    this.set(ctxValue);
-  }
-
   editFilterOperator(newOperatorItem) {
     const ctxValue = this.get();
 
@@ -242,71 +242,45 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  // // parentheses
-  // createParensFilter() {
-  //   const ctxValue = this.get();
-  //   const { filters } = ctxValue.filtersTree;
+  // parentheses
+  createParensFilter() {
+    const ctxValue = this.get();
 
-  //   const newFilter = {
-  //     id: this.getFilterId(),
-  //     type: "parens",
-  //     filters: [],
-  //   };
+    const { filters, newFilter } = this._filtersTree.insertFilter({
+      type: "parens",
+      filters: [],
+    });
 
-  //   filters.push(newFilter);
+    ctxValue.filters = filters;
 
-  //   this._nofityFiltersUpdate(filters, {
-  //     action: "create",
-  //     filter: newFilter,
-  //   });
+    this.set(ctxValue);
 
-  //   this.set(ctxValue);
+    return newFilter;
+  }
 
-  //   return newFilter;
-  // }
+  startInserting(filter) {
+    const ctxValue = this.get();
 
-  // groupFiltersInParens() {
-  //   const ctxValue = this.get();
-  //   const { edition, filters } = ctxValue;
-  //   const filterUnderEdition = edition.filter;
-  //   const filterIndex = filters.findIndex(
-  //     (f) => f.id === filterUnderEdition.id
-  //   );
+    ctxValue.insertion = this._filtersTree.startInserting(filter);
 
-  //   const newParensGroup = {
-  //     id: this.getFilterId(),
-  //     type: "parens",
-  //     filters: [
-  //       { ...filters[filterIndex - 1], parentId: filterUnderEdition.id },
-  //       { ...filters[filterIndex], parentId: filterUnderEdition.id },
-  //       { ...filters[filterIndex + 1], parentId: filterUnderEdition.id },
-  //     ],
-  //   };
+    this.set(ctxValue);
+  }
 
-  //   filters.splice(filterIndex - 1, 3, newParensGroup);
+  stopInserting() {
+    const ctxValue = this.get();
 
-  //   this._nofityFiltersUpdate(filters, {
-  //     action: "create",
-  //     filter: newParensGroup,
-  //   });
+    ctxValue.insertion = this._filtersTree.stopInserting();
 
-  //   this.set(ctxValue);
-  // }
+    this.set(ctxValue);
+  }
 
-  // // filters insertion
-  // startInserting(filter) {
-  //   const ctxValue = this.get();
+  groupFiltersInParens() {
+    const ctxValue = this.get();
 
-  //   ctxValue.insertion = { filter };
+    const { filters } = this._filtersTree.groupFiltersInParens();
 
-  //   this.set(ctxValue);
-  // }
+    ctxValue.filters = filters;
 
-  // stopInserting() {
-  //   const ctxValue = this.get();
-
-  //   ctxValue.insertion = { filter: this._filtersTreeRoot };
-
-  //   this.set(ctxValue);
-  // }
+    this.set(ctxValue);
+  }
 }

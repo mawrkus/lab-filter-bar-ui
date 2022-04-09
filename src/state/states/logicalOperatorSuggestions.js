@@ -61,11 +61,21 @@ export const chooseLogicalOperator = {
 export const editLogicalOperator = {
   events: {
     discardSuggestions: "displayPartialFilterSuggestions",
-    selectItem: {
-      targetId: "displayPartialFilterSuggestions",
-      action(event, ctx) {
-        ctx.editFilterOperator(event.data.item);
+    selectItem: [
+      {
+        cond: (event, ctx) => event.data.item.type !== "parens",
+        targetId: "displayPartialFilterSuggestions",
+        action(event, ctx) {
+          ctx.editFilterOperator(event.data.item);
+        },
       },
-    },
+      {
+        cond: (event, ctx) => event.data.item.type === "parens",
+        targetId: "displayPartialFilterSuggestions",
+        action(event, ctx) {
+          ctx.groupFiltersInParens();
+        },
+      },
+    ],
   },
 };

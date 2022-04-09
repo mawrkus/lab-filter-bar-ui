@@ -39,6 +39,13 @@ export const idle = {
     ],
     editFilter: [
       {
+        cond: (event) => event.data.filter.type === "logical-operator",
+        targetId: "loadLogicalOperatorSuggestions",
+        action(event, ctx) {
+          ctx.startEditing(event.data);
+        },
+      },
+      {
         cond: (event) => event.data.part === "attribute",
         targetId: "loadAttributeSuggestions",
         action(event, ctx) {
@@ -46,19 +53,8 @@ export const idle = {
         },
       },
       {
-        cond: (event) =>
-          event.data.filter.type !== "logical-operator" &&
-          event.data.part === "operator",
+        cond: (event) => event.data.part === "operator",
         targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.startEditing(event.data);
-        },
-      },
-      {
-        cond: (event) =>
-          event.data.filter.type === "logical-operator" &&
-          event.data.part === "operator",
-        targetId: "loadLogicalOperatorSuggestions",
         action(event, ctx) {
           ctx.startEditing(event.data);
         },
@@ -68,6 +64,48 @@ export const idle = {
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.startEditing(event.data);
+        },
+      },
+      // TODO: target to proxy state proxyEditParens
+      {
+        cond: (event, ctx) => {
+          if (event.data.filter.type === "parens") {
+            const partialFilter = ctx.getPartialFilter();
+            return partialFilter && partialFilter.operator === null;
+          }
+
+          return false;
+        },
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.startInserting(event.data.filter);
+        },
+      },
+      {
+        cond: (event, ctx) => {
+          if (event.data.filter.type === "parens") {
+            const partialFilter = ctx.getPartialFilter();
+            return partialFilter && partialFilter.value === null;
+          }
+
+          return false;
+        },
+        targetId: "loadValueSuggestions",
+        action(event, ctx) {
+          ctx.startInserting(event.data.filter);
+        },
+      },
+      {
+        cond: (event, ctx) => {
+          if (event.data.filter.type === "parens") {
+            return !ctx.getPartialFilter();
+          }
+
+          return false;
+        },
+        targetId: "loadLogicalOperatorSuggestions",
+        action(event, ctx) {
+          ctx.startInserting(event.data.filter);
         },
       },
     ],

@@ -1,8 +1,6 @@
-import { memo } from "react";
-import areEqual from "fast-deep-equal";
 import { Label } from "semantic-ui-react";
 
-const PartialChicletComponent = ({ filter, onClick }) => {
+export const PartialChiclet = ({ filter, onClick }) => {
   const { attribute, operator } = filter;
 
   if (!attribute && !operator) {
@@ -39,5 +37,3 @@ const PartialChicletComponent = ({ filter, onClick }) => {
     </div>
   );
 };
-
-export const PartialChiclet = memo(PartialChicletComponent, areEqual);

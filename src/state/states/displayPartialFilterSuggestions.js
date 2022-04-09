@@ -11,12 +11,19 @@ export const displayPartialFilterSuggestions = {
       const partialFilter = ctx.getPartialFilter();
 
       if (!partialFilter) {
+        const lastFilter = ctx.getLastFilter();
+
+        if (lastFilter?.type === "logical-operator") {
+          ctx.reset(); // no more edition & empty suggestions list
+          toolkit.sendEvent("redirectToLoadAttributeSuggestions");
+          return;
+        }
+
         toolkit.sendEvent("redirectToIdle");
         return;
       }
 
-      // no more edition & empty suggestions list
-      ctx.reset();
+      ctx.reset(); // no more edition & empty suggestions list
 
       if (partialFilter.operator === null) {
         toolkit.sendEvent("redirectToLoadOperatorSuggestions");
@@ -27,6 +34,7 @@ export const displayPartialFilterSuggestions = {
   },
   events: {
     redirectToIdle: "idle",
+    redirectToLoadAttributeSuggestions: "loadAttributeSuggestions",
     redirectToLoadOperatorSuggestions: "loadOperatorSuggestions",
     redirectToLoadValueSuggestions: "loadValueSuggestions",
   },

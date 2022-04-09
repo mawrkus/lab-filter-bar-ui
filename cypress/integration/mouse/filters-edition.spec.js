@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { operatorsList } from "../../support/commands";
+import { attributesList, operatorsList } from "../../support/commands";
 import { seasonsList, crewList } from "../../fixtures/api";
 
 describe("Filter Bar - Edition with the mouse", () => {
@@ -27,6 +27,12 @@ describe("Filter Bar - Edition with the mouse", () => {
     cy.filterBarShouldHaveText(
       "Season=1 (11 episodes)ANDEpisode!=Pilot (S1E1)"
     );
+
+    cy.clickOnSearchInput();
+    cy.selectLogicalOperator("AND");
+    cy.editLogicalOperator("AND", "OR");
+
+    cy.suggestionsShouldBe(attributesList);
   });
 
   describe("when editing filter operators", () => {
@@ -109,9 +115,7 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.filterBarShouldHaveText("SeasonNOT IN");
 
         cy.editOperator("NOT IN", "IS NOT NULL");
-        cy.filterBarShouldHaveText(
-          "SeasonIS NOT NULL"
-        );
+        cy.filterBarShouldHaveText("SeasonIS NOT NULL");
       });
     });
   });

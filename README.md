@@ -9,11 +9,12 @@ A filter bar UI component built with:
 
 ## ⛩️ Architecture: core concepts
 
-- State machine with domain context (the app state, observable)
-- Suggestion services via an HTTP client -> API (+ cancellable requests)
-- Clear contract on the data structure (suggestion item from the API -> component prop -> filter)
-- Dumb UI components
-- Filter Bar as a proxy to the state machine
+- State machine with domain context (the app state)
+- The app state is observable
+- The Filter Bar receives the app state as props
+- The Filter Bar renders "dumb" UI components (Chiclet, ...)
+- Suggestions are fetched from HTTP clients → API (+ cancellable requests)
+- Clear contract on the data structure: suggestion item from the API → component prop → filter
 
 ## 📗 Use cases
 
@@ -35,6 +36,7 @@ Using the mouse or the keyboard:
 - Changing a 3-part filter to a 2-part one and vice-versa
 - Same with a partial attribute
 - Same with a partial attribute and operator
+- Changing a filter operator from "single" to "multi" type
 
 ### Deletion
 
@@ -47,6 +49,10 @@ Using the mouse or keyboard:
 
 - Request cancellation
 - Error: selection blocked, search text creation allowed
+
+### Parens
+
+- ...
 
 ## 🙈 Quirks
 

@@ -1,9 +1,6 @@
 /**
- * This state is/should be reached every time a filter has been edited.
- * It acts as a proxy to:
- * - the "idle" state, when there's no partial filter that needs to be completed
- * - the "loadOperatorSuggestions" state, when there's a partial filter without operator
- * - the "loadValueSuggestions" state, when there's a partial filter without value
+ * This state is/should be reached every time after a filter has been edited.
+ * It acts as a redirection proxy.
  */
 export const displayPartialFilterSuggestions = {
   actions: {

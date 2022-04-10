@@ -66,47 +66,9 @@ export const idle = {
           ctx.startEditing(event.data);
         },
       },
-      // TODO: target to proxy state proxyEditParens
       {
-        cond: (event, ctx) => {
-          if (event.data.filter.type === "parens") {
-            const partialFilter = ctx.getPartialFilter();
-            return partialFilter && partialFilter.operator === null;
-          }
-
-          return false;
-        },
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.startInserting(event.data.filter);
-        },
-      },
-      {
-        cond: (event, ctx) => {
-          if (event.data.filter.type === "parens") {
-            const partialFilter = ctx.getPartialFilter();
-            return partialFilter && partialFilter.value === null;
-          }
-
-          return false;
-        },
-        targetId: "loadValueSuggestions",
-        action(event, ctx) {
-          ctx.startInserting(event.data.filter);
-        },
-      },
-      {
-        cond: (event, ctx) => {
-          if (event.data.filter.type === "parens") {
-            return !ctx.getPartialFilter();
-          }
-
-          return false;
-        },
-        targetId: "loadLogicalOperatorSuggestions",
-        action(event, ctx) {
-          ctx.startInserting(event.data.filter);
-        },
+        cond: (event) => event.data.filter.type === "parens",
+        targetId: "displayParensSuggestions",
       },
     ],
     removeFilter: {

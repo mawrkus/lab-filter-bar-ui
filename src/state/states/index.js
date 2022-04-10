@@ -4,3 +4,4 @@ export * from './operatorSuggestions';
 export * from './valueSuggestions';
 export * from './logicalOperatorSuggestions';
 export * from './displayPartialFilterSuggestions';
+export * from './displayParensSuggestions';

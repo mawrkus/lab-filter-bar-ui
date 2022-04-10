@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { attributesList, operatorsList } from "../../support/commands";
+import { logicalOperatorsList, operatorsList } from "../../support/commands";
 import { seasonsList, crewList } from "../../fixtures/api";
 
 describe("Filter Bar - Edition with the mouse", () => {
@@ -18,21 +18,28 @@ describe("Filter Bar - Edition with the mouse", () => {
   });
 
   it("should allow the user to edit a logical operator", () => {
-    cy.visitWithFilters("filters-triple.json");
-
-    cy.editLogicalOperator("AND", "OR");
-    cy.filterBarShouldHaveText("Season=1 (11 episodes)OREpisode!=Pilot (S1E1)");
-
-    cy.editLogicalOperator("OR", "AND");
-    cy.filterBarShouldHaveText(
-      "Season=1 (11 episodes)ANDEpisode!=Pilot (S1E1)"
-    );
+    cy.visitWithFilters("filters-single.json");
 
     cy.clickOnSearchInput();
-    cy.selectLogicalOperator("AND");
-    cy.editLogicalOperator("AND", "OR");
+    cy.suggestionsShouldBe(logicalOperatorsList);
 
-    cy.suggestionsShouldBe(attributesList);
+    cy.selectLogicalOperator("AND");
+    cy.filterBarShouldHaveText("Season=1 (11 episodes)AND");
+
+    cy.editLogicalOperator("AND", "OR", { checkForParens: true });
+    cy.filterBarShouldHaveText("Season=1 (11 episodes)OR");
+
+    cy.selectAttribute("Season");
+    cy.selectOperator("=");
+    cy.selectValue("2 (10 episodes)");
+    cy.filterBarShouldHaveText(
+      "Season=1 (11 episodes)ORSeason=2 (10 episodes)"
+    );
+
+    cy.editLogicalOperator("OR", "AND", { checkForParens: true });
+    cy.filterBarShouldHaveText(
+      "Season=1 (11 episodes)ANDSeason=2 (10 episodes)"
+    );
   });
 
   describe("when editing filter operators", () => {
@@ -61,7 +68,7 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.editOperator("IS NULL", "IS NOT NULL");
         cy.filterBarShouldHaveText("SeasonIS NOT NULL");
 
-        cy.editOperator("IS NOT NULL", "=", true);
+        cy.editOperator("IS NOT NULL", "=", { checkForLoading: true });
         cy.suggestionsShouldBe(seasonsList);
         cy.filterBarShouldHaveText('Season="null"');
 
@@ -74,7 +81,7 @@ describe("Filter Bar - Edition with the mouse", () => {
       it("should allow the user to switch from simple operators to them and vice versa", () => {
         cy.visitWithFilters("filters-single.json");
 
-        cy.editOperator("=", "IN", true);
+        cy.editOperator("=", "IN", { checkForLoading: true });
         cy.filterBarShouldHaveText("SeasonIN1 (11 episodes)");
 
         cy.selectMultipleSuggestions(["1 (11 episodes)", "2 (10 episodes)"]);
@@ -92,7 +99,7 @@ describe("Filter Bar - Edition with the mouse", () => {
           list: ["3 (10 episodes)", "4 (10 episodes)", "5 (10 episodes)"],
         });
 
-        cy.editOperator("NOT IN", "LIKE", true);
+        cy.editOperator("NOT IN", "LIKE", { checkForLoading: true });
         cy.suggestionsShouldBe(seasonsList);
         cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)");
 
@@ -106,11 +113,11 @@ describe("Filter Bar - Edition with the mouse", () => {
         cy.editOperator("=", "IS NULL");
         cy.filterBarShouldHaveText("SeasonIS NULL");
 
-        cy.editOperator("IS NULL", "IN", true);
+        cy.editOperator("IS NULL", "IN", { checkForLoading: true });
         cy.suggestionsShouldBe(seasonsList);
         cy.filterBarShouldHaveText("SeasonIN");
 
-        cy.editOperator("IN", "NOT IN", true);
+        cy.editOperator("IN", "NOT IN", { checkForLoading: true });
         cy.suggestionsShouldBe(seasonsList);
         cy.filterBarShouldHaveText("SeasonNOT IN");
 
@@ -167,7 +174,7 @@ describe("Filter Bar - Edition with the mouse", () => {
           cy.selectLogicalOperator("AND");
           cy.selectAttribute("Crew");
 
-          cy.editLogicalOperator("AND", "OR");
+          cy.editLogicalOperator("AND", "OR", { checkForParens: true });
 
           cy.suggestionsShouldBe(operatorsList);
 
@@ -186,12 +193,12 @@ describe("Filter Bar - Edition with the mouse", () => {
           cy.selectAttribute("Crew");
           cy.selectOperator("!=");
 
-          cy.editOperator("=", "LIKE", true);
+          cy.editOperator("=", "LIKE", { checkForLoading: true });
 
           cy.suggestionsShouldBe(crewList);
           cy.filterBarShouldHaveText("SeasonLIKE1 (11 episodes)ANDCrew!=");
 
-          cy.editOperator("LIKE", "IN", true);
+          cy.editOperator("LIKE", "IN", { checkForLoading: true });
           cy.get("body").click();
 
           // does not happen - see README (Quirks)
@@ -209,7 +216,9 @@ describe("Filter Bar - Edition with the mouse", () => {
           cy.selectAttribute("Crew");
           cy.selectOperator("!=");
 
-          cy.editValue("1 (11 episodes)", "2 (10 episodes)", true);
+          cy.editValue("1 (11 episodes)", "2 (10 episodes)", {
+            checkForLoading: true,
+          });
 
           cy.suggestionsShouldBe(crewList);
 
@@ -226,7 +235,10 @@ describe("Filter Bar - Edition with the mouse", () => {
           cy.selectAttribute("Crew");
           cy.selectOperator("!=");
 
-          cy.editLogicalOperator("AND", "OR", true);
+          cy.editLogicalOperator("AND", "OR", {
+            checkForLoading: true,
+            checkForParens: true,
+          });
 
           cy.suggestionsShouldBe(crewList);
 

@@ -1,6 +1,12 @@
-import { regx } from './helpers/regx'
+import { regx } from "./helpers/regx";
 
-export const attributesList = ["Season", "Episode", "Character", "Crew"];
+export const attributesList = [
+  "Season",
+  "Episode",
+  "Character",
+  "Crew",
+  "( ... )",
+];
 
 export const operatorsList = [
   "=",
@@ -14,6 +20,10 @@ export const operatorsList = [
 ];
 
 export const logicalOperatorsList = ["AND", "OR"];
+export const logicalOperatorsListWithParens = [
+  ...logicalOperatorsList,
+  "( ... )",
+];
 
 /* Actions */
 
@@ -36,10 +46,10 @@ Cypress.Commands.add("typeInSearchInput", (text) => {
   return cy.get(".filter-bar .suggestions input.search").type(text);
 });
 
-Cypress.Commands.add("selectSuggestion", (label, checkForLoading = false) => {
+Cypress.Commands.add("selectSuggestion", (label, options = {}) => {
   cy.log(`🖲️ Selecting label "${label}"`);
 
-  if (checkForLoading) {
+  if (options.checkForLoading) {
     cy.log(`📡 Intercepting "${apiHost}" requests`);
     cy.intercept(`${apiHost}/**`).as("fetchData");
   }
@@ -48,7 +58,7 @@ Cypress.Commands.add("selectSuggestion", (label, checkForLoading = false) => {
     .contains(regx(label))
     .click();
 
-  if (checkForLoading) {
+  if (options.checkForLoading) {
     cy.log("⏳ Waiting for request...");
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait("@fetchData").wait(postFetchDelay);
@@ -75,7 +85,7 @@ Cypress.Commands.add("selectAttribute", (label) => {
 });
 
 Cypress.Commands.add("selectOperator", (label) => {
-  return cy.selectSuggestion(label, true);
+  return cy.selectSuggestion(label, { checkForLoading: true });
 });
 
 Cypress.Commands.add("selectLogicalOperator", (label) => {
@@ -87,10 +97,10 @@ Cypress.Commands.add("selectValue", (label) => {
   return cy.selectSuggestion(label);
 });
 
-Cypress.Commands.add("deleteFilter", (index, checkForLoading = false) => {
+Cypress.Commands.add("deleteFilter", (index, options = {}) => {
   cy.log(`🗑️ Deleting filter #${index}`);
 
-  if (checkForLoading) {
+  if (options.checkForLoading) {
     cy.log(`📡 Intercepting "${apiHost}" requests`);
     cy.intercept(`${apiHost}/**`).as("fetchData");
   }
@@ -99,14 +109,14 @@ Cypress.Commands.add("deleteFilter", (index, checkForLoading = false) => {
     .find(".icon.delete")
     .click();
 
-  if (checkForLoading) {
+  if (options.checkForLoading) {
     cy.log("⏳ Waiting for request...");
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait("@fetchData").wait(postFetchDelay);
   }
 });
 
-Cypress.Commands.add("editOperator", (from, to, checkForLoading = false) => {
+Cypress.Commands.add("editOperator", (from, to, options = {}) => {
   cy.log(`🕹️ Changing operator from "${from}" to "${to}"`);
 
   cy.get(".filter-bar .chiclets .chiclet .operator")
@@ -115,25 +125,26 @@ Cypress.Commands.add("editOperator", (from, to, checkForLoading = false) => {
 
   cy.suggestionsShouldBe(operatorsList);
 
-  return cy.selectSuggestion(to, checkForLoading);
+  return cy.selectSuggestion(to, options);
 });
 
-Cypress.Commands.add(
-  "editLogicalOperator",
-  (from, to, checkForLoading = false) => {
-    cy.log(`🕹️ Changing logical operator from "${from}" to "${to}"`);
+Cypress.Commands.add("editLogicalOperator", (from, to, options = {}) => {
+  cy.log(`🕹️ Changing logical operator from "${from}" to "${to}"`);
 
-    cy.get(".filter-bar .chiclets .chiclet .operator")
-      .contains(regx(from))
-      .click();
+  cy.get(".filter-bar .chiclets .chiclet .operator")
+    .contains(regx(from))
+    .click();
 
-    cy.suggestionsShouldBe(logicalOperatorsList);
+  const expectedSuggestions = options.checkForParens
+    ? logicalOperatorsListWithParens
+    : logicalOperatorsList;
 
-    return cy.selectSuggestion(to, checkForLoading);
-  }
-);
+  cy.suggestionsShouldBe(expectedSuggestions);
 
-Cypress.Commands.add("editValue", (from, to, checkForLoading = false) => {
+  return cy.selectSuggestion(to, options);
+});
+
+Cypress.Commands.add("editValue", (from, to, options = {}) => {
   cy.log(`🕹️ Changing value from "${from}" to "${to}"`);
 
   cy.clickOnChicletValue(from);
@@ -142,7 +153,7 @@ Cypress.Commands.add("editValue", (from, to, checkForLoading = false) => {
     return cy.typeInSearchInput(to);
   }
 
-  return cy.selectSuggestion(to, checkForLoading);
+  return cy.selectSuggestion(to, options);
 });
 
 Cypress.Commands.add("clickOnChicletValue", (valueLabel) => {

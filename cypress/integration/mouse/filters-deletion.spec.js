@@ -47,7 +47,7 @@ describe("Filter Bar - Deletion with the mouse", () => {
 
       cy.selectOperator("=");
 
-      cy.deleteFilter(1, true);
+      cy.deleteFilter(1, { checkForLoading: true });
 
       cy.suggestionsShouldBe(crewList);
     });

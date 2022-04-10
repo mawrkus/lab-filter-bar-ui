@@ -175,15 +175,15 @@ describe("Filter Bar - Creation with the mouse", () => {
 
         // we don't use selectAttribute() because we don't expect the operators suggestions
         cy.clickOnPartialAttribute();
-        cy.selectSuggestion("Episode", true);
+        cy.selectSuggestion("Episode", { checkForLoading: true });
         cy.suggestionsShouldBe(episodesList);
 
         cy.clickOnPartialAttribute();
-        cy.selectSuggestion("Character", true);
+        cy.selectSuggestion("Character", { checkForLoading: true });
         cy.suggestionsShouldBe(charactersList);
 
         cy.clickOnPartialAttribute();
-        cy.selectSuggestion("Crew", true);
+        cy.selectSuggestion("Crew", { checkForLoading: true });
         cy.suggestionsShouldBe(crewList);
 
         cy.selectValue("Dan Harmon (Creator)");

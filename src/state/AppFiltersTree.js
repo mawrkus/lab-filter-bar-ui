@@ -57,12 +57,6 @@ export class AppFiltersTree {
     return lastFilter?.type === "partial" ? lastFilter : null;
   }
 
-  setPartialFilterAttribute(attributeItem) {
-    this.getPartialFilter().attribute = attributeItem;
-
-    return this._rootFilter.filters;
-  }
-
   setPartialFilterOperator(operatorItem) {
     this.getPartialFilter().operator = operatorItem;
 
@@ -197,6 +191,24 @@ export class AppFiltersTree {
     return this._edition;
   }
 
+  editFilterAttribute(newAttributeItem, notify) {
+    const { filter } = this._edition;
+    const prevFilter = copy(filter);
+
+    filter.attribute = newAttributeItem;
+
+    if (notify) {
+      this._nofityFiltersUpdate(this._rootFilter.filters, {
+        action: "edit",
+        prevFilter,
+        filter,
+        part: "attribute",
+      });
+    }
+
+    return this._rootFilter.filters;
+  }
+
   /*
     single-value operators:
       = -> != (only change operator) => displayPartialFilterSuggestions
@@ -213,7 +225,7 @@ export class AppFiltersTree {
       IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
       IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
   */
-  editFilterOperator(newOperatorItem) {
+  editFilterOperator(newOperatorItem, notify) {
     const { filters } = this._rootFilter;
     const { filter } = this._edition;
     const prevFilter = copy(filter);
@@ -221,12 +233,14 @@ export class AppFiltersTree {
     filter.operator = newOperatorItem;
 
     if (prevFilter.operator.type === newOperatorItem.type) {
-      this._nofityFiltersUpdate(filters, {
-        action: "edit",
-        prevFilter,
-        filter,
-        part: "operator",
-      });
+      if (notify) {
+        this._nofityFiltersUpdate(filters, {
+          action: "edit",
+          prevFilter,
+          filter,
+          part: "operator",
+        });
+      }
 
       return filters;
     }
@@ -274,12 +288,14 @@ export class AppFiltersTree {
       }
     }
 
-    this._nofityFiltersUpdate(filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "operator",
-    });
+    if (notify) {
+      this._nofityFiltersUpdate(filters, {
+        action: "edit",
+        prevFilter,
+        filter,
+        part: "operator",
+      });
+    }
 
     return filters;
   }

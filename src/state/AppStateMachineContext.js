@@ -124,15 +124,6 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  setPartialFilterAttribute(newAttributeItem) {
-    const ctxValue = this.get();
-
-    ctxValue.filters =
-      this._filtersTree.setPartialFilterAttribute(newAttributeItem);
-
-    this.set(ctxValue);
-  }
-
   setPartialFilterOperator(operatorItem) {
     const ctxValue = this.get();
 
@@ -226,10 +217,20 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  editFilterOperator(newOperatorItem) {
+  editFilterAttribute(newAttributeItem) {
     const ctxValue = this.get();
+    const notify = false; // false by default as only partial filter attributes can be edited
 
-    ctxValue.filters = this._filtersTree.editFilterOperator(newOperatorItem);
+    ctxValue.filters = this._filtersTree.editFilterAttribute(newAttributeItem, notify);
+
+    this.set(ctxValue);
+  }
+
+  editFilterOperator(newOperatorItem, isPartialFilter) {
+    const ctxValue = this.get();
+    const notify = !isPartialFilter;
+
+    ctxValue.filters = this._filtersTree.editFilterOperator(newOperatorItem, notify);
 
     this.set(ctxValue);
   }

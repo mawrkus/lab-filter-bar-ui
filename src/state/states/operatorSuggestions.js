@@ -139,7 +139,7 @@ export const editOperator = {
           return false;
         },
         // only exception: we don't go to "displayPartialFilterSuggestions" because:
-        //  - we know that the value has to be edited
+        //  - the operator's type changes and we know that the value has to be edited now
         //  - if we go to "displayPartialFilterSuggestions", the state will be resetted (no more edition)
         targetId: "loadValueSuggestions",
         action(event, ctx) {

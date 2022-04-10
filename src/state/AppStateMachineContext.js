@@ -25,7 +25,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this._filtersTree = filtersTree;
   }
 
-  reset(resetError) {
+  reset(resetError, stopInserting = false) {
     const ctxValue = this.get();
     const lastLoadingError = ctxValue.suggestions.error;
 
@@ -38,7 +38,10 @@ export class AppStateMachineContext extends StateMachineContext {
     };
 
     ctxValue.edition = this._filtersTree.stopEditing();
-    ctxValue.insertion = this._filtersTree.stopInserting();
+
+    if (stopInserting) {
+      ctxValue.insertion = this._filtersTree.stopInserting();
+    }
 
     this.set(ctxValue);
   }
@@ -242,19 +245,30 @@ export class AppStateMachineContext extends StateMachineContext {
   }
 
   // parentheses
-  createParensFilter() {
+  createParensFilter(movePartialFilter = false) {
     const ctxValue = this.get();
+    let partialFilter = null;
+
+    if (movePartialFilter) {
+      partialFilter = this._filtersTree.getEdition().filter;
+
+      this._filtersTree.removeFilter(partialFilter)
+
+      ctxValue.edition = this._filtersTree.stopEditing();
+    }
+
+    const filtersInParens = partialFilter ? [partialFilter] : [];
 
     const { filters, newFilter } = this._filtersTree.insertFilter({
       type: "parens",
-      filters: [],
+      filters: filtersInParens,
     });
+
+    ctxValue.insertion = this._filtersTree.startInserting(newFilter);
 
     ctxValue.filters = filters;
 
     this.set(ctxValue);
-
-    return newFilter;
   }
 
   startInserting(filter) {

@@ -40,9 +40,7 @@ export const chooseAttribute = {
         cond: (event, ctx) => event.data.item.type === "parens",
         targetId: "loadAttributeSuggestions",
         action(event, ctx) {
-          const parensFilter = ctx.createParensFilter();
-
-          ctx.startInserting(parensFilter);
+          ctx.createParensFilter();
         },
       },
     ],
@@ -65,12 +63,22 @@ export const chooseAttribute = {
 export const editAttribute = {
   events: {
     discardSuggestions: "displayPartialFilterSuggestions",
-    selectItem: {
-      targetId: "displayPartialFilterSuggestions",
-      action(event, ctx) {
-        ctx.editFilterAttribute(event.data.item);
+    selectItem: [
+      {
+        cond: (event, ctx) => event.data.item.type !== "parens",
+        targetId: "displayPartialFilterSuggestions",
+        action(event, ctx) {
+          ctx.editFilterAttribute(event.data.item);
+        },
       },
-    },
+      {
+        cond: (event, ctx) => event.data.item.type === "parens",
+        targetId: "displayPartialFilterSuggestions",
+        action(event, ctx) {
+          ctx.createParensFilter(true);
+        },
+      },
+    ],
     createItem: {
       targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {

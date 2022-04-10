@@ -2,7 +2,11 @@ import { copy } from "fastest-json-copy";
 
 export class AppFiltersTree {
   constructor({ initFilters, onUpdateFilters }) {
-    this._nofityFiltersUpdate = onUpdateFilters;
+    this._nofityFiltersUpdate = (newFilters, event) => {
+      if (event.filter.type !== "partial") {
+        onUpdateFilters(newFilters, event);
+      }
+    };
 
     this._rootFilter = {
       id: "root",
@@ -119,12 +123,10 @@ export class AppFiltersTree {
 
     filters.push(newFilter);
 
-    if (newFilter.type !== "partial") {
-      this._nofityFiltersUpdate(filters, {
-        action: "create",
-        filter: newFilter,
-      });
-    }
+    this._nofityFiltersUpdate(filters, {
+      action: "create",
+      filter: newFilter,
+    });
 
     return {
       filters: this._rootFilter.filters,
@@ -155,12 +157,7 @@ export class AppFiltersTree {
   removePartialFilter() {
     const { filters } = this._rootFilter;
 
-    const filter = filters.pop();
-
-    this._nofityFiltersUpdate(filters, {
-      action: "remove",
-      filter,
-    });
+    filters.pop();
 
     return filters;
   }
@@ -197,14 +194,12 @@ export class AppFiltersTree {
 
     filter.attribute = newAttributeItem;
 
-    if (filter.type !== "partial") {
-      this._nofityFiltersUpdate(this._rootFilter.filters, {
-        action: "edit",
-        prevFilter,
-        filter,
-        part: "attribute",
-      });
-    }
+    this._nofityFiltersUpdate(this._rootFilter.filters, {
+      action: "edit",
+      prevFilter,
+      filter,
+      part: "attribute",
+    });
 
     return this._rootFilter.filters;
   }
@@ -233,14 +228,12 @@ export class AppFiltersTree {
     filter.operator = newOperatorItem;
 
     if (prevFilter.operator.type === newOperatorItem.type) {
-      if (filter.type !== "partial") {
-        this._nofityFiltersUpdate(filters, {
-          action: "edit",
-          prevFilter,
-          filter,
-          part: "operator",
-        });
-      }
+      this._nofityFiltersUpdate(filters, {
+        action: "edit",
+        prevFilter,
+        filter,
+        part: "operator",
+      });
 
       return filters;
     }
@@ -289,14 +282,12 @@ export class AppFiltersTree {
       }
     }
 
-    if (filter.type !== "partial") {
-      this._nofityFiltersUpdate(filters, {
-        action: "edit",
-        prevFilter,
-        filter,
-        part: "operator",
-      });
-    }
+    this._nofityFiltersUpdate(filters, {
+      action: "edit",
+      prevFilter,
+      filter,
+      part: "operator",
+    });
 
     return filters;
   }

@@ -5,7 +5,7 @@ export const idle = {
 
       const resetError = event?.name === "discardSuggestions";
 
-      ctx.reset(resetError);
+      ctx.reset(resetError, true);
     },
   },
   events: {

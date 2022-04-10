@@ -1,5 +1,5 @@
 /**
- * This state is/should be reached every time a parens group is edited.
+ * This state is reached every time a parens group is edited.
  * It acts as a redirection proxy for these cases:
     (...)
     (attribute ...)

@@ -19,22 +19,16 @@ export const idle = {
         targetId: "loadAttributeSuggestions",
       },
       {
-        cond: (event, ctx) => {
-          const partialFilter = ctx.getPartialFilter();
-          return partialFilter && partialFilter.operator === null;
-        },
+        cond: (event, ctx) => ctx.getLastFilter().type !== 'partial',
+        targetId: "loadLogicalOperatorSuggestions",
+      },
+      {
+        cond: (event, ctx) => ctx.getLastFilter().operator === null,
         targetId: "loadOperatorSuggestions",
       },
       {
-        cond: (event, ctx) => {
-          const partialFilter = ctx.getPartialFilter();
-          return partialFilter && partialFilter.value === null;
-        },
+        cond: (event, ctx) => ctx.getLastFilter().value === null,
         targetId: "loadValueSuggestions",
-      },
-      {
-        cond: (event, ctx) => ctx.getLastFilter(),
-        targetId: "loadLogicalOperatorSuggestions",
       },
     ],
     editFilter: [

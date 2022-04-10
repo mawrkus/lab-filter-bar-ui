@@ -258,7 +258,7 @@ export class AppFiltersTree {
       // = -> IN, IS NULL -> IN
       if (prevFilter.operator.type === "single-value") {
         // = -> IN
-        if (prevFilter.value.id === null) {
+        if (prevFilter.value === null || prevFilter.value.id === null) { // also support partial filter edition with no value yet
           // search text
           filter.value = null; // no search text support in multiple suggestions dropdown component :/
         } else {

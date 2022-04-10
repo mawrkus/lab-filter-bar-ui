@@ -1,5 +1,5 @@
 export class LogicalOperatorService {
-  load({ parens }) {
+  load({ addParens }) {
     const items = [
       {
         id: 1,
@@ -15,7 +15,7 @@ export class LogicalOperatorService {
       },
     ];
 
-    if (parens) {
+    if (addParens) {
       items.push({
         id: 3,
         value: "parens",

@@ -2,26 +2,13 @@ import { StateMachine, transitionLogger } from "./lib/state-machine";
 import { AppStateMachineContext } from "./AppStateMachineContext";
 import { buildSuggestionService } from "./suggestion-services";
 
-import {
-  idle,
-  loadAttributeSuggestions,
-  chooseAttribute,
-  editAttribute,
-  loadOperatorSuggestions,
-  chooseOperator,
-  editPartialOperator,
-  editOperator,
-  loadValueSuggestions,
-  chooseValue,
-  editValue,
-  loadLogicalOperatorSuggestions,
-  chooseLogicalOperator,
-  editLogicalOperator,
-  displayPartialFilterSuggestions,
-  displayParensSuggestions,
-} from "./states";
+import * as states from "./states";
 
-export const buildAppStateMachine = ({ initFilters, onUpdateFilters, onTransition = () => {} }) => {
+export const buildAppStateMachine = ({
+  initFilters,
+  onUpdateFilters,
+  onTransition = () => {},
+}) => {
   const suggestionService = buildSuggestionService();
 
   const appStateMachineContext = new AppStateMachineContext({
@@ -31,30 +18,13 @@ export const buildAppStateMachine = ({ initFilters, onUpdateFilters, onTransitio
 
   const appStateMachine = new StateMachine({
     initialStateId: "idle",
-    onTransition(...args){
+    onTransition(...args) {
       transitionLogger(...args);
       onTransition(...args);
     },
     context: appStateMachineContext,
     toolkit: { suggestionService },
-    states: {
-      idle,
-      loadAttributeSuggestions,
-      chooseAttribute,
-      editAttribute,
-      loadOperatorSuggestions,
-      chooseOperator,
-      editPartialOperator,
-      editOperator,
-      loadValueSuggestions,
-      chooseValue,
-      editValue,
-      loadLogicalOperatorSuggestions,
-      chooseLogicalOperator,
-      editLogicalOperator,
-      displayPartialFilterSuggestions,
-      displayParensSuggestions,
-    },
+    states,
   });
 
   return appStateMachine;

@@ -8,15 +8,16 @@ export class AppFiltersTree {
       }
     };
 
+    this._lastFilterIndex = initFilters.length + 1;
+
     this._rootFilter = {
       id: "root",
       filters: initFilters,
     };
 
-    this._lastFilterIndex = initFilters.length + 1;
+    this._insertion = { filter: this._rootFilter };
 
     this._edition = null;
-    this._insertion = { filter: this._rootFilter };
   }
 
   _genFilterId() {
@@ -27,8 +28,9 @@ export class AppFiltersTree {
     return this._rootFilter.filters;
   }
 
+  // returns the last filter at the current insertion point
   getLastFilter() {
-    const { filters } = this._rootFilter;
+    const { filters } = this._insertion.filter;
 
     return filters[filters.length - 1] || null;
   }
@@ -53,51 +55,51 @@ export class AppFiltersTree {
     return null;
   }
 
-  // partial filters
-  getPartialFilter() {
-    const { filters } = this._insertion.filter;
-    const lastFilter = filters[filters.length - 1] || null;
+  // // partial filters
+  // getPartialFilter() {
+  //   const { filters } = this._insertion.filter;
+  //   const lastFilter = filters[filters.length - 1] || null;
 
-    return lastFilter?.type === "partial" ? lastFilter : null;
-  }
+  //   return lastFilter?.type === "partial" ? lastFilter : null;
+  // }
 
-  setPartialFilterOperator(operatorItem) {
-    this.getPartialFilter().operator = operatorItem;
+  // setPartialFilterOperator(operatorItem) {
+  //   this.getPartialFilter().operator = operatorItem;
 
-    return this._rootFilter.filters;
-  }
+  //   return this._rootFilter.filters;
+  // }
 
-  completePartialFilter(item, type) {
-    const partialFilter = this.getPartialFilter();
+  // completePartialFilter(item, type) {
+  //   const partialFilter = this.getPartialFilter();
 
-    partialFilter.type = type;
+  //   partialFilter.type = type;
 
-    switch (type) {
-      case "attribute-operator":
-        partialFilter.operator = item;
+  //   switch (type) {
+  //     case "attribute-operator":
+  //       partialFilter.operator = item;
 
-        partialFilter.value = {
-          id: null,
-          value: item.presetValue,
-          label: String(item.presetValue),
-        };
-        break;
+  //       partialFilter.value = {
+  //         id: null,
+  //         value: item.presetValue,
+  //         label: String(item.presetValue),
+  //       };
+  //       break;
 
-      case "attribute-operator-value":
-        partialFilter.value = item;
-        break;
+  //     case "attribute-operator-value":
+  //       partialFilter.value = item;
+  //       break;
 
-      default:
-        throw new TypeError(`Unknown filter type "${type}"!`);
-    }
+  //     default:
+  //       throw new TypeError(`Unknown filter type "${type}"!`);
+  //   }
 
-    this._nofityFiltersUpdate(this._rootFilter.filters, {
-      action: "create",
-      filter: partialFilter,
-    });
+  //   this._nofityFiltersUpdate(this._rootFilter.filters, {
+  //     action: "create",
+  //     filter: partialFilter,
+  //   });
 
-    return this._rootFilter.filters;
-  }
+  //   return this._rootFilter.filters;
+  // }
 
   // insertion
   getInsertion() {
@@ -105,7 +107,7 @@ export class AppFiltersTree {
   }
 
   startInserting(filter) {
-    this._insertion = { filter: this.findFilterById(filter.id) };
+    this._insertion = { filter };
 
     return this._insertion;
   }
@@ -116,58 +118,80 @@ export class AppFiltersTree {
     return this._insertion;
   }
 
-  insertFilter(newFilter) {
+  isInserting() {
+    return this._insertion.filter.id !== "root";
+  }
+
+  insertFilter(filter) {
     const { filters } = this._insertion.filter;
 
-    newFilter.id = this._genFilterId();
+    filter.id = this._genFilterId();
 
-    filters.push(newFilter);
+    filters.push(filter);
 
     this._nofityFiltersUpdate(filters, {
       action: "create",
-      filter: newFilter,
-    });
-
-    return {
-      filters: this._rootFilter.filters,
-      newFilter,
-    };
-  }
-
-  // deletion
-  removeFilter(filter) {
-    const { filters } = this._rootFilter;
-
-    if (!filters.length) {
-      return filters;
-    }
-
-    const index = filters.findIndex((f) => f.id === filter.id);
-
-    filters.splice(index, 2);
-
-    this._nofityFiltersUpdate(filters, {
-      action: "remove",
       filter,
     });
 
-    return filters;
+    return filter;
   }
 
-  removePartialFilter() {
-    const { filters } = this._rootFilter;
+  replaceFilter(fromFilter, toFilter) {
+    const { filters } = this._insertion.filter;
 
-    filters.pop();
+    Object.keys(fromFilter).forEach((key) => {
+      delete fromFilter[key];
+    });
 
-    return filters;
+    Object.entries(toFilter).forEach(([key, value]) => {
+      fromFilter[key] = value;
+    });
+
+    fromFilter.id = this._genFilterId();
+
+    this._nofityFiltersUpdate(filters, {
+      action: "create",
+      filter: fromFilter,
+    });
+
+    return fromFilter;
   }
+
+  // // deletion
+  // removeFilter(filter) {
+  //   const { filters } = this._rootFilter;
+
+  //   if (!filters.length) {
+  //     return filters;
+  //   }
+
+  //   const index = filters.findIndex((f) => f.id === filter.id);
+
+  //   filters.splice(index, 2);
+
+  //   this._nofityFiltersUpdate(filters, {
+  //     action: "remove",
+  //     filter,
+  //   });
+
+  //   return filters;
+  // }
+
+  // removePartialFilter() {
+  //   const { filters } = this._rootFilter;
+
+  //   filters.pop();
+
+  //   return filters;
+  // }
 
   // edition
   getEdition() {
     return this._edition;
   }
 
-  startEditing(filter, part) {
+  startEditing({ filter, part }) {
     this._edition = {
       filter: this.findFilterById(filter.id),
       part,
@@ -182,17 +206,21 @@ export class AppFiltersTree {
     return this._edition;
   }
 
-  setEditionPart(newPart) {
-    this._edition.part = newPart;
-
-    return this._edition;
+  isEditing() {
+    return this._edition !== null;
   }
 
-  editFilterAttribute(newAttributeItem) {
+  // setEditionPart(newPart) {
+  //   this._edition.part = newPart;
+
+  //   return this._edition;
+  // }
+
+  editFilterAttribute({ item }) {
     const { filter } = this._edition;
     const prevFilter = copy(filter);
 
-    filter.attribute = newAttributeItem;
+    filter.attribute = item;
 
     this._nofityFiltersUpdate(this._rootFilter.filters, {
       action: "edit",
@@ -201,141 +229,141 @@ export class AppFiltersTree {
       part: "attribute",
     });
 
-    return this._rootFilter.filters;
+    return filter;
   }
 
-  /*
-    single-value operators:
-      = -> != (only change operator) => displayPartialFilterSuggestions
-      = -> IS NULL (change operator and value) => displayPartialFilterSuggestions
-      = -> IN (change operator and value becomes an array) => loadValueSuggestions
+  // /*
+  //   single-value operators:
+  //     = -> != (only change operator) => displayPartialFilterSuggestions
+  //     = -> IS NULL (change operator and value) => displayPartialFilterSuggestions
+  //     = -> IN (change operator and value becomes an array) => loadValueSuggestions
 
-    preset-value operators:
-      IS NULL -> IS NOT NULL (only change operator) => displayPartialFilterSuggestions
-      IS NULL -> = (change operator and value) => loadValueSuggestions
-      IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
+  //   preset-value operators:
+  //     IS NULL -> IS NOT NULL (only change operator) => displayPartialFilterSuggestions
+  //     IS NULL -> = (change operator and value) => loadValueSuggestions
+  //     IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
 
-    multiple-value operators
-      IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
-      IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
-      IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
-  */
-  editFilterOperator(newOperatorItem) {
-    const { filters } = this._rootFilter;
-    const { filter } = this._edition;
-    const prevFilter = copy(filter);
+  //   multiple-value operators
+  //     IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
+  //     IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
+  //     IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
+  // */
+  // editFilterOperator(newOperatorItem) {
+  //   const { filters } = this._rootFilter;
+  //   const { filter } = this._edition;
+  //   const prevFilter = copy(filter);
 
-    filter.operator = newOperatorItem;
+  //   filter.operator = newOperatorItem;
 
-    if (prevFilter.operator.type === newOperatorItem.type) {
-      this._nofityFiltersUpdate(filters, {
-        action: "edit",
-        prevFilter,
-        filter,
-        part: "operator",
-      });
+  //   if (prevFilter.operator.type === newOperatorItem.type) {
+  //     this._nofityFiltersUpdate(filters, {
+  //       action: "edit",
+  //       prevFilter,
+  //       filter,
+  //       part: "operator",
+  //     });
 
-      return filters;
-    }
+  //     return filters;
+  //   }
 
-    // = -> IS NULL
-    if (newOperatorItem.type === "preset-value") {
-      filter.value = {
-        id: null,
-        value: newOperatorItem.presetValue,
-        label: String(newOperatorItem.presetValue),
-      };
+  //   // = -> IS NULL
+  //   if (newOperatorItem.type === "preset-value") {
+  //     filter.value = {
+  //       id: null,
+  //       value: newOperatorItem.presetValue,
+  //       label: String(newOperatorItem.presetValue),
+  //     };
 
-      filter.type = "attribute-operator";
-    } else if (newOperatorItem.type === "multiple-value") {
-      // = -> IN, IS NULL -> IN
-      if (prevFilter.operator.type === "single-value") {
-        // = -> IN
-        // (also support partial filter edition with no value yet)
-        if (prevFilter.value === null || prevFilter.value.id === null) {
-          // search text
-          filter.value = null; // no search text support in multiple suggestions dropdown component :/
-        } else {
-          filter.value.id = [prevFilter.value.id];
-          filter.value.value = [prevFilter.value.value];
-        }
-      } else if (prevFilter.operator.type === "preset-value") {
-        // IS NULL -> IN
-        filter.value = null; // no search text support in multiple suggestions dropdown component :/
-        filter.type = "attribute-operator-value";
-      }
-    } else if (newOperatorItem.type === "single-value") {
-      // IS NULL -> =, IN -> =
-      if (prevFilter.operator.type === "preset-value") {
-        filter.value = {
-          id: null,
-          value: prevFilter.operator.presetValue,
-          label: String(prevFilter.operator.presetValue),
-        };
+  //     filter.type = "attribute-operator";
+  //   } else if (newOperatorItem.type === "multiple-value") {
+  //     // = -> IN, IS NULL -> IN
+  //     if (prevFilter.operator.type === "single-value") {
+  //       // = -> IN
+  //       // (also support partial filter edition with no value yet)
+  //       if (prevFilter.value === null || prevFilter.value.id === null) {
+  //         // search text
+  //         filter.value = null; // no search text support in multiple suggestions dropdown component :/
+  //       } else {
+  //         filter.value.id = [prevFilter.value.id];
+  //         filter.value.value = [prevFilter.value.value];
+  //       }
+  //     } else if (prevFilter.operator.type === "preset-value") {
+  //       // IS NULL -> IN
+  //       filter.value = null; // no search text support in multiple suggestions dropdown component :/
+  //       filter.type = "attribute-operator-value";
+  //     }
+  //   } else if (newOperatorItem.type === "single-value") {
+  //     // IS NULL -> =, IN -> =
+  //     if (prevFilter.operator.type === "preset-value") {
+  //       filter.value = {
+  //         id: null,
+  //         value: prevFilter.operator.presetValue,
+  //         label: String(prevFilter.operator.presetValue),
+  //       };
 
-        filter.type = "attribute-operator-value";
-      } else if (prevFilter.operator.type === "multiple-value") {
-        // IN -> =
-        filter.value.id = prevFilter.value.id[0];
-        filter.value.value = prevFilter.value.value[0];
-        filter.value.label = prevFilter.value.label.split(",")[0];
-      }
-    }
+  //       filter.type = "attribute-operator-value";
+  //     } else if (prevFilter.operator.type === "multiple-value") {
+  //       // IN -> =
+  //       filter.value.id = prevFilter.value.id[0];
+  //       filter.value.value = prevFilter.value.value[0];
+  //       filter.value.label = prevFilter.value.label.split(",")[0];
+  //     }
+  //   }
 
-    this._nofityFiltersUpdate(filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "operator",
-    });
+  //   this._nofityFiltersUpdate(filters, {
+  //     action: "edit",
+  //     prevFilter,
+  //     filter,
+  //     part: "operator",
+  //   });
 
-    return filters;
-  }
+  //   return filters;
+  // }
 
-  editFilterValue(newValueItem) {
-    const { filter } = this._edition;
-    const prevFilter = copy(filter);
+  // editFilterValue(newValueItem) {
+  //   const { filter } = this._edition;
+  //   const prevFilter = copy(filter);
 
-    filter.value = newValueItem;
+  //   filter.value = newValueItem;
 
-    this._nofityFiltersUpdate(this._rootFilter.filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "value",
-    });
+  //   this._nofityFiltersUpdate(this._rootFilter.filters, {
+  //     action: "edit",
+  //     prevFilter,
+  //     filter,
+  //     part: "value",
+  //   });
 
-    return this._rootFilter.filters;
-  }
+  //   return this._rootFilter.filters;
+  // }
 
-  groupFiltersInParens() {
-    const { filter } = this._edition;
-    const { filters } = this._rootFilter;
+  // groupFiltersInParens() {
+  //   const { filter } = this._edition;
+  //   const { filters } = this._rootFilter;
 
-    const filterIndex = this._rootFilter.filters.findIndex(
-      (f) => f.id === filter.id
-    );
+  //   const filterIndex = this._rootFilter.filters.findIndex(
+  //     (f) => f.id === filter.id
+  //   );
 
-    const newFilter = {
-      id: this._genFilterId(),
-      type: "parens",
-      filters: [
-        filters[filterIndex - 1],
-        filters[filterIndex],
-        filters[filterIndex + 1],
-      ],
-    };
+  //   const newFilter = {
+  //     id: this._genFilterId(),
+  //     type: "parens",
+  //     filters: [
+  //       filters[filterIndex - 1],
+  //       filters[filterIndex],
+  //       filters[filterIndex + 1],
+  //     ],
+  //   };
 
-    filters.splice(filterIndex - 1, 3, newFilter);
+  //   filters.splice(filterIndex - 1, 3, newFilter);
 
-    this._nofityFiltersUpdate(filters, {
-      action: "create",
-      filter: newFilter,
-    });
+  //   this._nofityFiltersUpdate(filters, {
+  //     action: "create",
+  //     filter: newFilter,
+  //   });
 
-    return {
-      filters,
-      newFilter,
-    };
-  }
+  //   return {
+  //     filters,
+  //     newFilter,
+  //   };
+  // }
 }

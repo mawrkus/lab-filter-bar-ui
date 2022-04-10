@@ -3,19 +3,20 @@ export const loadAttributeSuggestions = {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
-      const attributes = await toolkit.suggestionService.loadAttributes();
+      const addParens = !ctx.isInserting();
+      const items = await toolkit.suggestionService.loadAttributes({ addParens });
 
-      ctx.doneLoading(attributes);
+      ctx.doneLoading({ items });
 
-      toolkit.sendEvent("attributeSuggestionsLoaded");
+      toolkit.sendEvent("attributesLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    attributeSuggestionsLoaded: [
+    attributesLoaded: [
       {
         cond: (event, ctx) => !ctx.isEditing(),
-        targetId: "chooseAttribute",
+        targetId: "setAttribute",
       },
       {
         cond: (event, ctx) => ctx.isEditing(),
@@ -25,64 +26,54 @@ export const loadAttributeSuggestions = {
   },
 };
 
-export const chooseAttribute = {
+export const setAttribute = {
   events: {
     discardSuggestions: "idle",
-    selectItem: [
-      {
-        cond: (event, ctx) => event.data.item.type !== "parens",
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.createPartialFilter(event.data.item);
-        },
-      },
-      {
-        cond: (event, ctx) => event.data.item.type === "parens",
-        targetId: "loadAttributeSuggestions",
-        action(event, ctx) {
+    selectItem: {
+      targetId: "proxyToDisplayNextSuggestions",
+      action(event, ctx) {
+        const { item, isSearchText } = event.data;
+
+        if (item.type === "parens") {
           ctx.createParensFilter();
-        },
-      },
-    ],
-    createItem: {
-      targetId: "idle",
-      action(event, ctx) {
-        ctx.createSearchTextFilter(event.data.item);
-      },
-    },
-    // On backspace
-    removeLastFilter: {
-      targetId: "idle",
-      action(event, ctx) {
-        ctx.removeFilter(ctx.getLastFilter());
+          return;
+        }
+
+        if (isSearchText) {
+          ctx.createSearchTextFilter({ item: event.data.item });
+          return;
+        }
+
+        ctx.createPartialFilter({ item });
       },
     },
   },
 };
 
 export const editAttribute = {
+  actions: {
+    onExit(event, ctx) {
+      ctx.stopEditing();
+    },
+  },
   events: {
-    discardSuggestions: "displayPartialFilterSuggestions",
-    selectItem: [
-      {
-        cond: (event, ctx) => event.data.item.type !== "parens",
-        targetId: "displayPartialFilterSuggestions",
-        action(event, ctx) {
-          ctx.editFilterAttribute(event.data.item);
-        },
-      },
-      {
-        cond: (event, ctx) => event.data.item.type === "parens",
-        targetId: "displayPartialFilterSuggestions",
-        action(event, ctx) {
-          ctx.createParensFilter(true);
-        },
-      },
-    ],
-    createItem: {
-      targetId: "displayPartialFilterSuggestions",
+    discardSuggestions: "idle",
+    selectItem: {
+      targetId: "proxyToDisplayNextSuggestions",
       action(event, ctx) {
-        ctx.createSearchTextFilter(event.data.item);
+        const { item, isSearchText } = event.data;
+
+        if (item.type === "parens") {
+          ctx.convertEditionToParensFilter();
+          return;
+        }
+
+        if (isSearchText) {
+          ctx.convertEditionToSearchTextFilter({ item: event.data.item });
+          return;
+        }
+
+        ctx.editFilterAttribute({ item });
       },
     },
   },

@@ -41,12 +41,8 @@ const FilterBarComponent = ({ stateMachine }) => {
     stateMachine.sendEvent("discardSuggestions");
   };
 
-  const onSelectSuggestionItem = (event, item) => {
-    stateMachine.sendEvent("selectItem", { item });
-  };
-
-  const onCreateSuggestionItem = (event, item) => {
-    stateMachine.sendEvent("createItem", { item });
+  const onSelectSuggestionItem = (event, item, isSearchText) => {
+    stateMachine.sendEvent("selectItem", { item, isSearchText });
   };
 
   const onBackspace = () => {
@@ -77,7 +73,6 @@ const FilterBarComponent = ({ stateMachine }) => {
           onOpen={onOpenSuggestionsDropdown}
           onClose={onCloseSuggestionsDropdown}
           onSelectItem={onSelectSuggestionItem}
-          onCreateItem={onCreateSuggestionItem}
           onBackspace={onBackspace}
         />
       </div>

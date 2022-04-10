@@ -69,7 +69,7 @@ export const editPartialOperator = {
         cond: (event) => event.data.item.type !== "preset-value",
         targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator(event.data.item, true);
+          ctx.editFilterOperator(event.data.item);
         },
       },
       {

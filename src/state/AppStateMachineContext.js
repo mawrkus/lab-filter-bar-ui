@@ -219,18 +219,16 @@ export class AppStateMachineContext extends StateMachineContext {
 
   editFilterAttribute(newAttributeItem) {
     const ctxValue = this.get();
-    const notify = false; // false by default as only partial filter attributes can be edited
 
-    ctxValue.filters = this._filtersTree.editFilterAttribute(newAttributeItem, notify);
+    ctxValue.filters = this._filtersTree.editFilterAttribute(newAttributeItem);
 
     this.set(ctxValue);
   }
 
-  editFilterOperator(newOperatorItem, isPartialFilter) {
+  editFilterOperator(newOperatorItem) {
     const ctxValue = this.get();
-    const notify = !isPartialFilter;
 
-    ctxValue.filters = this._filtersTree.editFilterOperator(newOperatorItem, notify);
+    ctxValue.filters = this._filtersTree.editFilterOperator(newOperatorItem);
 
     this.set(ctxValue);
   }

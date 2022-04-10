@@ -30,17 +30,17 @@ export const chooseAttribute = {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event, ctx) => event.data.item.type !== 'parens',
+        cond: (event, ctx) => event.data.item.type !== "parens",
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
           ctx.createPartialFilter(event.data.item);
         },
       },
       {
-        cond: (event, ctx) => event.data.item.type === 'parens',
+        cond: (event, ctx) => event.data.item.type === "parens",
         targetId: "loadAttributeSuggestions",
         action(event, ctx) {
-          const parensFilter = ctx.createParensFilter(event.data.item);
+          const parensFilter = ctx.createParensFilter();
 
           ctx.startInserting(parensFilter);
         },

@@ -191,13 +191,13 @@ export class AppFiltersTree {
     return this._edition;
   }
 
-  editFilterAttribute(newAttributeItem, notify) {
+  editFilterAttribute(newAttributeItem) {
     const { filter } = this._edition;
     const prevFilter = copy(filter);
 
     filter.attribute = newAttributeItem;
 
-    if (notify) {
+    if (filter.type !== "partial") {
       this._nofityFiltersUpdate(this._rootFilter.filters, {
         action: "edit",
         prevFilter,
@@ -225,7 +225,7 @@ export class AppFiltersTree {
       IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
       IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
   */
-  editFilterOperator(newOperatorItem, notify) {
+  editFilterOperator(newOperatorItem) {
     const { filters } = this._rootFilter;
     const { filter } = this._edition;
     const prevFilter = copy(filter);
@@ -233,7 +233,7 @@ export class AppFiltersTree {
     filter.operator = newOperatorItem;
 
     if (prevFilter.operator.type === newOperatorItem.type) {
-      if (notify) {
+      if (filter.type !== "partial") {
         this._nofityFiltersUpdate(filters, {
           action: "edit",
           prevFilter,
@@ -258,7 +258,8 @@ export class AppFiltersTree {
       // = -> IN, IS NULL -> IN
       if (prevFilter.operator.type === "single-value") {
         // = -> IN
-        if (prevFilter.value === null || prevFilter.value.id === null) { // also support partial filter edition with no value yet
+        // (also support partial filter edition with no value yet)
+        if (prevFilter.value === null || prevFilter.value.id === null) {
           // search text
           filter.value = null; // no search text support in multiple suggestions dropdown component :/
         } else {
@@ -288,7 +289,7 @@ export class AppFiltersTree {
       }
     }
 
-    if (notify) {
+    if (filter.type !== "partial") {
       this._nofityFiltersUpdate(filters, {
         action: "edit",
         prevFilter,

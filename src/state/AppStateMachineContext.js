@@ -11,8 +11,8 @@ export class AppStateMachineContext extends StateMachineContext {
     const edition = filtersTree.getEdition(); // { filter, part }
 
     super({
-      edition,
       insertion,
+      edition,
       filters,
       suggestions: {
         selectionType: "single", // "single" or "multiple"
@@ -53,9 +53,9 @@ export class AppStateMachineContext extends StateMachineContext {
     return this._filtersTree.getLastFilter();
   }
 
-  // getPartialFilter() {
-  //   return this._filtersTree.getPartialFilter();
-  // }
+  findPartialFilter() {
+    return this._filtersTree.findPartialFilter();
+  }
 
   /* suggestions loading */
 
@@ -157,9 +157,11 @@ export class AppStateMachineContext extends StateMachineContext {
 
     const { filter } = this._filtersTree.getEdition();
 
+    const childFilter = copy(filter);
+
     const newFilter = this._filtersTree.replaceFilter(filter, {
       type: "parens",
-      filters: [copy(filter)],
+      filters: [childFilter],
     });
 
     ctxValue.insertion = this._filtersTree.startInserting(newFilter);
@@ -196,57 +198,72 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  // hasLoadingError() {
-  //   return Boolean(this.get().suggestions.error);
-  // }
+  /* filter operators */
 
-  // clearLoadingError() {
-  //   const ctxValue = this.get();
+  setPartialFilterOperator({ item }) {
+    const ctxValue = this.get();
 
-  //   ctxValue.suggestions.error = null;
+    this._filtersTree.setPartialFilterOperator({ item });
 
-  //   this.set(ctxValue);
-  // }
+    ctxValue.filters = this._filtersTree.getFilters();
 
-  // setPartialFilterOperator(operatorItem) {
-  //   const ctxValue = this.get();
+    this.set(ctxValue);
+  }
 
-  //   ctxValue.filters = this._filtersTree.setPartialFilterOperator(operatorItem);
+  editFilterOperator({ item }) {
+    const ctxValue = this.get();
 
-  //   this.set(ctxValue);
-  // }
+    this._filtersTree.editFilterOperator({ item });
 
-  // completePartialFilter(item, type = "attribute-operator-value") {
-  //   const ctxValue = this.get();
+    ctxValue.filters = this._filtersTree.getFilters();
 
-  //   ctxValue.filters = this._filtersTree.completePartialFilter(item, type);
+    this.set(ctxValue);
+  }
 
-  //   this.set(ctxValue);
-  // }
+  clearLoadingError() {
+    const ctxValue = this.get();
 
-  // createLogicalOperatorFilter(logicalOperatorItem) {
-  //   const ctxValue = this.get();
+    ctxValue.suggestions.error = null;
 
-  //   const { filters } = this._filtersTree.insertFilter({
-  //     type: "logical-operator",
-  //     attribute: null,
-  //     operator: logicalOperatorItem,
-  //     value: null,
-  //   });
+    this.set(ctxValue);
+  }
 
-  //   ctxValue.filters = filters;
+  completePartialFilter({ item, type = "attribute-operator-value" }) {
+    const ctxValue = this.get();
 
-  //   this.set(ctxValue);
-  // }
+    this._filtersTree.completePartialFilter({ item, type });
 
-  // // filters deletion
-  // removeFilter(filter) {
-  //   const ctxValue = this.get();
+    ctxValue.filters = this._filtersTree.getFilters();
 
-  //   ctxValue.filters = this._filtersTree.removeFilter(filter);
+    this.set(ctxValue);
+  }
 
-  //   this.set(ctxValue);
-  // }
+  createLogicalOperatorFilter({ item }) {
+    const ctxValue = this.get();
+
+    this._filtersTree.insertFilter({
+      type: "logical-operator",
+      attribute: null,
+      operator: item,
+      value: null,
+    });
+
+    ctxValue.filters = this._filtersTree.getFilters();
+
+    this.set(ctxValue);
+  }
+
+  /* filters deletion */
+
+  removeFilter(filter) {
+    const ctxValue = this.get();
+
+    this._filtersTree.removeFilter(filter);
+
+    ctxValue.filters = this._filtersTree.getFilters();
+
+    this.set(ctxValue);
+  }
 
   // removePartialFilter() {
   //   const ctxValue = this.get();
@@ -270,13 +287,9 @@ export class AppStateMachineContext extends StateMachineContext {
     return this._filtersTree.getEdition();
   }
 
-  isEditing() {
-    return this._filtersTree.isEditing();
+  isEditing(type) {
+    return this._filtersTree.isEditing(type);
   }
-
-  // isEditingPartialFilter() {
-  //   return this._filtersTree.getEdition()?.filter?.type === "partial";
-  // }
 
   startEditing({ filter, part }) {
     const ctxValue = this.get();
@@ -294,37 +307,23 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  // setEditionPart(part) {
-  //   const ctxValue = this.get();
+  setEditionPart(part) {
+    const ctxValue = this.get();
 
-  //   ctxValue.edition = this._filtersTree.setEditionPart(part);
+    ctxValue.edition = this._filtersTree.setEditionPart(part);
 
-  //   this.set(ctxValue);
-  // }
+    this.set(ctxValue);
+  }
 
-  // editFilterAttribute(newAttributeItem) {
-  //   const ctxValue = this.get();
+  editFilterValue({ item }) {
+    const ctxValue = this.get();
 
-  //   ctxValue.filters = this._filtersTree.editFilterAttribute(newAttributeItem);
+    this._filtersTree.editFilterValue({ item });
 
-  //   this.set(ctxValue);
-  // }
+    ctxValue.filters = this._filtersTree.getFilters();
 
-  // editFilterOperator(newOperatorItem) {
-  //   const ctxValue = this.get();
-
-  //   ctxValue.filters = this._filtersTree.editFilterOperator(newOperatorItem);
-
-  //   this.set(ctxValue);
-  // }
-
-  // editFilterValue(newValueItem) {
-  //   const ctxValue = this.get();
-
-  //   ctxValue.filters = this._filtersTree.editFilterValue(newValueItem);
-
-  //   this.set(ctxValue);
-  // }
+    this.set(ctxValue);
+  }
 
   /* insertion */
 
@@ -332,13 +331,15 @@ export class AppStateMachineContext extends StateMachineContext {
     return this._filtersTree.isInserting();
   }
 
-  // startInserting(filter) {
-  //   const ctxValue = this.get();
+  startInserting(filterId) {
+    const ctxValue = this.get();
 
-  //   ctxValue.insertion = this._filtersTree.startInserting(filter);
+    const filterInTree = this._filtersTree.findFilterById(filterId);
 
-  //   this.set(ctxValue);
-  // }
+    ctxValue.insertion = this._filtersTree.startInserting(filterInTree);
+
+    this.set(ctxValue);
+  }
 
   // stopInserting() {
   //   const ctxValue = this.get();
@@ -348,13 +349,13 @@ export class AppStateMachineContext extends StateMachineContext {
   //   this.set(ctxValue);
   // }
 
-  // groupFiltersInParens() {
-  //   const ctxValue = this.get();
+  groupFiltersInParens() {
+    const ctxValue = this.get();
 
-  //   const { filters } = this._filtersTree.groupFiltersInParens();
+    this._filtersTree.groupFiltersInParens();
 
-  //   ctxValue.filters = filters;
+    ctxValue.filters = this._filtersTree.getFilters();
 
-  //   this.set(ctxValue);
-  // }
+    this.set(ctxValue);
+  }
 }

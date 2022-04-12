@@ -26,7 +26,7 @@ describe("Filter Bar - Edition with the mouse", () => {
     cy.selectLogicalOperator("AND");
     cy.filterBarShouldHaveText("Season=1 (11 episodes)AND");
 
-    cy.editLogicalOperator("AND", "OR", { checkForParens: true });
+    cy.editLogicalOperator("AND", "OR");
     cy.filterBarShouldHaveText("Season=1 (11 episodes)OR");
 
     cy.selectAttribute("Season");

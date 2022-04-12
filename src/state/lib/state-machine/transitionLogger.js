@@ -1,6 +1,6 @@
 export const transitionLogger = (transition, ctx) => {
-  console.log("📟", new Date());
-  console.log("  📥 %s(%o)", transition.event.name, transition.event.data);
+  console.log("📟", new Date().toLocaleString());
+  console.log(" 📥 %s(%o)", transition.event.name, transition.event.data);
 
   if (transition.isValid) {
     console.log("  ✔ %s → %s", transition.fromStateId, transition.toStateId);
@@ -8,5 +8,7 @@ export const transitionLogger = (transition, ctx) => {
     console.log("  💥 %s → %s", transition.fromStateId, transition.toStateId);
   }
 
-  console.log("  🔎", JSON.stringify(ctx.get()));
+  Object.entries(ctx.get()).forEach(([key, value]) => {
+    console.log("    🔎 %s=%o", key, JSON.stringify(value));
+  });
 };

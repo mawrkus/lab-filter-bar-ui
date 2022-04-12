@@ -41,7 +41,7 @@ const FilterBarComponent = ({ stateMachine }) => {
     stateMachine.sendEvent("discardSuggestions");
   };
 
-  const onSelectSuggestionItem = (event, item, isSearchText) => {
+  const onSelectSuggestionItem = (event, item, isSearchText = false) => {
     stateMachine.sendEvent("selectItem", { item, isSearchText });
   };
 

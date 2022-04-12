@@ -35,7 +35,6 @@ export const proxyToNextSuggestions = {
     gotoLoadAttributeSuggestions: "loadAttributeSuggestions",
     gotoLoadOperatorSuggestions: "loadOperatorSuggestions",
     gotoLoadValueSuggestions: "loadValueSuggestions",
-    gotoLoadGroupOperatorSuggestions: "loadGroupOperatorSuggestions",
     gotoIdle: "idle",
   },
 };

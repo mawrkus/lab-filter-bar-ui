@@ -56,13 +56,6 @@ export const idle = {
           ctx.startInserting(event.data.filter.id);
         },
       },
-      {
-        cond: () => true,
-        targetId: "proxyToNextSuggestions",
-        action(event, ctx) {
-          ctx.startInserting(event.data.filter.id);
-        },
-      },
     ],
     removeFilter: {
       targetId: "proxyToNextSuggestions",

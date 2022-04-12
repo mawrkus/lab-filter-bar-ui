@@ -103,8 +103,6 @@ export const editOperator = {
           const typeUnderEdition = operator.type;
           const newType = event.data.item.type;
 
-          debugger;
-
           /* same types */
 
           // IN -> NOT IN without any selected value

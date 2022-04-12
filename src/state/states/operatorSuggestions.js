@@ -136,7 +136,6 @@ export const editOperator = {
         //  - the operator's type changes and we know that the value has to be edited now
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          debugger;
           ctx.editFilterOperator({ item: event.data.item });
 
           // we continue editing

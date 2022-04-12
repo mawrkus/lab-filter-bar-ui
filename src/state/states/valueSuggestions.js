@@ -9,7 +9,7 @@ export const loadValueSuggestions = {
         return toolkit.sendEvent("valueSuggestionsLoaded");
       }
 
-      const targetFilter = filterUnderEdition || ctx.findPartialFilter();
+      const targetFilter = filterUnderEdition || ctx.getPartialFilter();
       const valuesType = targetFilter.attribute.value;
       const operatorType = targetFilter.operator.type;
 

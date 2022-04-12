@@ -53,6 +53,10 @@ export class AppStateMachineContext extends StateMachineContext {
     return this._filtersTree.getLastFilter();
   }
 
+  getPartialFilter() {
+    return this._filtersTree.getPartialFilter();
+  }
+
   findPartialFilter() {
     return this._filtersTree.findPartialFilter();
   }

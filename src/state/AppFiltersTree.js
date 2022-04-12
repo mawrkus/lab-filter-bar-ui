@@ -178,18 +178,34 @@ export class AppFiltersTree {
   }
 
   // deletion
-  removeFilter(filter) {
-    const { filters } = this._rootFilter;
+  _removeFilter(filter, filters = this._rootFilter.filters) {
+    const newFilters = [];
 
-    if (!filters.length) {
-      return filter;
+    for (let i = 0; i < filters.length; i++) {
+      const currentFilter = filters[i];
+
+      if (currentFilter.id === filter.id) {
+        i += 1; // remove logical operator at right
+        continue;
+      }
+
+      newFilters.push(currentFilter);
+
+      if (currentFilter.type === "parens") {
+        currentFilter.filters = this._removeFilter(
+          filter,
+          currentFilter.filters
+        );
+      }
     }
 
-    const index = filters.findIndex((f) => f.id === filter.id);
+    return newFilters;
+  }
 
-    filters.splice(index, 2);
+  removeFilter(filter) {
+    this._rootFilter.filters = this._removeFilter(filter);
 
-    this._nofityFiltersUpdate(filters, {
+    this._nofityFiltersUpdate(this._rootFilter.filters, {
       action: "remove",
       filter,
     });

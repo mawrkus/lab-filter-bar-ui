@@ -16,6 +16,32 @@ A filter bar UI component built with:
 - Suggestions are fetched from HTTP clients → API (+ cancellable requests)
 - Clear contract on the data structure: suggestion item from the API → component prop → filter
 
+### State diagram
+
+```mermaid
+stateDiagram-v2
+    [*]     --> idle
+    idle    --> loadAttributeSuggestions: startInput (no filters)
+    idle    --> loadLogicalOperatorSuggestions: startInput (last filter is complete and != logical operator)
+    idle    --> proxyToNextSuggestions: startInput (last filter incomplete or logical operator)
+    idle    --> proxyToEditFilterSuggestions: editFilter (!= parens)
+    idle    --> loadAttributeSuggestions: editFilter (empty parens)
+    idle    --> loadLogicalOperatorSuggestions: editFilter (last filter in parens is complete and != logical operator)
+    idle    --> proxyToNextSuggestions: editFilter (last filter in parens incomplete or logical operator)
+    idle    --> proxyToNextSuggestions: removeFilter
+    idle    --> idle: removeLastFilter
+    loadAttributeSuggestions    --> attributesLoaded
+    attributesLoaded    --> setAttribute: attributesLoaded (not editing)
+    attributesLoaded    --> editAttribute: attributesLoaded (editing)
+    setAttribute        --> idle: discardSuggestions
+    setAttribute        --> loadAttributeSuggestions: selectItem (parens)
+    setAttribute        --> proxyToNextSuggestions: selectItem (!= parens)
+    setAttribute        --> loadOperatorSuggestions: selectItem (!= search text)
+    setAttribute        --> idle: removeLastFilter
+    editAttribute       --> idle: discardSuggestions
+    editAttribute       --> proxyToNextSuggestions: selectItem
+```
+
 ## 📗 Use cases
 
 ### Creation

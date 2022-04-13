@@ -30,9 +30,13 @@ stateDiagram-v2
     idle    --> proxyToNextSuggestions: editFilter (last filter in parens incomplete or logical operator)
     idle    --> proxyToNextSuggestions: removeFilter
     idle    --> idle: removeLastFilter
+
     loadAttributeSuggestions    --> attributesLoaded
-    attributesLoaded    --> setAttribute: attributesLoaded (not editing)
-    attributesLoaded    --> editAttribute: attributesLoaded (editing)
+    state if_editing <<choice>>
+    attributesLoaded    --> if_editing
+    if_editing          --> setAttribute: not editing
+    if_editing          --> editAttribute: editing
+
     setAttribute        --> idle: discardSuggestions
     setAttribute        --> loadAttributeSuggestions: selectItem (parens)
     setAttribute        --> proxyToNextSuggestions: selectItem (!= parens)

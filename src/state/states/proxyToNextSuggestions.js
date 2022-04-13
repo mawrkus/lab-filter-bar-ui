@@ -1,10 +1,10 @@
 /**
-  * This state is reached after a filter has been completed, edited or removed.
-  * It acts as a redirection proxy for these cases:
-  *
-  * [partial] attribute → operator suggestions
-  * [partial] attribute operator → value suggestions
-  * [complete + logical] attribute operator value AND/OR → attribute suggestions
+ * This state is reached after a filter has been completed, edited or removed.
+ * It acts as a redirection proxy for these cases:
+ *
+ * [partial] attribute → operator suggestions
+ * [partial] attribute operator → value suggestions
+ * [complete + logical] attribute operator value AND/OR → attribute suggestions
  */
 export const proxyToNextSuggestions = {
   actions: {
@@ -28,6 +28,11 @@ export const proxyToNextSuggestions = {
         }
       }
 
+      if (ctx.isInserting() && ctx.getInsertion().filter.filters.length < 2) {
+        toolkit.sendEvent("gotoLoadLogicalOperatorSuggestions");
+        return;
+      }
+
       toolkit.sendEvent("gotoIdle");
     },
   },
@@ -35,6 +40,7 @@ export const proxyToNextSuggestions = {
     gotoLoadAttributeSuggestions: "loadAttributeSuggestions",
     gotoLoadOperatorSuggestions: "loadOperatorSuggestions",
     gotoLoadValueSuggestions: "loadValueSuggestions",
+    gotoLoadLogicalOperatorSuggestions: "loadLogicalOperatorSuggestions",
     gotoIdle: "idle",
   },
 };

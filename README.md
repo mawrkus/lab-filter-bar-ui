@@ -96,6 +96,6 @@ When editing a multi dropdown and closing it by clicking on the document:
 
 ..resulting in poor UX :/
 
-We've tried to introduce a 100ms delay in the `displayPartialFilterSuggestions` state to prevent the
+We've tried to introduce a 100ms delay in the `proxyToNextSuggestions` state to prevent the
 dropdown that opens for the partial filter to be closed on mouse up but it produced wrong dropdown
 placements when editing completed filter values and a partial filter is present.

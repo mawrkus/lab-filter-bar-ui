@@ -24,17 +24,6 @@ export class AppFiltersTree {
     return `f${this._lastFilterIndex++}`;
   }
 
-  getFilters() {
-    return this._rootFilter.filters;
-  }
-
-  // returns the last filter at the current insertion point
-  getLastFilter() {
-    const { filters } = this._insertion.filter;
-
-    return filters[filters.length - 1] || null;
-  }
-
   _findFilterBy(searchFn, filters = this._rootFilter.filters) {
     for (let i = 0; i < filters.length; i += 1) {
       let filter = filters[i];
@@ -55,19 +44,131 @@ export class AppFiltersTree {
     return null;
   }
 
-  findFilterById(filterId) {
-    return this._findFilterBy((f) => f.id === filterId);
+  _removeFilter(filter, filters = this._rootFilter.filters) {
+    const newFilters = [];
+
+    for (let i = 0; i < filters.length; i++) {
+      const currentFilter = filters[i];
+
+      if (currentFilter.id === filter.id) {
+        i += 1; // remove logical operator at right
+        continue;
+      }
+
+      newFilters.push(currentFilter);
+
+      if (currentFilter.type === "parens") {
+        currentFilter.filters = this._removeFilter(
+          filter,
+          currentFilter.filters
+        );
+      }
+    }
+
+    return newFilters;
   }
 
-  findPartialFilter() {
-    return this._findFilterBy((f) => f.type === "partial");
+  /* filter accessors */
+
+  getFilters() {
+    return this._rootFilter.filters;
   }
 
-  // partial filters
+  // returns the last filter at the current insertion point
+  getLastFilter() {
+    const { filters } = this._insertion.filter;
+
+    return filters[filters.length - 1] || null;
+  }
+
+  // get the last filter at current insertion point and checks if it's partial
   getPartialFilter() {
     const lastFilter = this.getLastFilter();
 
     return lastFilter?.type === "partial" ? lastFilter : null;
+  }
+
+  // traverses the whole tree to find the 1st partial filter
+  findPartialFilter() {
+    return this._findFilterBy((f) => f.type === "partial");
+  }
+
+  /* inserting mode */
+
+  startInserting(filterId) {
+    this._insertion = { filter: this._findFilterBy((f) => f.id === filterId) };
+
+    return this._insertion;
+  }
+
+  isInserting() {
+    return this._insertion.filter.id !== "root";
+  }
+
+  getInsertion() {
+    return this._insertion;
+  }
+
+  stopInserting() {
+    this._insertion = { filter: this._rootFilter };
+
+    return this._insertion;
+  }
+
+  /* editing mode */
+
+  startEditing({ filter, part }) {
+    this._edition = {
+      part,
+      filter: this._findFilterBy((f) => f.id === filter.id),
+    };
+
+    return this._edition;
+  }
+
+  setEditionPart(newPart) {
+    this._edition.part = newPart;
+
+    return this._edition;
+  }
+
+  isEditing(type) {
+    if (type) {
+      return this._edition?.filter?.type === type;
+    }
+
+    return this._edition !== null;
+  }
+
+  getEdition() {
+    return this._edition;
+  }
+
+  stopEditing() {
+    this._edition = null;
+
+    return this._edition;
+  }
+
+  /* filters creation */
+
+  insertFilter(filter) {
+    const { filters, id: parentId } = this._insertion.filter;
+
+    filter.id = this._genFilterId();
+
+    if (this.isInserting()) {
+      filter.parentId = parentId;
+    }
+
+    filters.push(filter);
+
+    this._nofityFiltersUpdate(filters, {
+      action: "create",
+      filter,
+    });
+
+    return filter;
   }
 
   setPartialFilterOperator({ item }) {
@@ -110,150 +211,7 @@ export class AppFiltersTree {
     return partialFilter;
   }
 
-  // insertion
-  getInsertion() {
-    return this._insertion;
-  }
-
-  startInserting(filter) {
-    this._insertion = { filter: this.findFilterById(filter.id) };
-
-    return this._insertion;
-  }
-
-  stopInserting() {
-    this._insertion = { filter: this._rootFilter };
-
-    return this._insertion;
-  }
-
-  isInserting() {
-    return this._insertion.filter.id !== "root";
-  }
-
-  insertFilter(filter) {
-    const { filters, id: parentId } = this._insertion.filter;
-
-    filter.id = this._genFilterId();
-
-    if (this.isInserting()) {
-      filter.parentId = parentId;
-    }
-
-    filters.push(filter);
-
-    this._nofityFiltersUpdate(filters, {
-      action: "create",
-      filter,
-    });
-
-    return filter;
-  }
-
-  replaceFilter(fromFilter, toFilter) {
-    const { filters } = this._insertion.filter;
-
-    Object.keys(fromFilter).forEach((key) => {
-      delete fromFilter[key];
-    });
-
-    Object.entries(toFilter).forEach(([key, value]) => {
-      fromFilter[key] = value;
-    });
-
-    fromFilter.id = this._genFilterId();
-
-    if (fromFilter.type === "parens") {
-      fromFilter.filters.forEach((childFilter) => {
-        childFilter.parentId = fromFilter.id;
-      });
-    }
-
-    this._nofityFiltersUpdate(filters, {
-      action: "create",
-      filter: fromFilter,
-    });
-
-    return fromFilter;
-  }
-
-  // deletion
-  _removeFilter(filter, filters = this._rootFilter.filters) {
-    const newFilters = [];
-
-    for (let i = 0; i < filters.length; i++) {
-      const currentFilter = filters[i];
-
-      if (currentFilter.id === filter.id) {
-        i += 1; // remove logical operator at right
-        continue;
-      }
-
-      newFilters.push(currentFilter);
-
-      if (currentFilter.type === "parens") {
-        currentFilter.filters = this._removeFilter(
-          filter,
-          currentFilter.filters
-        );
-      }
-    }
-
-    return newFilters;
-  }
-
-  removeFilter(filter) {
-    this._rootFilter.filters = this._removeFilter(filter);
-
-    this._nofityFiltersUpdate(this._rootFilter.filters, {
-      action: "remove",
-      filter,
-    });
-
-    return filter;
-  }
-
-  // removePartialFilter() {
-  //   const { filters } = this._rootFilter;
-
-  //   filters.pop();
-
-  //   return filters;
-  // }
-
-  // edition
-  getEdition() {
-    return this._edition;
-  }
-
-  startEditing({ filter, part }) {
-    this._edition = {
-      part,
-      filter: this.findFilterById(filter.id),
-    };
-
-    return this._edition;
-  }
-
-  stopEditing() {
-    this._edition = null;
-
-    return this._edition;
-  }
-
-  isEditing(type) {
-    if (type) {
-      return this._edition?.filter?.type === type;
-    }
-
-    return this._edition !== null;
-  }
-
-  setEditionPart(newPart) {
-    this._edition.part = newPart;
-
-    return this._edition;
-  }
+  /* filters edition */
 
   editFilterAttribute({ item }) {
     const { filter } = this._edition;
@@ -375,6 +333,33 @@ export class AppFiltersTree {
     return this._rootFilter.filters;
   }
 
+  replaceFilter(fromFilter, toFilter) {
+    const { filters } = this._insertion.filter;
+
+    Object.keys(fromFilter).forEach((key) => {
+      delete fromFilter[key];
+    });
+
+    Object.entries(toFilter).forEach(([key, value]) => {
+      fromFilter[key] = value;
+    });
+
+    fromFilter.id = this._genFilterId();
+
+    if (fromFilter.type === "parens") {
+      fromFilter.filters.forEach((childFilter) => {
+        childFilter.parentId = fromFilter.id;
+      });
+    }
+
+    this._nofityFiltersUpdate(filters, {
+      action: "create",
+      filter: fromFilter,
+    });
+
+    return fromFilter;
+  }
+
   groupFiltersInParens() {
     const { filter } = this._edition;
     const { filters } = this._rootFilter;
@@ -405,5 +390,18 @@ export class AppFiltersTree {
       filters,
       newFilter,
     };
+  }
+
+  /* filters deletion */
+
+  removeFilter(filter) {
+    this._rootFilter.filters = this._removeFilter(filter);
+
+    this._nofityFiltersUpdate(this._rootFilter.filters, {
+      action: "remove",
+      filter,
+    });
+
+    return filter;
   }
 }

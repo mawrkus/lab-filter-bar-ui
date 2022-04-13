@@ -60,7 +60,7 @@ export const Chiclet = memo(ChicletComponent, (prevProps, nextProps) => {
   // removing a partial operator with backspace and selecting a new one
   // this happens because 2 successive setProps() are batched in useStateMachine()
   // resulting in a single render with the same prev/next props here
-  if (nextProps.filter.type === "partial") {
+  if (nextProps.filter.type === "partial" || nextProps.filter.type === "parens") {
     return false;
   }
 

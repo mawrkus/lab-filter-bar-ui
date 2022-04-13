@@ -26,29 +26,6 @@ export class AppStateMachineContext extends StateMachineContext {
     this._filtersTree = filtersTree;
   }
 
-  // reset(resetError, stopInserting = false) {
-  //   const ctxValue = this.get();
-  //   const lastLoadingError = ctxValue.suggestions.error;
-
-  //   ctxValue.suggestions = {
-  //     selectionType: "single",
-  //     visible: resetError ? false : Boolean(lastLoadingError),
-  //     loading: false,
-  //     error: resetError ? null : lastLoadingError,
-  //     items: [],
-  //   };
-
-  //   ctxValue.edition = this._filtersTree.stopEditing();
-
-  //   if (stopInserting) {
-  //     ctxValue.insertion = this._filtersTree.stopInserting();
-  //   }
-
-  //   this.set(ctxValue);
-  // }
-
-  /* filters accessors */
-
   getLastFilter() {
     return this._filtersTree.getLastFilter();
   }
@@ -270,21 +247,15 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  // removePartialFilter() {
-  //   const ctxValue = this.get();
+  removePartialFilterOperator() {
+    const ctxValue = this.get();
 
-  //   ctxValue.filters = this._filtersTree.removePartialFilter();
+    this._filtersTree.setPartialFilterOperator({ item: null });
 
-  //   this.set(ctxValue);
-  // }
+    ctxValue.filters = this._filtersTree.getFilters();
 
-  // removePartialFilterOperator() {
-  //   const ctxValue = this.get();
-
-  //   ctxValue.filters = this._filtersTree.setPartialFilterOperator(null);
-
-  //   this.set(ctxValue);
-  // }
+    this.set(ctxValue);
+  }
 
   /* edition */
 

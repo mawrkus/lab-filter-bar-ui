@@ -65,6 +65,12 @@ export const setValue = {
         ctx.completePartialFilter({ item: event.data.item });
       },
     },
+    removeLastFilter: {
+      targetId: "idle",
+      action(event, ctx) {
+        ctx.removePartialFilterOperator();
+      },
+    },
   },
 };
 

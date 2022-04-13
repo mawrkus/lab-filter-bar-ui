@@ -3,26 +3,29 @@ export const loadLogicalOperatorSuggestions = {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
-      const { edition, insertion } = ctx.get();
+      const filterUnderEdition = ctx.getEdition()?.filter;
 
-      const parens =
-        insertion.filter.id === "root" &&
-        edition?.filter?.type === "logical-operator";
+      // TODO: none of the left/right filter can be a parens filter
+      const addParens =
+        !ctx.isInserting() && filterUnderEdition
+          ? filterUnderEdition.id !== ctx.getLastFilter().id
+          : false;
 
-      const logicalOperators =
-        await toolkit.suggestionService.loadLogicalOperators({ parens });
+      const items = await toolkit.suggestionService.loadLogicalOperators({
+        addParens,
+      });
 
-      ctx.doneLoading(logicalOperators);
+      ctx.doneLoading(items);
 
-      toolkit.sendEvent("logicalOperatorSuggestionsLoaded");
+      toolkit.sendEvent("logicalOperatorsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    logicalOperatorSuggestionsLoaded: [
+    logicalOperatorsLoaded: [
       {
         cond: (event, ctx) => !ctx.isEditing(),
-        targetId: "chooseLogicalOperator",
+        targetId: "setLogicalOperator",
       },
       {
         cond: (event, ctx) => ctx.isEditing(),
@@ -32,23 +35,27 @@ export const loadLogicalOperatorSuggestions = {
   },
 };
 
-export const chooseLogicalOperator = {
+export const setLogicalOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: {
-      targetId: "loadAttributeSuggestions",
+      targetId: "proxyToNextSuggestions",
       action(event, ctx) {
-        ctx.createLogicalOperatorFilter(event.data.item);
+        const { item, isSearchText } = event.data;
+
+        if (isSearchText) {
+          ctx.createLogicalOperatorFilter({
+            id: null,
+            value: "and",
+            label: "AND",
+          });
+
+          ctx.createSearchTextFilter(item);
+        } else {
+          ctx.createLogicalOperatorFilter(item);
+        }
       },
     },
-    createItem: {
-      targetId: "idle",
-      action(event, ctx) {
-        ctx.createLogicalOperatorFilter({ value: "and", label: "AND" });
-        ctx.createSearchTextFilter(event.data.item);
-      },
-    },
-    // On backspace
     removeLastFilter: {
       targetId: "idle",
       action(event, ctx) {
@@ -59,23 +66,25 @@ export const chooseLogicalOperator = {
 };
 
 export const editLogicalOperator = {
+  actions: {
+    onExit(event, ctx) {
+      ctx.stopEditing();
+    },
+  },
   events: {
-    discardSuggestions: "displayPartialFilterSuggestions",
-    selectItem: [
-      {
-        cond: (event, ctx) => event.data.item.type !== "parens",
-        targetId: "displayPartialFilterSuggestions",
-        action(event, ctx) {
-          ctx.editFilterOperator(event.data.item);
-        },
-      },
-      {
-        cond: (event, ctx) => event.data.item.type === "parens",
-        targetId: "displayPartialFilterSuggestions",
-        action(event, ctx) {
+    discardSuggestions: "proxyToNextSuggestions",
+    selectItem: {
+      targetId: "proxyToNextSuggestions",
+      action(event, ctx) {
+        const { item } = event.data;
+
+        if (item.type === "parens") {
           ctx.groupFiltersInParens();
-        },
+          return;
+        }
+
+        ctx.editFilterOperator(item);
       },
-    ],
+    },
   },
 };

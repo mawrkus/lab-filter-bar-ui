@@ -16,6 +16,36 @@ A filter bar UI component built with:
 - Suggestions are fetched from HTTP clients → API (+ cancellable requests)
 - Clear contract on the data structure: suggestion item from the API → component prop → filter
 
+### State diagram
+
+```mermaid
+stateDiagram-v2
+    [*]     --> idle
+    idle    --> loadAttributeSuggestions: startInput (no filters)
+    idle    --> loadLogicalOperatorSuggestions: startInput (last filter is complete and != logical operator)
+    idle    --> proxyToNextSuggestions: startInput (last filter incomplete or logical operator)
+    idle    --> proxyToEditFilterSuggestions: editFilter (!= parens)
+    idle    --> loadAttributeSuggestions: editFilter (empty parens)
+    idle    --> loadLogicalOperatorSuggestions: editFilter (last filter in parens is complete and != logical operator)
+    idle    --> proxyToNextSuggestions: editFilter (last filter in parens incomplete or logical operator)
+    idle    --> proxyToNextSuggestions: removeFilter
+    idle    --> idle: removeLastFilter
+
+    loadAttributeSuggestions    --> attributesLoaded
+    state if_editing <<choice>>
+    attributesLoaded    --> if_editing
+    if_editing          --> setAttribute: not editing
+    if_editing          --> editAttribute: editing
+
+    setAttribute        --> idle: discardSuggestions
+    setAttribute        --> loadAttributeSuggestions: selectItem (parens)
+    setAttribute        --> proxyToNextSuggestions: selectItem (!= parens)
+    setAttribute        --> loadOperatorSuggestions: selectItem (!= search text)
+    setAttribute        --> idle: removeLastFilter
+    editAttribute       --> idle: discardSuggestions
+    editAttribute       --> proxyToNextSuggestions: selectItem
+```
+
 ## 📗 Use cases
 
 ### Creation
@@ -96,6 +126,6 @@ When editing a multi dropdown and closing it by clicking on the document:
 
 ..resulting in poor UX :/
 
-We've tried to introduce a 100ms delay in the `displayPartialFilterSuggestions` state to prevent the
+We've tried to introduce a 100ms delay in the `proxyToNextSuggestions` state to prevent the
 dropdown that opens for the partial filter to be closed on mouse up but it produced wrong dropdown
 placements when editing completed filter values and a partial filter is present.

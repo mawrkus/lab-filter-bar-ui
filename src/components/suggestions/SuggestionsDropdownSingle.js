@@ -11,7 +11,6 @@ export const SuggestionsDropdownSingle = ({
   onOpen,
   onClose,
   onSelectItem,
-  onCreateItem,
   onBackspace,
 }) => {
   useHandleBackspaceKey(onBackspace);
@@ -30,7 +29,8 @@ export const SuggestionsDropdownSingle = ({
     if (item) {
       onSelectItem(e, item);
     } else {
-      onCreateItem(e, { id: null, value: newValue, label: newValue });
+      // search text
+      onSelectItem(e, { id: null, value: newValue, label: newValue }, true);
     }
   };
 

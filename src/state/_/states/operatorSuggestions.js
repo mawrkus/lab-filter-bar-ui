@@ -3,47 +3,36 @@ export const loadOperatorSuggestions = {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
-      const items = await toolkit.suggestionService.loadOperators();
+      const operators = await toolkit.suggestionService.loadOperators();
 
-      ctx.doneLoading(items);
+      ctx.doneLoading(operators);
 
-      toolkit.sendEvent("operatorsLoaded");
+      toolkit.sendEvent("operatorSuggestionsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    operatorsLoaded: [
+    operatorSuggestionsLoaded: [
       {
         cond: (event, ctx) => !ctx.isEditing(),
-        targetId: "setOperator",
+        targetId: "chooseOperator",
       },
       {
-        cond: (event, ctx) => ctx.isEditing("partial"),
+        cond: (event, ctx) => ctx.isEditingPartialFilter(),
         targetId: "editPartialOperator",
       },
       {
-        cond: () => true,
+        cond: (event, ctx) => !ctx.isEditingPartialFilter(),
         targetId: "editOperator",
       },
     ],
   },
 };
 
-export const setOperator = {
+export const chooseOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
-      {
-        cond: (event) => event.data.isSearchText,
-        targetId: "setOperator",
-      },
-      {
-        cond: (event) => event.data.item.type === "preset-value",
-        targetId: "proxyToNextSuggestions",
-        action(event, ctx) {
-          ctx.completePartialFilter(event.data.item, "attribute-operator");
-        },
-      },
       {
         cond: (event) => event.data.item.type !== "preset-value",
         targetId: "loadValueSuggestions",
@@ -51,13 +40,24 @@ export const setOperator = {
           ctx.setPartialFilterOperator(event.data.item);
         },
       },
-    ],
-    removeLastFilter: {
-      targetId: "idle",
-      action(event, ctx) {
-        ctx.removeFilter(ctx.getLastFilter());
+      {
+        cond: (event) => event.data.item.type === "preset-value",
+        targetId: "idle",
+        action(event, ctx) {
+          ctx.completePartialFilter(event.data.item, "attribute-operator");
+        },
       },
-    },
+    ],
+    // On backspace
+    removeLastFilter: [
+      {
+        cond: (event, ctx) => ctx.getPartialFilter(),
+        targetId: "idle",
+        action(event, ctx) {
+          ctx.removePartialFilter();
+        },
+      },
+    ],
   },
 };
 
@@ -66,22 +66,17 @@ export const editPartialOperator = {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event) => event.data.isSearchText,
-        targetId: "editPartialOperator",
+        cond: (event) => event.data.item.type !== "preset-value",
+        targetId: "displayPartialFilterSuggestions",
+        action(event, ctx) {
+          ctx.editFilterOperator(event.data.item);
+        },
       },
       {
-        cond: (event) => !event.data.isSearchText,
-        targetId: "proxyToNextSuggestions",
+        cond: (event) => event.data.item.type === "preset-value",
+        targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
-          const { item } = event.data;
-
-          if (item.type === "preset-value") {
-            ctx.completePartialFilter(item, "attribute-operator");
-          } else {
-            ctx.editFilterOperator(item);
-          }
-
-          ctx.stopEditing();
+          ctx.completePartialFilter(event.data.item, "attribute-operator");
         },
       },
     ],
@@ -90,28 +85,24 @@ export const editPartialOperator = {
 
 /*
   single-value operators:
-    = -> != (only change operator) => proxyToNextSuggestions
-    = -> IS NULL (change operator and value) => proxyToNextSuggestions
+    = -> != (only change operator) => displayPartialFilterSuggestions
+    = -> IS NULL (change operator and value) => displayPartialFilterSuggestions
     = -> IN (change operator and value becomes an array) => loadValueSuggestions
 
   preset-value operators:
-    IS NULL -> IS NOT NULL (only change operator) => proxyToNextSuggestions
+    IS NULL -> IS NOT NULL (only change operator) => displayPartialFilterSuggestions
     IS NULL -> = (change operator and value) => loadValueSuggestions
     IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
 
   multiple-value operators
-    IN -> NOT IN (only change operator) => proxyToNextSuggestions
+    IN -> NOT IN (only change operator) => displayPartialFilterSuggestions
     IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
-    IN -> IS NULL (change operator and value and value becomes a primitive) => proxyToNextSuggestions
+    IN -> IS NULL (change operator and value and value becomes a primitive) => displayPartialFilterSuggestions
 */
 export const editOperator = {
   events: {
-    discardSuggestions: "idle",
+    discardSuggestions: "displayPartialFilterSuggestions",
     selectItem: [
-      {
-        cond: (event) => event.data.isSearchText,
-        targetId: "editOperator",
-      },
       {
         cond: (event, ctx) => {
           const { operator, value } = ctx.getEdition().filter;
@@ -147,23 +138,20 @@ export const editOperator = {
 
           return false;
         },
-        // only exception: we don't go to "proxyToNextSuggestions" because:
+        // only exception: we don't go to "displayPartialFilterSuggestions" because:
         //  - the operator's type changes and we know that the value has to be edited now
+        //  - if we go to "displayPartialFilterSuggestions", the state will be resetted (no more edition)
         targetId: "loadValueSuggestions",
         action(event, ctx) {
           ctx.editFilterOperator(event.data.item);
-
-          // we continue editing
           ctx.setEditionPart("value");
         },
       },
       {
         cond: () => true,
-        targetId: "proxyToNextSuggestions",
+        targetId: "displayPartialFilterSuggestions",
         action(event, ctx) {
           ctx.editFilterOperator(event.data.item);
-
-          ctx.stopEditing();
         },
       },
     ],

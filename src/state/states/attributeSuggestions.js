@@ -3,19 +3,21 @@ export const loadAttributeSuggestions = {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
 
-      const attributes = await toolkit.suggestionService.loadAttributes();
+      const items = await toolkit.suggestionService.loadAttributes({
+        addParens: !ctx.isInserting(),
+      });
 
-      ctx.doneLoading(attributes);
+      ctx.doneLoading(items);
 
-      toolkit.sendEvent("attributeSuggestionsLoaded");
+      toolkit.sendEvent("attributesLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    attributeSuggestionsLoaded: [
+    attributesLoaded: [
       {
         cond: (event, ctx) => !ctx.isEditing(),
-        targetId: "chooseAttribute",
+        targetId: "setAttribute",
       },
       {
         cond: (event, ctx) => ctx.isEditing(),
@@ -25,32 +27,33 @@ export const loadAttributeSuggestions = {
   },
 };
 
-export const chooseAttribute = {
+export const setAttribute = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
       {
-        cond: (event, ctx) => event.data.item.type !== "parens",
-        targetId: "loadOperatorSuggestions",
-        action(event, ctx) {
-          ctx.createPartialFilter(event.data.item);
-        },
-      },
-      {
-        cond: (event, ctx) => event.data.item.type === "parens",
+        cond: (event) => event.data.item.type === "parens",
         targetId: "loadAttributeSuggestions",
         action(event, ctx) {
           ctx.createParensFilter();
         },
       },
-    ],
-    createItem: {
-      targetId: "idle",
-      action(event, ctx) {
-        ctx.createSearchTextFilter(event.data.item);
+      // non-parens
+      {
+        cond: (event) => event.data.isSearchText,
+        targetId: "proxyToNextSuggestions",
+        action(event, ctx) {
+          ctx.createSearchTextFilter(event.data.item);
+        },
       },
-    },
-    // On backspace
+      {
+        cond: (event) => !event.data.isSearchText,
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.createPartialFilter(event.data.item);
+        },
+      },
+    ],
     removeLastFilter: {
       targetId: "idle",
       action(event, ctx) {
@@ -61,28 +64,29 @@ export const chooseAttribute = {
 };
 
 export const editAttribute = {
+  actions: {
+    onExit(event, ctx) {
+      ctx.stopEditing();
+    },
+  },
   events: {
-    discardSuggestions: "displayPartialFilterSuggestions",
-    selectItem: [
-      {
-        cond: (event, ctx) => event.data.item.type !== "parens",
-        targetId: "displayPartialFilterSuggestions",
-        action(event, ctx) {
-          ctx.editFilterAttribute(event.data.item);
-        },
-      },
-      {
-        cond: (event, ctx) => event.data.item.type === "parens",
-        targetId: "displayPartialFilterSuggestions",
-        action(event, ctx) {
-          ctx.createParensFilter(true);
-        },
-      },
-    ],
-    createItem: {
-      targetId: "displayPartialFilterSuggestions",
+    discardSuggestions: "idle",
+    selectItem: {
+      targetId: "proxyToNextSuggestions",
       action(event, ctx) {
-        ctx.createSearchTextFilter(event.data.item);
+        const { item, isSearchText } = event.data;
+
+        if (item.type === "parens") {
+          ctx.convertEditionToParensFilter();
+          return;
+        }
+
+        if (isSearchText) {
+          ctx.convertEditionToSearchTextFilter(event.data.item);
+          return;
+        }
+
+        ctx.editFilterAttribute(item);
       },
     },
   },

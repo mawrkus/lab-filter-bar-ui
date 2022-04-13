@@ -11,8 +11,8 @@ export class SuggestionService {
     this._logicalOperatorService = logicalOperatorService;
   }
 
-  loadAttributes() {
-    return this._attributeService.load();
+  loadAttributes({ addParens }) {
+    return this._attributeService.load({ addParens });
   }
 
   loadOperators() {
@@ -23,8 +23,8 @@ export class SuggestionService {
     return this._valueService.load({ type });
   }
 
-  loadLogicalOperators({ parens }) {
-    return this._logicalOperatorService.load({ parens });
+  loadLogicalOperators({ addParens }) {
+    return this._logicalOperatorService.load({ addParens });
   }
 
   cancelLoad() {
@@ -32,6 +32,6 @@ export class SuggestionService {
   }
 
   isCancelError(error) {
-    return error instanceof DOMException && error.name === 'AbortError';
+    return error instanceof DOMException && error.name === "AbortError";
   }
 }

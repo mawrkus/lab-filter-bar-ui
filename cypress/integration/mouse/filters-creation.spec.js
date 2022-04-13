@@ -136,6 +136,18 @@ describe("Filter Bar - Creation with the mouse", () => {
 
         cy.filterBarShouldHaveText("SeasonLIKE2 (10 episodes)");
       });
+
+      it("should allow the user to complete it with a search text", () => {
+        cy.clickOnSearchInput();
+        cy.suggestionsShouldBe(attributesList);
+
+        cy.selectAttribute("Episode");
+
+        cy.clickOnPartialAttribute();
+        cy.clickOnSearchInput().type("pilot{enter}");
+
+        cy.filterBarShouldHaveText('"pilot"');
+      });
     });
 
     describe("if there is a partial filter attribute & operator", () => {
@@ -189,6 +201,20 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.selectValue("Dan Harmon (Creator)");
 
         cy.filterBarShouldHaveText("Crew=Dan Harmon (Creator)");
+      });
+
+      it("should allow the user to complete the attribute with a search text", () => {
+        cy.clickOnSearchInput();
+        cy.suggestionsShouldBe(attributesList);
+
+        cy.selectAttribute("Season");
+        cy.selectOperator("=");
+        cy.suggestionsShouldBe(seasonsList);
+
+        cy.clickOnPartialAttribute();
+        cy.clickOnSearchInput().type("spring{enter}");
+
+        cy.filterBarShouldHaveText('"spring"');
       });
     });
 

@@ -18,11 +18,11 @@ export const loadValueSuggestions = {
 
       ctx.startLoading(selectionType);
 
-      let items = [];
+      let values = [];
       let error = null;
 
       try {
-        items = await toolkit.suggestionService.loadValues({
+        values = await toolkit.suggestionService.loadValues({
           type: valuesType,
         });
       } catch (e) {
@@ -36,17 +36,18 @@ export const loadValueSuggestions = {
         }
       }
 
-      ctx.doneLoading(items, selectionType, error);
+      ctx.doneLoading(values, selectionType, error);
 
-      toolkit.sendEvent("valuesLoaded");
+      toolkit.sendEvent("valueSuggestionsLoaded");
     },
   },
   events: {
     discardSuggestions: "idle",
-    valuesLoaded: [
+    valueSuggestionsLoaded: [
+      // we allow search text filter creation regardless if there was a loading error or not
       {
         cond: (event, ctx) => !ctx.isEditing(),
-        targetId: "setValue",
+        targetId: "chooseValue",
       },
       {
         cond: (event, ctx) => ctx.isEditing(),
@@ -56,29 +57,9 @@ export const loadValueSuggestions = {
   },
 };
 
-export const setValue = {
-  events: {
-    discardSuggestions: "idle",
-    selectItem: {
-      targetId: "proxyToNextSuggestions",
-      action(event, ctx) {
-        ctx.completePartialFilter(event.data.item);
-      },
-    },
-    removeLastFilter: {
-      targetId: "idle",
-      action(event, ctx) {
-        ctx.removePartialFilterOperator();
-      },
-    },
-  },
-};
-
-export const editValue = {
+export const chooseValue = {
   actions: {
     onExit(event, ctx) {
-      ctx.stopEditing();
-
       // we allowed search text filter edition even in case of loading error
       ctx.clearLoadingError();
     },
@@ -86,7 +67,47 @@ export const editValue = {
   events: {
     discardSuggestions: "idle",
     selectItem: {
-      targetId: "proxyToNextSuggestions",
+      targetId: "idle",
+      action(event, ctx) {
+        ctx.completePartialFilter(event.data.item);
+      },
+    },
+    createItem: {
+      targetId: "idle",
+      action(event, ctx) {
+        ctx.completePartialFilter(event.data.item);
+      },
+    },
+    // On backspace
+    removeLastFilter: [
+      {
+        cond: (event, ctx) => ctx.getPartialFilter(),
+        targetId: "loadOperatorSuggestions",
+        action(event, ctx) {
+          ctx.removePartialFilterOperator();
+        },
+      },
+    ],
+  },
+};
+
+export const editValue = {
+  actions: {
+    onExit(event, ctx) {
+      // we allowed search text filter edition even in case of loading error
+      ctx.clearLoadingError();
+    },
+  },
+  events: {
+    discardSuggestions: "displayPartialFilterSuggestions",
+    selectItem: {
+      targetId: "displayPartialFilterSuggestions",
+      action(event, ctx) {
+        ctx.editFilterValue(event.data.item);
+      },
+    },
+    createItem: {
+      targetId: "displayPartialFilterSuggestions",
       action(event, ctx) {
         ctx.editFilterValue(event.data.item);
       },

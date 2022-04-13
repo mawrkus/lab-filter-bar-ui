@@ -1,8 +1,9 @@
-import { SuggestionService } from "./SuggestionService";
 import { AttributeService } from "./AttributeService";
-import { OperatorService } from "./OperatorService";
-import { ValueService } from "./ValueService";
 import { LogicalOperatorService } from "./LogicalOperatorService";
+import { OperatorService } from "./OperatorService";
+import { SuggestionService } from "./SuggestionService";
+import { ValueService } from "./ValueService";
+
 import { HttpClient } from "./HttpClient";
 
 export const buildSuggestionService = () => new SuggestionService({

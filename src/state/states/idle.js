@@ -3,70 +3,69 @@ export const idle = {
     onEntry(event, ctx, toolkit) {
       toolkit.suggestionService.cancelLoad();
 
-      const resetError = event?.name === "discardSuggestions";
-
-      ctx.reset(resetError, true);
+      // reset suggestions (loading = false), reset insertion to root node and reset edition
+      ctx.reset();
     },
   },
   events: {
-    discardSuggestions: "idle",
     startInput: [
       {
-        cond: (event, ctx) => {
-          const lastFilter = ctx.getLastFilter();
-          return !lastFilter || lastFilter.type === "logical-operator";
-        },
+        cond: (event, ctx) => !ctx.getLastFilter(),
         targetId: "loadAttributeSuggestions",
       },
       {
-        cond: (event, ctx) => ctx.getLastFilter().type !== 'partial',
+        cond: (event, ctx) => {
+          const lastFilter = ctx.getLastFilter();
+          return (
+            lastFilter.type !== "partial" &&
+            lastFilter.type !== "logical-operator"
+          );
+        },
         targetId: "loadLogicalOperatorSuggestions",
       },
       {
-        cond: (event, ctx) => ctx.getLastFilter().operator === null,
-        targetId: "loadOperatorSuggestions",
-      },
-      {
-        cond: (event, ctx) => ctx.getLastFilter().value === null,
-        targetId: "loadValueSuggestions",
+        cond: () => true,
+        targetId: "proxyToNextSuggestions",
       },
     ],
     editFilter: [
       {
-        cond: (event) => event.data.filter.type === "logical-operator",
-        targetId: "loadLogicalOperatorSuggestions",
-        action(event, ctx) {
-          ctx.startEditing(event.data);
-        },
+        cond: (event) => event.data.filter.type !== "parens",
+        targetId: "proxyToEditFilterSuggestions",
       },
+      // parens
       {
-        cond: (event) => event.data.part === "attribute",
+        cond: (event) => !event.data.filter.filters.length,
         targetId: "loadAttributeSuggestions",
         action(event, ctx) {
-          ctx.startEditing(event.data);
+          ctx.startInserting(event.data.filter.id);
         },
       },
       {
-        cond: (event) => event.data.part === "operator",
-        targetId: "loadOperatorSuggestions",
+        cond: (event) => {
+          const { filters } = event.data.filter;
+          const lastFilter = filters[filters.length - 1];
+
+          return (
+            lastFilter.type !== "partial" &&
+            lastFilter.type !== "logical-operator"
+          );
+        },
+        targetId: "loadLogicalOperatorSuggestions",
         action(event, ctx) {
-          ctx.startEditing(event.data);
+          ctx.startInserting(event.data.filter.id);
         },
       },
       {
-        cond: (event) => event.data.part === "value",
-        targetId: "loadValueSuggestions",
+        cond: () => true,
+        targetId: "proxyToNextSuggestions",
         action(event, ctx) {
-          ctx.startEditing(event.data);
+          ctx.startInserting(event.data.filter.id);
         },
-      },
-      {
-        cond: (event) => event.data.filter.type === "parens",
-        targetId: "displayParensSuggestions",
       },
     ],
     removeFilter: {
-      targetId: "displayPartialFilterSuggestions",
+      targetId: "proxyToNextSuggestions",
       action(event, ctx) {
         ctx.removeFilter(event.data.filter);
       },
@@ -74,7 +73,17 @@ export const idle = {
     removeLastFilter: {
       targetId: "idle",
       action(event, ctx) {
-        ctx.removeFilter(ctx.getLastFilter());
+        const lastFilter = ctx.getLastFilter();
+
+        if (
+          lastFilter.type === "parens" &&
+          lastFilter.filters[lastFilter.filters.length - 1]
+        ) {
+          ctx.removeFilter(lastFilter.filters[lastFilter.filters.length - 1]);
+          return;
+        }
+
+        ctx.removeFilter(lastFilter);
       },
     },
   },

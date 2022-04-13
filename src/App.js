@@ -15,7 +15,9 @@ export const App = () => {
   const appStateMachine = useMemo(() => buildAppStateMachine({
     initFilters: filters,
     onTransition: (transition) => {
-      setStateId(transition.toStateId);
+      if (transition.toStateId) {
+        setStateId(transition.toStateId);
+      }
     },
     onUpdateFilters: (newFilters, event) => {
       const { action, filter, prevFilter, part } = event;

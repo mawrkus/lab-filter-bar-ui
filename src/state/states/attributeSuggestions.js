@@ -7,7 +7,7 @@ export const loadAttributeSuggestions = {
         addParens: !ctx.isInserting(),
       });
 
-      ctx.doneLoading({ items });
+      ctx.doneLoading(items);
 
       toolkit.sendEvent("attributesLoaded");
     },
@@ -43,14 +43,14 @@ export const setAttribute = {
         cond: (event) => event.data.isSearchText,
         targetId: "proxyToNextSuggestions",
         action(event, ctx) {
-          ctx.createSearchTextFilter({ item: event.data.item });
+          ctx.createSearchTextFilter(event.data.item);
         },
       },
       {
         cond: (event) => !event.data.isSearchText,
         targetId: "loadOperatorSuggestions",
         action(event, ctx) {
-          ctx.createPartialFilter({ item: event.data.item });
+          ctx.createPartialFilter(event.data.item);
         },
       },
     ],
@@ -82,11 +82,11 @@ export const editAttribute = {
         }
 
         if (isSearchText) {
-          ctx.convertEditionToSearchTextFilter({ item: event.data.item });
+          ctx.convertEditionToSearchTextFilter(event.data.item);
           return;
         }
 
-        ctx.editFilterAttribute({ item });
+        ctx.editFilterAttribute(item);
       },
     },
   },

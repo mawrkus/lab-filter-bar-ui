@@ -4,7 +4,7 @@ export const loadValueSuggestions = {
       const filterUnderEdition = ctx.getEdition()?.filter;
 
       if (filterUnderEdition?.type === "search-text") {
-        ctx.doneLoading({ items: [filterUnderEdition.value] });
+        ctx.doneLoading([filterUnderEdition.value]);
 
         return toolkit.sendEvent("valueSuggestionsLoaded");
       }
@@ -36,7 +36,7 @@ export const loadValueSuggestions = {
         }
       }
 
-      ctx.doneLoading({ items, selectionType, error });
+      ctx.doneLoading(items, selectionType, error);
 
       toolkit.sendEvent("valuesLoaded");
     },
@@ -62,7 +62,7 @@ export const setValue = {
     selectItem: {
       targetId: "proxyToNextSuggestions",
       action(event, ctx) {
-        ctx.completePartialFilter({ item: event.data.item });
+        ctx.completePartialFilter(event.data.item);
       },
     },
     removeLastFilter: {
@@ -88,7 +88,7 @@ export const editValue = {
     selectItem: {
       targetId: "proxyToNextSuggestions",
       action(event, ctx) {
-        ctx.editFilterValue({ item: event.data.item });
+        ctx.editFilterValue(event.data.item);
       },
     },
   },

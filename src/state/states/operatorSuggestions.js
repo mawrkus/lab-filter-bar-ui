@@ -5,7 +5,7 @@ export const loadOperatorSuggestions = {
 
       const items = await toolkit.suggestionService.loadOperators();
 
-      ctx.doneLoading({ items });
+      ctx.doneLoading(items);
 
       toolkit.sendEvent("operatorsLoaded");
     },
@@ -41,17 +41,14 @@ export const setOperator = {
         cond: (event) => event.data.item.type === "preset-value",
         targetId: "proxyToNextSuggestions",
         action(event, ctx) {
-          ctx.completePartialFilter({
-            item: event.data.item,
-            type: "attribute-operator",
-          });
+          ctx.completePartialFilter(event.data.item, "attribute-operator");
         },
       },
       {
         cond: (event) => event.data.item.type !== "preset-value",
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.setPartialFilterOperator({ item: event.data.item });
+          ctx.setPartialFilterOperator(event.data.item);
         },
       },
     ],
@@ -79,9 +76,9 @@ export const editPartialOperator = {
           const { item } = event.data;
 
           if (item.type === "preset-value") {
-            ctx.completePartialFilter({ item, type: "attribute-operator" });
+            ctx.completePartialFilter(item, "attribute-operator");
           } else {
-            ctx.editFilterOperator({ item });
+            ctx.editFilterOperator(item);
           }
 
           ctx.stopEditing();
@@ -154,7 +151,7 @@ export const editOperator = {
         //  - the operator's type changes and we know that the value has to be edited now
         targetId: "loadValueSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator({ item: event.data.item });
+          ctx.editFilterOperator(event.data.item);
 
           // we continue editing
           ctx.setEditionPart("value");
@@ -164,7 +161,7 @@ export const editOperator = {
         cond: () => true,
         targetId: "proxyToNextSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator({ item: event.data.item });
+          ctx.editFilterOperator(event.data.item);
 
           ctx.stopEditing();
         },

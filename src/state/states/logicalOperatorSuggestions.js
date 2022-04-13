@@ -15,7 +15,7 @@ export const loadLogicalOperatorSuggestions = {
         addParens,
       });
 
-      ctx.doneLoading({ items });
+      ctx.doneLoading(items);
 
       toolkit.sendEvent("logicalOperatorsLoaded");
     },
@@ -45,11 +45,14 @@ export const setLogicalOperator = {
 
         if (isSearchText) {
           ctx.createLogicalOperatorFilter({
-            item: { id: null, value: "and", label: "AND" },
+            id: null,
+            value: "and",
+            label: "AND",
           });
-          ctx.createSearchTextFilter({ item });
+
+          ctx.createSearchTextFilter(item);
         } else {
-          ctx.createLogicalOperatorFilter({ item });
+          ctx.createLogicalOperatorFilter(item);
         }
       },
     },
@@ -80,7 +83,7 @@ export const editLogicalOperator = {
           return;
         }
 
-        ctx.editFilterOperator({ item });
+        ctx.editFilterOperator(item);
       },
     },
   },

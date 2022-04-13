@@ -53,7 +53,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
   /* suggestions loading */
 
-  startLoading({ selectionType = "single" } = {}) {
+  startLoading(selectionType = "single") {
     const ctxValue = this.get();
 
     ctxValue.suggestions = {
@@ -67,7 +67,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  doneLoading({ items, selectionType = "single", error = null } = {}) {
+  doneLoading(items, selectionType = "single", error = null) {
     const ctxValue = this.get();
 
     ctxValue.suggestions = {
@@ -115,10 +115,10 @@ export class AppStateMachineContext extends StateMachineContext {
 
   /* editing mode */
 
-  startEditing({ filter, part }) {
+  startEditing(filter, part) {
     const ctxValue = this.get();
 
-    ctxValue.edition = this._filtersTree.startEditing({ filter, part });
+    ctxValue.edition = this._filtersTree.startEditing(filter, part);
 
     this.set(ctxValue);
   }
@@ -149,7 +149,7 @@ export class AppStateMachineContext extends StateMachineContext {
 
   /* filters creation */
 
-  createPartialFilter({ item }) {
+  createPartialFilter(item) {
     const ctxValue = this.get();
 
     this._filtersTree.insertFilter({
@@ -164,27 +164,27 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  setPartialFilterOperator({ item }) {
+  setPartialFilterOperator(item) {
     const ctxValue = this.get();
 
-    this._filtersTree.setPartialFilterOperator({ item });
+    this._filtersTree.setPartialFilterOperator(item);
 
     ctxValue.filters = this._filtersTree.getFilters();
 
     this.set(ctxValue);
   }
 
-  completePartialFilter({ item, type = "attribute-operator-value" }) {
+  completePartialFilter(item, type = "attribute-operator-value") {
     const ctxValue = this.get();
 
-    this._filtersTree.completePartialFilter({ item, type });
+    this._filtersTree.completePartialFilter(item, type);
 
     ctxValue.filters = this._filtersTree.getFilters();
 
     this.set(ctxValue);
   }
 
-  createSearchTextFilter({ item }) {
+  createSearchTextFilter(item) {
     const ctxValue = this.get();
 
     this._filtersTree.insertFilter({
@@ -199,7 +199,7 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  createLogicalOperatorFilter({ item }) {
+  createLogicalOperatorFilter(item) {
     const ctxValue = this.get();
 
     this._filtersTree.insertFilter({
@@ -214,14 +214,12 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  createParensFilter({ filterToMove } = {}) {
+  createParensFilter() {
     const ctxValue = this.get();
-
-    const filters = filterToMove ? [filterToMove] : [];
 
     const newFilter = this._filtersTree.insertFilter({
       type: "parens",
-      filters,
+      filters: [],
     });
 
     ctxValue.insertion = this._filtersTree.startInserting(newFilter.id);
@@ -233,37 +231,37 @@ export class AppStateMachineContext extends StateMachineContext {
 
   /* filters edition */
 
-  editFilterAttribute({ item }) {
+  editFilterAttribute(item) {
     const ctxValue = this.get();
 
-    this._filtersTree.editFilterAttribute({ item });
+    this._filtersTree.editFilterAttribute(item);
 
     ctxValue.filters = this._filtersTree.getFilters();
 
     this.set(ctxValue);
   }
 
-  editFilterOperator({ item }) {
+  editFilterOperator(item) {
     const ctxValue = this.get();
 
-    this._filtersTree.editFilterOperator({ item });
+    this._filtersTree.editFilterOperator(item);
 
     ctxValue.filters = this._filtersTree.getFilters();
 
     this.set(ctxValue);
   }
 
-  editFilterValue({ item }) {
+  editFilterValue(item) {
     const ctxValue = this.get();
 
-    this._filtersTree.editFilterValue({ item });
+    this._filtersTree.editFilterValue(item);
 
     ctxValue.filters = this._filtersTree.getFilters();
 
     this.set(ctxValue);
   }
 
-  convertEditionToSearchTextFilter({ item }) {
+  convertEditionToSearchTextFilter(item) {
     const ctxValue = this.get();
 
     const { filter } = this._filtersTree.getEdition();
@@ -324,7 +322,7 @@ export class AppStateMachineContext extends StateMachineContext {
   removePartialFilterOperator() {
     const ctxValue = this.get();
 
-    this._filtersTree.setPartialFilterOperator({ item: null });
+    this._filtersTree.setPartialFilterOperator(null);
 
     ctxValue.filters = this._filtersTree.getFilters();
 

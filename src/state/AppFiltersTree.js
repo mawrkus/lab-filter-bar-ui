@@ -117,7 +117,7 @@ export class AppFiltersTree {
 
   /* editing mode */
 
-  startEditing({ filter, part }) {
+  startEditing(filter, part) {
     this._edition = {
       part,
       filter: this._findFilterBy((f) => f.id === filter.id),
@@ -126,8 +126,8 @@ export class AppFiltersTree {
     return this._edition;
   }
 
-  setEditionPart(newPart) {
-    this._edition.part = newPart;
+  setEditionPart(part) {
+    this._edition.part = part;
 
     return this._edition;
   }
@@ -171,7 +171,7 @@ export class AppFiltersTree {
     return filter;
   }
 
-  setPartialFilterOperator({ item }) {
+  setPartialFilterOperator(item) {
     const partialFilter = this.getPartialFilter();
 
     partialFilter.operator = item;
@@ -179,7 +179,7 @@ export class AppFiltersTree {
     return partialFilter;
   }
 
-  completePartialFilter({ item, type }) {
+  completePartialFilter(item, type) {
     const partialFilter = this.getPartialFilter();
 
     partialFilter.type = type;
@@ -213,7 +213,7 @@ export class AppFiltersTree {
 
   /* filters edition */
 
-  editFilterAttribute({ item }) {
+  editFilterAttribute(item) {
     const { filter } = this._edition;
     const prevFilter = copy(filter);
 
@@ -245,7 +245,7 @@ export class AppFiltersTree {
   //     IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
   //     IN -> IS NULL (change operator and value and value becomes a primitive) => proxyToNextSuggestions
   // */
-  editFilterOperator({ item }) {
+  editFilterOperator(item) {
     const { filters } = this._rootFilter;
     const { filter } = this._edition;
     const prevFilter = copy(filter);
@@ -317,7 +317,7 @@ export class AppFiltersTree {
     return filter;
   }
 
-  editFilterValue({ item }) {
+  editFilterValue(item) {
     const { filter } = this._edition;
     const prevFilter = copy(filter);
 

@@ -260,10 +260,6 @@ export class AppStateMachineContext extends StateMachineContext {
   /* filters deletion */
 
   removeFilter(filter) {
-    if (!filter) {
-      return;
-    }
-
     const ctxValue = this.get();
 
     this._filtersTree.removeFilter(filter);

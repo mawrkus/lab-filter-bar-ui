@@ -70,5 +70,21 @@ export const idle = {
         ctx.removeFilter(event.data.filter);
       },
     },
+    removeLastFilter: {
+      targetId: "idle",
+      action(event, ctx) {
+        const lastFilter = ctx.getLastFilter();
+
+        if (
+          lastFilter.type === "parens" &&
+          lastFilter.filters[lastFilter.filters.length - 1]
+        ) {
+          ctx.removeFilter(lastFilter.filters[lastFilter.filters.length - 1]);
+          return;
+        }
+
+        ctx.removeFilter(lastFilter);
+      },
+    },
   },
 };

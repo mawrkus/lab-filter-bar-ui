@@ -54,6 +54,12 @@ export const setAttribute = {
         },
       },
     ],
+    removeLastFilter: {
+      targetId: "idle",
+      action(event, ctx) {
+        ctx.removeFilter(ctx.getLastFilter());
+      },
+    },
   },
 };
 

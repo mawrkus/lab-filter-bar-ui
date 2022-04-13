@@ -3,7 +3,7 @@ export const idle = {
     onEntry(event, ctx, toolkit) {
       toolkit.suggestionService.cancelLoad();
 
-      // reset suggestions (loading = false) and reset insertion to root node
+      // reset suggestions (loading = false), reset insertion to root node and reset edition
       ctx.reset();
     },
   },

@@ -103,6 +103,7 @@ export class AppStateMachineContext extends StateMachineContext {
     };
 
     ctxValue.insertion = this._filtersTree.stopInserting();
+    ctxValue.edition = this._filtersTree.stopEditing();
 
     this.set(ctxValue);
   }

@@ -34,6 +34,10 @@ export const setOperator = {
     discardSuggestions: "idle",
     selectItem: [
       {
+        cond: (event) => event.data.isSearchText,
+        targetId: "setOperator",
+      },
+      {
         cond: (event) => event.data.item.type === "preset-value",
         targetId: "proxyToNextSuggestions",
         action(event, ctx) {
@@ -55,25 +59,29 @@ export const setOperator = {
 };
 
 export const editPartialOperator = {
-  actions: {
-    onExit(event, ctx) {
-      ctx.stopEditing();
-    },
-  },
   events: {
     discardSuggestions: "idle",
-    selectItem: {
-      targetId: "proxyToNextSuggestions",
-      action(event, ctx) {
-        const { item } = event.data;
-
-        if (item.type === "preset-value") {
-          ctx.completePartialFilter({ item, type: "attribute-operator" });
-        } else {
-          ctx.editFilterOperator({ item });
-        }
+    selectItem: [
+      {
+        cond: (event) => event.data.isSearchText,
+        targetId: "editPartialOperator",
       },
-    },
+      {
+        cond: (event) => !event.data.isSearchText,
+        targetId: "proxyToNextSuggestions",
+        action(event, ctx) {
+          const { item } = event.data;
+
+          if (item.type === "preset-value") {
+            ctx.completePartialFilter({ item, type: "attribute-operator" });
+          } else {
+            ctx.editFilterOperator({ item });
+          }
+
+          ctx.stopEditing();
+        },
+      },
+    ],
   },
 };
 
@@ -97,6 +105,10 @@ export const editOperator = {
   events: {
     discardSuggestions: "idle",
     selectItem: [
+      {
+        cond: (event) => event.data.isSearchText,
+        targetId: "editOperator",
+      },
       {
         cond: (event, ctx) => {
           const { operator, value } = ctx.getEdition().filter;

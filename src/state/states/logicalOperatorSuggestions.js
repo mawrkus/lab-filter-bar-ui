@@ -53,6 +53,12 @@ export const setLogicalOperator = {
         }
       },
     },
+    removeLastFilter: {
+      targetId: "idle",
+      action(event, ctx) {
+        ctx.removeFilter(ctx.getLastFilter());
+      },
+    },
   },
 };
 

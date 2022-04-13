@@ -14,7 +14,17 @@ A filter bar UI component built with:
 - The Filter Bar receives the app state as props
 - The Filter Bar renders "dumb" UI components (Chiclet, ...)
 - Suggestions are fetched from HTTP clients → API (+ cancellable requests)
-- Clear contract on the data structure: suggestion item from the API → component prop → filter
+- Clear contract on the data structure: suggestion item from the API → filter → component prop
+- Main states:
+    - `idle` (waiting for user input),
+    - `attribute suggestions` (loading and displaying)
+    - `operator suggestions` (loading and displaying)
+    - `value suggestions` (loading and displaying)
+    - `logical operator suggestions` (loading and displaying)
+ - Redirection proxy states:
+    - `edit filter suggestions` (when a filter is edited)
+    - `next suggestions` (check for partial filters every time a filter has been created, edited or deleted)
+
 
 ### State diagram
 

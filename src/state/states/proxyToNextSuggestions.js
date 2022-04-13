@@ -1,7 +1,7 @@
 /**
  * This state is reached after a filter has been completed, edited or removed.
- * It acts as a redirection proxy for these cases:
  *
+ * It acts as a redirection proxy for these cases:
  * [partial] attribute → operator suggestions
  * [partial] attribute operator → value suggestions
  * [complete + logical] attribute operator value AND/OR → attribute suggestions

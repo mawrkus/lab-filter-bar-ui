@@ -1,3 +1,6 @@
+/**
+ * This state is reached when a filter is edited. It acts as a redirection proxy.
+ */
 export const proxyToEditFilterSuggestions = {
   actions: {
     onEntry(event, ctx, toolkit) {

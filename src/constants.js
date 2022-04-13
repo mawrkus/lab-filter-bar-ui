@@ -7,6 +7,12 @@ export const FILTER_TYPES = {
   PARENS: "PARENS",
 };
 
+export const FILTER_PARTS = {
+  ATTRIBUTE: "ATTRIBUTE",
+  OPERATOR: "OPERATOR",
+  VALUE: "VALUE",
+};
+
 export const OPERATOR_TYPES = {
   SINGLE_VALUE: "SINGLE_VALUE",
   PRESET_VALUE: "PRESET_VALUE",

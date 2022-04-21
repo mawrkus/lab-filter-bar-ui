@@ -154,7 +154,7 @@ export const editOperator = {
           ctx.editFilterOperator(event.data.item);
 
           // we continue editing
-          ctx.setEditionPart("value");
+          ctx.setEditingPart("value");
         },
       },
       {

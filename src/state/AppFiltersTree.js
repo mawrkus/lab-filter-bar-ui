@@ -126,7 +126,7 @@ export class AppFiltersTree {
     return this._edition;
   }
 
-  setEditionPart(part) {
+  setEditingPart(part) {
     this._edition.part = part;
 
     return this._edition;

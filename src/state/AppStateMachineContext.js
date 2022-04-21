@@ -123,10 +123,10 @@ export class AppStateMachineContext extends StateMachineContext {
     this.set(ctxValue);
   }
 
-  setEditionPart(part) {
+  setEditingPart(part) {
     const ctxValue = this.get();
 
-    ctxValue.edition = this._filtersTree.setEditionPart(part);
+    ctxValue.edition = this._filtersTree.setEditingPart(part);
 
     this.set(ctxValue);
   }

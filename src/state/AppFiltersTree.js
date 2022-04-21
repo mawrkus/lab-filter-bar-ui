@@ -301,9 +301,13 @@ export class AppFiltersTree {
         filter.type = "attribute-operator-value";
       } else if (prevFilter.operator.type === "multiple-value") {
         // IN -> =
-        filter.value.id = prevFilter.value.id[0];
-        filter.value.value = prevFilter.value.value[0];
-        filter.value.label = prevFilter.value.label.split(",")[0];
+        if (prevFilter.value === null) {
+          filter.value = null;
+        } else {
+          filter.value.id = prevFilter.value.id[0];
+          filter.value.value = prevFilter.value.value[0];
+          filter.value.label = prevFilter.value.label.split(",")[0];
+        }
       }
     }
 

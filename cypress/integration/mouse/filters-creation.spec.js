@@ -172,6 +172,14 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.suggestionsShouldBe(seasonsList);
 
         cy.clickOnPartialOperator();
+        cy.selectOperator("=");
+        cy.suggestionsShouldBe(seasonsList);
+
+        cy.clickOnPartialOperator();
+        cy.selectOperator("IN");
+        cy.suggestionsShouldBe(seasonsList);
+
+        cy.clickOnPartialOperator();
         cy.selectOperator("IS NULL");
 
         cy.filterBarShouldHaveText("SeasonIS NULL");

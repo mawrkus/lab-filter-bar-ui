@@ -100,7 +100,7 @@ Using the mouse or keyboard:
 Choosing "Crew" then the "IN" operator:
 
 - sends a `selectItem` event with type = "multiple-value"
-- transitions from `chooseOperator` → `displayValueSuggestions`
+- transitions from `setOperator` → `displayValueSuggestions`
 - sends a `startInput` event (!)
 - 💥 which triggers an invalid transition `displayValueSuggestions` → `undefined`
 - (...then a bit later) sends a `valueSuggestionsLoaded` event
@@ -113,11 +113,11 @@ Why? Because the `startInput` event comes from:
 - which calls the `onOpen` prop
 - which sends the `startInput` event
 
-The same hapens when removing a partial IN operator.
-
 State machine FTW! :D
 
 ### Dropdown component warnings
+
+Not sure it still happens but:
 
 ```text
 Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.

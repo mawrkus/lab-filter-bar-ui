@@ -1,4 +1,4 @@
-export const loadOperatorSuggestions = {
+export const displayOperatorSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
@@ -46,7 +46,7 @@ export const setOperator = {
       },
       {
         cond: (event) => event.data.item.type !== "preset-value",
-        targetId: "loadValueSuggestions",
+        targetId: "displayValueSuggestions",
         action(event, ctx) {
           ctx.setPartialFilterOperator(event.data.item);
         },
@@ -92,16 +92,16 @@ export const editPartialOperator = {
   single-value operators:
     = -> != (only change operator) => proxyToNextSuggestions
     = -> IS NULL (change operator and value) => proxyToNextSuggestions
-    = -> IN (change operator and value becomes an array) => loadValueSuggestions
+    = -> IN (change operator and value becomes an array) => displayValueSuggestions
 
   preset-value operators:
     IS NULL -> IS NOT NULL (only change operator) => proxyToNextSuggestions
-    IS NULL -> = (change operator and value) => loadValueSuggestions
-    IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
+    IS NULL -> = (change operator and value) => displayValueSuggestions
+    IS NULL -> IN (change operator and value and value becomes an array) => displayValueSuggestions
 
   multiple-value operators
     IN -> NOT IN (only change operator) => proxyToNextSuggestions
-    IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
+    IN -> = (change operator and value becomes a primitive) => displayValueSuggestions
     IN -> IS NULL (change operator and value and value becomes a primitive) => proxyToNextSuggestions
 */
 export const editOperator = {
@@ -149,7 +149,7 @@ export const editOperator = {
         },
         // only exception: we don't go to "proxyToNextSuggestions" because:
         //  - the operator's type changes and we know that the value has to be edited now
-        targetId: "loadValueSuggestions",
+        targetId: "displayValueSuggestions",
         action(event, ctx) {
           ctx.editFilterOperator(event.data.item);
 

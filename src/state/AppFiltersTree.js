@@ -233,16 +233,16 @@ export class AppFiltersTree {
   //   single-value operators:
   //     = -> != (only change operator) => proxyToNextSuggestions
   //     = -> IS NULL (change operator and value) => proxyToNextSuggestions
-  //     = -> IN (change operator and value becomes an array) => loadValueSuggestions
+  //     = -> IN (change operator and value becomes an array) => displayValueSuggestions
 
   //   preset-value operators:
   //     IS NULL -> IS NOT NULL (only change operator) => proxyToNextSuggestions
-  //     IS NULL -> = (change operator and value) => loadValueSuggestions
-  //     IS NULL -> IN (change operator and value and value becomes an array) => loadValueSuggestions
+  //     IS NULL -> = (change operator and value) => displayValueSuggestions
+  //     IS NULL -> IN (change operator and value and value becomes an array) => displayValueSuggestions
 
   //   multiple-value operators
   //     IN -> NOT IN (only change operator) => proxyToNextSuggestions
-  //     IN -> = (change operator and value becomes a primitive) => loadValueSuggestions
+  //     IN -> = (change operator and value becomes a primitive) => displayValueSuggestions
   //     IN -> IS NULL (change operator and value and value becomes a primitive) => proxyToNextSuggestions
   // */
   editFilterOperator(item) {

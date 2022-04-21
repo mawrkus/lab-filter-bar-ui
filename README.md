@@ -16,41 +16,40 @@ A filter bar UI component built with:
 - Suggestions are fetched from HTTP clients → API (+ cancellable requests)
 - Clear contract on the data structure: suggestion item from the API → filter → component prop
 - Main states:
-    - `idle` (waiting for user input),
-    - `attribute suggestions` (loading and displaying)
-    - `operator suggestions` (loading and displaying)
-    - `value suggestions` (loading and displaying)
-    - `logical operator suggestions` (loading and displaying)
- - Redirection proxy states:
-    - `edit filter suggestions` (when a filter is edited)
-    - `next suggestions` (check for partial filters every time a filter has been created, edited or deleted)
-
+  - `idle` (waiting for user input),
+  - `attribute suggestions` (loading and displaying)
+  - `operator suggestions` (loading and displaying)
+  - `value suggestions` (loading and displaying)
+  - `logical operator suggestions` (loading and displaying)
+- Redirection proxy states:
+  - `edit filter suggestions` (when a filter is edited)
+  - `next suggestions` (check for partial filters every time a filter has been created, edited or deleted)
 
 ### State diagram
 
 ```mermaid
 stateDiagram-v2
     [*]     --> idle
-    idle    --> loadAttributeSuggestions: startInput (no filters)
-    idle    --> loadLogicalOperatorSuggestions: startInput (last filter is complete and != logical operator)
+    idle    --> displayAttributeSuggestions: startInput (no filters)
+    idle    --> displayLogicalOperatorSuggestions: startInput (last filter is complete and != logical operator)
     idle    --> proxyToNextSuggestions: startInput (last filter incomplete or logical operator)
-    idle    --> proxyToEditFilterSuggestions: editFilter (!= parens)
-    idle    --> loadAttributeSuggestions: editFilter (empty parens)
-    idle    --> loadLogicalOperatorSuggestions: editFilter (last filter in parens is complete and != logical operator)
+    idle    --> proxyToEditSuggestions: editFilter (!= parens)
+    idle    --> displayAttributeSuggestions: editFilter (empty parens)
+    idle    --> displayLogicalOperatorSuggestions: editFilter (last filter in parens is complete and != logical operator)
     idle    --> proxyToNextSuggestions: editFilter (last filter in parens incomplete or logical operator)
     idle    --> proxyToNextSuggestions: removeFilter
     idle    --> idle: removeLastFilter
 
-    loadAttributeSuggestions    --> attributesLoaded
+    displayAttributeSuggestions    --> attributesLoaded
     state if_editing <<choice>>
     attributesLoaded    --> if_editing
     if_editing          --> setAttribute: not editing
     if_editing          --> editAttribute: editing
 
     setAttribute        --> idle: discardSuggestions
-    setAttribute        --> loadAttributeSuggestions: selectItem (parens)
+    setAttribute        --> displayAttributeSuggestions: selectItem (parens)
     setAttribute        --> proxyToNextSuggestions: selectItem (!= parens)
-    setAttribute        --> loadOperatorSuggestions: selectItem (!= search text)
+    setAttribute        --> displayOperatorSuggestions: selectItem (!= search text)
     setAttribute        --> idle: removeLastFilter
     editAttribute       --> idle: discardSuggestions
     editAttribute       --> proxyToNextSuggestions: selectItem
@@ -101,9 +100,9 @@ Using the mouse or keyboard:
 Choosing "Crew" then the "IN" operator:
 
 - sends a `selectItem` event with type = "multiple-value"
-- transitions from `chooseOperator` → `loadValueSuggestions`
+- transitions from `chooseOperator` → `displayValueSuggestions`
 - sends a `startInput` event (!)
-- 💥 which triggers an invalid transition `loadValueSuggestions` → `undefined`
+- 💥 which triggers an invalid transition `displayValueSuggestions` → `undefined`
 - (...then a bit later) sends a `valueSuggestionsLoaded` event
 - (...then a bit later) everything is all good
 

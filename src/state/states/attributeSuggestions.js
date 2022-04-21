@@ -1,4 +1,4 @@
-export const loadAttributeSuggestions = {
+export const displayAttributeSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();
@@ -33,7 +33,7 @@ export const setAttribute = {
     selectItem: [
       {
         cond: (event) => event.data.item.type === "parens",
-        targetId: "loadAttributeSuggestions",
+        targetId: "displayAttributeSuggestions",
         action(event, ctx) {
           ctx.createParensFilter();
         },
@@ -48,7 +48,7 @@ export const setAttribute = {
       },
       {
         cond: (event) => !event.data.isSearchText,
-        targetId: "loadOperatorSuggestions",
+        targetId: "displayOperatorSuggestions",
         action(event, ctx) {
           ctx.createPartialFilter(event.data.item);
         },

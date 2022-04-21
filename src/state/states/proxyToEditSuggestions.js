@@ -1,7 +1,7 @@
 /**
  * This state is reached when a filter is edited. It acts as a redirection proxy.
  */
-export const proxyToEditFilterSuggestions = {
+export const proxyToEditSuggestions = {
   actions: {
     onEntry(event, ctx, toolkit) {
       const { filter, part } = event.data;
@@ -38,10 +38,10 @@ export const proxyToEditFilterSuggestions = {
     },
   },
   events: {
-    gotoLoadAttributeSuggestions: "loadAttributeSuggestions",
-    gotoLoadOperatorSuggestions: "loadOperatorSuggestions",
-    gotoLoadValueSuggestions: "loadValueSuggestions",
-    gotoLoadLogicalOperatorSuggestions: "loadLogicalOperatorSuggestions",
+    gotoLoadAttributeSuggestions: "displayAttributeSuggestions",
+    gotoLoadOperatorSuggestions: "displayOperatorSuggestions",
+    gotoLoadValueSuggestions: "displayValueSuggestions",
+    gotoLoadLogicalOperatorSuggestions: "displayLogicalOperatorSuggestions",
     gotoIdle: "idle",
   },
 };

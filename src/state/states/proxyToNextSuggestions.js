@@ -37,10 +37,10 @@ export const proxyToNextSuggestions = {
     },
   },
   events: {
-    gotoLoadAttributeSuggestions: "loadAttributeSuggestions",
-    gotoLoadOperatorSuggestions: "loadOperatorSuggestions",
-    gotoLoadValueSuggestions: "loadValueSuggestions",
-    gotoLoadLogicalOperatorSuggestions: "loadLogicalOperatorSuggestions",
+    gotoLoadAttributeSuggestions: "displayAttributeSuggestions",
+    gotoLoadOperatorSuggestions: "displayOperatorSuggestions",
+    gotoLoadValueSuggestions: "displayValueSuggestions",
+    gotoLoadLogicalOperatorSuggestions: "displayLogicalOperatorSuggestions",
     gotoIdle: "idle",
   },
 };

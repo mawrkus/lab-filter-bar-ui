@@ -1,4 +1,4 @@
-export const loadValueSuggestions = {
+export const displayValueSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
       const filterUnderEdition = ctx.getEdition()?.filter;

@@ -1,4 +1,4 @@
-export const loadLogicalOperatorSuggestions = {
+export const displayLogicalOperatorSuggestions = {
   actions: {
     async onEntry(event, ctx, toolkit) {
       ctx.startLoading();

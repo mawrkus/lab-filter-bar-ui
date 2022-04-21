@@ -3,7 +3,9 @@ export const idle = {
     onEntry(event, ctx, toolkit) {
       toolkit.suggestionService.cancelLoad();
 
-      // reset suggestions (loading = false), reset insertion to root node and reset edition
+      // reset:
+      //   - suggestions (loading = false) and error,
+      //   - insertion to root node and edition
       ctx.reset();
     },
   },
@@ -11,7 +13,7 @@ export const idle = {
     startInput: [
       {
         cond: (event, ctx) => !ctx.getLastFilter(),
-        targetId: "loadAttributeSuggestions",
+        targetId: "displayAttributeSuggestions",
       },
       {
         cond: (event, ctx) => {
@@ -21,7 +23,7 @@ export const idle = {
             lastFilter.type !== "logical-operator"
           );
         },
-        targetId: "loadLogicalOperatorSuggestions",
+        targetId: "displayLogicalOperatorSuggestions",
       },
       {
         cond: () => true,
@@ -31,12 +33,12 @@ export const idle = {
     editFilter: [
       {
         cond: (event) => event.data.filter.type !== "parens",
-        targetId: "proxyToEditFilterSuggestions",
+        targetId: "proxyToEditSuggestions",
       },
       // parens
       {
         cond: (event) => !event.data.filter.filters.length,
-        targetId: "loadAttributeSuggestions",
+        targetId: "displayAttributeSuggestions",
         action(event, ctx) {
           ctx.startInserting(event.data.filter.id);
         },
@@ -51,7 +53,7 @@ export const idle = {
             lastFilter.type !== "logical-operator"
           );
         },
-        targetId: "loadLogicalOperatorSuggestions",
+        targetId: "displayLogicalOperatorSuggestions",
         action(event, ctx) {
           ctx.startInserting(event.data.filter.id);
         },

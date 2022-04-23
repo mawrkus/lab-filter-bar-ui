@@ -256,7 +256,11 @@ export class AppFiltersTree {
       };
 
       filter.type = "attribute-operator";
-    } else if (item.type === "multiple-value") {
+
+      return;
+    }
+
+    if (item.type === "multiple-value") {
       // = -> IN, IS NULL -> IN
       if (prevFilter.operator.type === "single-value") {
         // = -> IN
@@ -268,12 +272,22 @@ export class AppFiltersTree {
           filter.value.id = [prevFilter.value.id];
           filter.value.value = [prevFilter.value.value];
         }
-      } else if (prevFilter.operator.type === "preset-value") {
-        // IS NULL -> IN
+
+        return;
+      }
+
+      // IS NULL -> IN
+      if (prevFilter.operator.type === "preset-value") {
         filter.value = null; // no search text support in multiple suggestions dropdown component :/
         filter.type = "attribute-operator-value";
+
+        return;
       }
-    } else if (item.type === "single-value") {
+
+      return;
+    }
+
+    if (item.type === "single-value") {
       // IS NULL -> =, IN -> =
       if (prevFilter.operator.type === "preset-value") {
         filter.value = {
@@ -283,7 +297,11 @@ export class AppFiltersTree {
         };
 
         filter.type = "attribute-operator-value";
-      } else if (prevFilter.operator.type === "multiple-value") {
+
+        return;
+      }
+
+      if (prevFilter.operator.type === "multiple-value") {
         // IN -> =
         if (prevFilter.value === null) {
           filter.value = null;
@@ -292,10 +310,12 @@ export class AppFiltersTree {
           filter.value.value = prevFilter.value.value[0];
           filter.value.label = prevFilter.value.label.split(",")[0];
         }
-      }
-    }
 
-    return filter;
+        return;
+      }
+
+      return;
+    }
   }
 
   replaceFilter(fromFilter, toFilter) {

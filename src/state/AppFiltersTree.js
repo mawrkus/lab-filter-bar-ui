@@ -232,17 +232,21 @@ export class AppFiltersTree {
 
     filter.operator = item;
 
-    if (prevFilter.operator.type === item.type) {
-      this._nofityFiltersUpdate(filters, {
-        action: "edit",
-        prevFilter,
-        filter,
-        part: "operator",
-      });
-
-      return filter;
+    if (prevFilter.operator.type !== item.type) {
+      this._convertFilterAfterOperatorChange(prevFilter, item, filter);
     }
 
+    this._nofityFiltersUpdate(filters, {
+      action: "edit",
+      prevFilter,
+      filter,
+      part: "operator",
+    });
+
+    return filter;
+  }
+
+  _convertFilterAfterOperatorChange(prevFilter, item, filter) {
     // = -> IS NULL
     if (item.type === "preset-value") {
       filter.value = {
@@ -290,13 +294,6 @@ export class AppFiltersTree {
         }
       }
     }
-
-    this._nofityFiltersUpdate(filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "operator",
-    });
 
     return filter;
   }

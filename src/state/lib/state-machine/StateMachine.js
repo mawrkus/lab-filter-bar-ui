@@ -7,13 +7,7 @@ export class StateMachine {
    * @param {Object} options.states
    * @param {Function} options.onTransition
    */
-  constructor({
-    initialStateId,
-    context,
-    toolkit,
-    states,
-    onTransition,
-  } = {}) {
+  constructor({ initialStateId, context, toolkit, states, onTransition } = {}) {
     this._currentStateId = null;
 
     this._context = context;
@@ -28,7 +22,7 @@ export class StateMachine {
     this._onTransition = onTransition;
     this._onTransitionContext = this._buildOnTransitionContext();
 
-    const startEvent = { name: Symbol('init') };
+    const startEvent = { name: "init" };
 
     this._execTransition(startEvent, {
       fromStateId: null,
@@ -94,31 +88,19 @@ export class StateMachine {
     }
 
     if (action) {
-      action(
-        event,
-        this._context,
-        this._transitionActionToolkit
-      );
+      action(event, this._context, this._transitionActionToolkit);
     }
 
     const previousState = this._states[transition.fromStateId];
 
     if (previousState?.actions?.onExit) {
-      previousState?.actions.onExit(
-        event,
-        this._context,
-        this._onExitToolkit
-      );
+      previousState?.actions.onExit(event, this._context, this._onExitToolkit);
     }
 
     const currentState = this._states[this._currentStateId];
 
     if (currentState.actions?.onEntry) {
-      currentState.actions.onEntry(
-        event,
-        this._context,
-        this._onEntryToolkit
-      );
+      currentState.actions.onEntry(event, this._context, this._onEntryToolkit);
     }
   }
 

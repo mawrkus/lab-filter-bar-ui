@@ -1,11 +1,22 @@
 export const transitionLogger = (transition, ctx) => {
   console.log("📟", new Date().toLocaleString());
-  console.log(" 📥 %s(%o)", transition.event.name, transition.event.data);
 
   if (transition.isValid) {
-    console.log("  ✔ %s → %s", transition.fromStateId, transition.toStateId);
+    console.log(
+      "  📥 %s → %s(%o) → %s",
+      transition.fromStateId,
+      transition.event.name,
+      transition.event.data,
+      transition.toStateId
+    );
   } else {
-    console.log("  💥 %s → %s", transition.fromStateId, transition.toStateId);
+    console.log(
+      "  💥 %s → %s(%o) → %s",
+      transition.fromStateId,
+      transition.event.name,
+      transition.event.data,
+      transition.fromStateId
+    );
   }
 
   Object.entries(ctx.get()).forEach(([key, value]) => {

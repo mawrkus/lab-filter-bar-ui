@@ -302,7 +302,7 @@ export class AppStateMachineContext extends StateMachineContext {
   removePartialFilterOperator() {
     const ctxValue = this.get();
 
-    this._filtersTree.setPartialFilterOperator(null);
+    this._filtersTree.editPartialFilter(null, "operator");
 
     ctxValue.filters = this._filtersTree.getFilters();
 

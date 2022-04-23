@@ -167,7 +167,7 @@ export class AppStateMachineContext extends StateMachineContext {
   setPartialFilterOperator(item) {
     const ctxValue = this.get();
 
-    this._filtersTree.setPartialFilterOperator(item);
+    this._filtersTree.editPartialFilter(item, "operator");
 
     ctxValue.filters = this._filtersTree.getFilters();
 
@@ -231,30 +231,10 @@ export class AppStateMachineContext extends StateMachineContext {
 
   /* filters edition */
 
-  editFilterAttribute(item) {
+  editFilter(item, part) {
     const ctxValue = this.get();
 
-    this._filtersTree.editFilterAttribute(item);
-
-    ctxValue.filters = this._filtersTree.getFilters();
-
-    this.set(ctxValue);
-  }
-
-  editFilterOperator(item) {
-    const ctxValue = this.get();
-
-    this._filtersTree.editFilterOperator(item);
-
-    ctxValue.filters = this._filtersTree.getFilters();
-
-    this.set(ctxValue);
-  }
-
-  editFilterValue(item) {
-    const ctxValue = this.get();
-
-    this._filtersTree.editFilterValue(item);
+    this._filtersTree.editFilter(item, part);
 
     ctxValue.filters = this._filtersTree.getFilters();
 

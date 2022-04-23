@@ -86,7 +86,7 @@ export const editAttribute = {
           return;
         }
 
-        ctx.editFilterAttribute(item);
+        ctx.editFilter(item, "attribute");
       },
     },
   },

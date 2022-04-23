@@ -83,7 +83,7 @@ export const editLogicalOperator = {
           return;
         }
 
-        ctx.editFilterOperator(item);
+        ctx.editFilter(item, "operator");
       },
     },
   },

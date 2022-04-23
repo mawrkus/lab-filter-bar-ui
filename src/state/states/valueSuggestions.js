@@ -88,7 +88,7 @@ export const editValue = {
     selectItem: {
       targetId: "proxyToNextSuggestions",
       action(event, ctx) {
-        ctx.editFilterValue(event.data.item);
+        ctx.editFilter(event.data.item, "value");
       },
     },
   },

@@ -24,50 +24,6 @@ export class AppFiltersTree {
     return `f${this._lastFilterIndex++}`;
   }
 
-  _findFilterBy(searchFn, filters = this._rootFilter.filters) {
-    for (let i = 0; i < filters.length; i += 1) {
-      let filter = filters[i];
-
-      if (searchFn(filter)) {
-        return filter;
-      }
-
-      if (filter.type === "parens") {
-        const childFilter = this._findFilterBy(searchFn, filter.filters);
-
-        if (childFilter) {
-          return childFilter;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  _removeFilter(filter, filters = this._rootFilter.filters) {
-    const newFilters = [];
-
-    for (let i = 0; i < filters.length; i++) {
-      const currentFilter = filters[i];
-
-      if (currentFilter.id === filter.id) {
-        i += 1; // remove logical operator at right
-        continue;
-      }
-
-      newFilters.push(currentFilter);
-
-      if (currentFilter.type === "parens") {
-        currentFilter.filters = this._removeFilter(
-          filter,
-          currentFilter.filters
-        );
-      }
-    }
-
-    return newFilters;
-  }
-
   /* filter accessors */
 
   getFilters() {
@@ -91,6 +47,26 @@ export class AppFiltersTree {
   // traverses the whole tree to find the 1st partial filter
   findPartialFilter() {
     return this._findFilterBy((f) => f.type === "partial");
+  }
+
+  _findFilterBy(searchFn, filters = this._rootFilter.filters) {
+    for (let i = 0; i < filters.length; i += 1) {
+      let filter = filters[i];
+
+      if (searchFn(filter)) {
+        return filter;
+      }
+
+      if (filter.type === "parens") {
+        const childFilter = this._findFilterBy(searchFn, filter.filters);
+
+        if (childFilter) {
+          return childFilter;
+        }
+      }
+    }
+
+    return null;
   }
 
   /* inserting mode */
@@ -171,10 +147,10 @@ export class AppFiltersTree {
     return filter;
   }
 
-  setPartialFilterOperator(item) {
+  editPartialFilter(item, part) {
     const partialFilter = this.getPartialFilter();
 
-    partialFilter.operator = item;
+    partialFilter[part] = item;
 
     return partialFilter;
   }
@@ -213,17 +189,21 @@ export class AppFiltersTree {
 
   /* filters edition */
 
-  editFilterAttribute(item) {
+  editFilter(item, part) {
+    if (part === "operator") {
+      return this._editFilterOperator(item);
+    }
+
     const { filter } = this._edition;
     const prevFilter = copy(filter);
 
-    filter.attribute = item;
+    filter[part] = item;
 
     this._nofityFiltersUpdate(this._rootFilter.filters, {
       action: "edit",
       prevFilter,
       filter,
-      part: "attribute",
+      part,
     });
 
     return filter;
@@ -245,7 +225,7 @@ export class AppFiltersTree {
   //     IN -> = (change operator and value becomes a primitive) => displayValueSuggestions
   //     IN -> IS NULL (change operator and value and value becomes a primitive) => proxyToNextSuggestions
   // */
-  editFilterOperator(item) {
+  _editFilterOperator(item) {
     const { filters } = this._rootFilter;
     const { filter } = this._edition;
     const prevFilter = copy(filter);
@@ -321,22 +301,6 @@ export class AppFiltersTree {
     return filter;
   }
 
-  editFilterValue(item) {
-    const { filter } = this._edition;
-    const prevFilter = copy(filter);
-
-    filter.value = item;
-
-    this._nofityFiltersUpdate(this._rootFilter.filters, {
-      action: "edit",
-      prevFilter,
-      filter,
-      part: "value",
-    });
-
-    return this._rootFilter.filters;
-  }
-
   replaceFilter(fromFilter, toFilter) {
     const { filters } = this._insertion.filter;
 
@@ -407,5 +371,29 @@ export class AppFiltersTree {
     });
 
     return filter;
+  }
+
+  _removeFilter(filter, filters = this._rootFilter.filters) {
+    const newFilters = [];
+
+    for (let i = 0; i < filters.length; i++) {
+      const currentFilter = filters[i];
+
+      if (currentFilter.id === filter.id) {
+        i += 1; // remove logical operator at right
+        continue;
+      }
+
+      newFilters.push(currentFilter);
+
+      if (currentFilter.type === "parens") {
+        currentFilter.filters = this._removeFilter(
+          filter,
+          currentFilter.filters
+        );
+      }
+    }
+
+    return newFilters;
   }
 }

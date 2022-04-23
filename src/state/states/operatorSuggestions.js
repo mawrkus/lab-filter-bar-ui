@@ -78,7 +78,7 @@ export const editPartialOperator = {
           if (item.type === "preset-value") {
             ctx.completePartialFilter(item, "attribute-operator");
           } else {
-            ctx.editFilterOperator(item);
+            ctx.editFilter(item, "operator");
           }
 
           ctx.stopEditing();
@@ -151,7 +151,7 @@ export const editOperator = {
         //  - the operator's type changes and we know that the value has to be edited now
         targetId: "displayValueSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator(event.data.item);
+          ctx.editFilter(event.data.item, "operator");
 
           // we continue editing
           ctx.setEditingPart("value");
@@ -161,7 +161,7 @@ export const editOperator = {
         cond: () => true,
         targetId: "proxyToNextSuggestions",
         action(event, ctx) {
-          ctx.editFilterOperator(event.data.item);
+          ctx.editFilter(event.data.item, "operator");
 
           ctx.stopEditing();
         },

@@ -1,4 +1,6 @@
 export class StateMachine {
+  static initEvent = { name: "init" };
+
   /**
    * @param {Object} options
    * @param {string} options.initialStateId
@@ -22,11 +24,9 @@ export class StateMachine {
     this._onTransition = onTransition;
     this._onTransitionContext = this._buildOnTransitionContext();
 
-    const startEvent = { name: "init" };
-
-    this._execTransition(startEvent, {
+    this._execTransition(StateMachine.initEvent, {
       fromStateId: null,
-      event: startEvent,
+      event: StateMachine.initEvent,
       toStateId: initialStateId,
       isValid: typeof this._states[initialStateId] !== "undefined",
     });

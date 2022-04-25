@@ -1,17 +1,25 @@
 import { StateMachine, StateMachineContext } from "..";
 
 const buildMachine = (customOptions) => {
-  const options = {
-    ...customOptions,
-    context: new StateMachineContext(customOptions.context),
-  };
+  const { onUpdateContext, ...options } = customOptions;
+  const context = new StateMachineContext(customOptions.context);
 
-  return new StateMachine(options);
+  context.onUpdate(onUpdateContext);
+
+  const machine = new StateMachine({
+    ...options,
+    context,
+  });
+
+  return {
+    machine,
+    context,
+  };
 };
 
-describe("StateMachine", () => {
+describe("StateMachine({ initialStateId, context, toolkit, states, onTransition })", () => {
   it("should be a class with the following interface: getCurrentStateId(), getContext(), sendEvent(eventName, event)", () => {
-    const machine = buildMachine({
+    const { machine } = buildMachine({
       initialStateId: "idle",
       states: {
         idle: {},
@@ -28,7 +36,7 @@ describe("StateMachine", () => {
       it('should not transition the machine and should notify the "onTransition" listener', () => {
         const onTransition = jest.fn();
 
-        const machine = buildMachine({
+        const { machine } = buildMachine({
           initialStateId: "fetchAttributeSuggestions",
           onTransition,
           states: {
@@ -38,9 +46,7 @@ describe("StateMachine", () => {
 
         const expectedTransition = {
           fromStateId: null,
-          event: {
-            name: "init",
-          },
+          event: StateMachine.initEvent,
           toStateId: "fetchAttributeSuggestions",
           isValid: false,
         };
@@ -62,7 +68,7 @@ describe("StateMachine", () => {
       it('should transition the machine to it and notify the "onTransition" listener', () => {
         const onTransition = jest.fn();
 
-        const machine = buildMachine({
+        const { machine } = buildMachine({
           initialStateId: "idle",
           onTransition,
           states: {
@@ -72,9 +78,7 @@ describe("StateMachine", () => {
 
         const expectedTransition = {
           fromStateId: null,
-          event: {
-            name: "init",
-          },
+          event: StateMachine.initEvent,
           toStateId: "idle",
           isValid: true,
         };
@@ -95,7 +99,7 @@ describe("StateMachine", () => {
 
   describe("getCurrentStateId()", () => {
     it("should return the current state id", () => {
-      const machine = buildMachine({
+      const { machine } = buildMachine({
         initialStateId: "idle",
         states: {
           idle: {},
@@ -110,7 +114,7 @@ describe("StateMachine", () => {
     it("should return the current context", () => {
       const initialContext = { partialFilter: null };
 
-      const machine = buildMachine({
+      const { machine, context } = buildMachine({
         initialStateId: "idle",
         context: initialContext,
         states: {
@@ -118,7 +122,8 @@ describe("StateMachine", () => {
         },
       });
 
-      expect(machine.getContext().get()).toBe(initialContext);
+      expect(machine.getContext()).toBe(context);
+      expect(machine.getContext().get()).toEqual(initialContext);
     });
   });
 
@@ -127,7 +132,7 @@ describe("StateMachine", () => {
       it('should not transition the machine and should notify the "onTransition" listener', () => {
         const onTransition = jest.fn();
 
-        const machine = buildMachine({
+        const { machine } = buildMachine({
           initialStateId: "idle",
           onTransition,
           states: {
@@ -166,7 +171,7 @@ describe("StateMachine", () => {
         it('should not transition the machine and should notify the "onTransition" listener', () => {
           const onTransition = jest.fn();
 
-          const machine = buildMachine({
+          const { machine } = buildMachine({
             initialStateId: "idle",
             onTransition,
             states: {
@@ -204,7 +209,7 @@ describe("StateMachine", () => {
       describe("if the associated state exists", () => {
         describe("and it is defined as a string", () => {
           it("should transition the machine to it", () => {
-            const machine = buildMachine({
+            const { machine } = buildMachine({
               initialStateId: "idle",
               states: {
                 idle: {
@@ -226,7 +231,7 @@ describe("StateMachine", () => {
 
         describe("and it is defined as an object with a targetId", () => {
           it("should transition the machine to it", () => {
-            const machine = buildMachine({
+            const { machine } = buildMachine({
               initialStateId: "idle",
               states: {
                 idle: {
@@ -253,7 +258,7 @@ describe("StateMachine", () => {
 
             const toolkit = { suggestionService: { fetch() {} } };
 
-            const machine = buildMachine({
+            const { machine } = buildMachine({
               initialStateId: "idle",
               toolkit,
               states: {
@@ -297,9 +302,9 @@ describe("StateMachine", () => {
         it("should notify the onTransition listener of the transition", () => {
           const onTransition = jest.fn();
 
-          const initialContext = buildMachineContext({ isLoading: false });
+          const initialContext = { isLoading: false };
 
-          const machine = buildMachine({
+          const { machine } = buildMachine({
             initialStateId: "idle",
             context: initialContext,
             onTransition,
@@ -324,7 +329,7 @@ describe("StateMachine", () => {
 
           const loadEvent = {
             name: "onSuggestionsLoaded",
-            data: { list: ["entityType", "accountId"] },
+            data: { list: ["seasons", "episodes"] },
           };
 
           machine.sendEvent(loadEvent.name, loadEvent.data);
@@ -339,7 +344,7 @@ describe("StateMachine", () => {
           expect(onTransition).toHaveBeenCalledWith(
             {
               fromStateId: null,
-              event: null,
+              event: StateMachine.initEvent,
               toStateId: "idle",
               isValid: true,
             },
@@ -367,17 +372,17 @@ describe("StateMachine", () => {
 
         describe("when transitioning to a new state", () => {
           describe("state actions (callbacks)", () => {
-            describe("onExit(event, currentContext, exitToolkit)", () => {
+            describe("onExit(event, ctx, exitToolkit)", () => {
               it("should be properly executed", () => {
                 const onExit = jest.fn();
 
-                const initialContext = buildMachineContext({
+                const initialContext = {
                   isLoading: false,
-                });
+                };
 
                 const toolkit = { suggestionService: { fetch() {} } };
 
-                const machine = buildMachine({
+                const { machine } = buildMachine({
                   initialStateId: "idle",
                   context: initialContext,
                   toolkit,
@@ -414,19 +419,19 @@ describe("StateMachine", () => {
                 it("should allow the machine context to be updated and the onUpdateContext listener to be notified", () => {
                   const onUpdateContext = jest.fn();
 
-                  const machine = buildMachine({
+                  const { machine } = buildMachine({
                     initialStateId: "idle",
-                    context: buildMachineContext({
+                    context: {
                       debug: true,
                       isAboutToFetch: false,
-                    }),
+                    },
                     onUpdateContext,
                     states: {
                       idle: {
                         actions: {
-                          onExit: (event, currentContext) =>
-                            currentContext.set({
-                              ...currentContext.get(),
+                          onExit: (event, ctx) =>
+                            ctx.set({
+                              ...ctx.get(),
                               isAboutToFetch: true,
                             }),
                         },
@@ -451,18 +456,18 @@ describe("StateMachine", () => {
               });
             });
 
-            describe("onEntry(event, currentContext, entryToolkit)", () => {
+            describe("onEntry(event, ctx, entryToolkit)", () => {
               it("should be properly executed", () => {
                 const onEntryIdle = jest.fn();
                 const onEntryFetch = jest.fn();
 
-                const initialContext = buildMachineContext({
+                const initialContext = {
                   isLoading: false,
-                });
+                };
 
                 const toolkit = { suggestionService: { fetch() {} } };
 
-                const machine = buildMachine({
+                const { machine } = buildMachine({
                   initialStateId: "idle",
                   context: initialContext,
                   toolkit,
@@ -496,7 +501,7 @@ describe("StateMachine", () => {
                 };
 
                 expect(onEntryIdle).toHaveBeenCalledWith(
-                  null,
+                  StateMachine.initEvent,
                   machine.getContext(),
                   expectedToolkit
                 );
@@ -517,12 +522,12 @@ describe("StateMachine", () => {
                     list: [],
                   };
 
-                  const machine = buildMachine({
+                  const { machine } = buildMachine({
                     initialStateId: "idle",
-                    context: buildMachineContext({
+                    context: {
                       isLoading: false,
-                      list: ["entityType", "accountId"],
-                    }),
+                      list: ["seasons", "episodes"],
+                    },
                     onUpdateContext,
                     states: {
                       idle: {
@@ -532,8 +537,7 @@ describe("StateMachine", () => {
                       },
                       fetchAttributeSuggestions: {
                         actions: {
-                          onEntry: (event, currentContext) =>
-                            currentContext.set(newContext),
+                          onEntry: (event, ctx) => ctx.set(newContext),
                         },
                       },
                     },
@@ -548,15 +552,21 @@ describe("StateMachine", () => {
 
               describe('the toolkit methods passed to "onEntry"', () => {
                 describe("toolkit.sendEvent(eventName, event)", () => {
+                  const originalSendEvent = StateMachine.prototype.sendEvent;
+
+                  afterEach(
+                    () => (StateMachine.prototype.sendEvent = originalSendEvent)
+                  );
+
                   it('should call the machine\'s "sendEvent" method', () => {
                     jest.spyOn(StateMachine.prototype, "sendEvent");
 
                     const loadedEvent = {
                       name: "onSuggestionsLoaded",
-                      data: { list: ["entityTypes", "accountId"] },
+                      data: { list: ["seasons", "episodes"] },
                     };
 
-                    const machine = buildMachine({
+                    const { machine } = buildMachine({
                       initialStateId: "idle",
                       states: {
                         idle: {
@@ -566,7 +576,7 @@ describe("StateMachine", () => {
                         },
                         fetchAttributeSuggestions: {
                           actions: {
-                            onEntry: (event, currentContext, toolkit) =>
+                            onEntry: (event, ctx, toolkit) =>
                               toolkit.sendEvent(
                                 loadedEvent.name,
                                 loadedEvent.data
@@ -592,8 +602,6 @@ describe("StateMachine", () => {
                       loadedEvent.name,
                       loadedEvent.data
                     );
-
-                    jest.clearAllMocks(); // just in case
                   });
                 });
               });
@@ -601,49 +609,47 @@ describe("StateMachine", () => {
           });
 
           describe("transition actions (callbacks)", () => {
-            describe("action(event, currentContext, transitionToolkit)", () => {
+            describe("action(event, ctx, transitionToolkit)", () => {
               it("should be properly executed", () => {
-                const setAttribute = jest.fn((event, currentContext) => {
-                  const newContext = currentContext.get();
+                const setAttribute = jest.fn((event, ctx) => {
+                  const newContext = ctx.get();
 
                   newContext.partialFilter.attribute = event.data.value;
 
-                  currentContext.set(newContext);
+                  ctx.set(newContext);
                 });
 
-                const setOperator = jest.fn((event, currentContext) => {
-                  const newContext = currentContext.get();
+                const setOperator = jest.fn((event, ctx) => {
+                  const newContext = ctx.get();
 
                   newContext.partialFilter.operator = event.data.value;
 
-                  currentContext.set(newContext);
+                  ctx.set(newContext);
                 });
 
                 const toolkit = { suggestionService: { fetch() {} } };
 
-                const machine = buildMachine({
+                const { machine } = buildMachine({
                   initialStateId: "idle",
-                  context: buildMachineContext({
+                  context: {
                     partialFilter: {
                       attribute: null,
                       operator: null,
                     },
-                  }),
+                  },
                   toolkit,
                   states: {
                     idle: {
                       events: {
                         onInputFocus: [
                           {
-                            cond: (event, currentContext) =>
-                              currentContext.get().partialFilter.attribute ===
-                              null,
+                            cond: (event, ctx) =>
+                              ctx.get().partialFilter.attribute === null,
                             targetId: "displayAttributesList",
                           },
                           {
-                            cond: (event, currentContext) =>
-                              currentContext.get().partialFilter.operator ===
-                              null,
+                            cond: (event, ctx) =>
+                              ctx.get().partialFilter.operator === null,
                             targetId: "displayOperatorsList",
                           },
                         ],
@@ -672,7 +678,7 @@ describe("StateMachine", () => {
 
                 const attributeEvent = {
                   name: "onAttributeSelected",
-                  data: { value: "entityType" },
+                  data: { value: "seasons" },
                 };
 
                 machine.sendEvent(attributeEvent.name, attributeEvent.data);

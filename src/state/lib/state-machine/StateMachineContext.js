@@ -1,4 +1,4 @@
-import { copy } from 'fastest-json-copy';
+import { copy } from "fastest-json-copy";
 import areEqual from "fast-deep-equal";
 
 export class StateMachineContext {
@@ -31,7 +31,10 @@ export class StateMachineContext {
    * @param {Function} handler
    */
   onUpdate(handler) {
-    if (!this._updateHandlers.find((h) => h === handler)) {
+    if (
+      typeof handler === "function" &&
+      !this._updateHandlers.find((h) => h === handler)
+    ) {
       this._updateHandlers.push(handler);
     }
   }

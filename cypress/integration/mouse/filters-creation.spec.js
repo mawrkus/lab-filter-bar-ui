@@ -48,7 +48,7 @@ describe("Filter Bar - Creation with the mouse", () => {
 
     cy.selectAttribute("Character");
     cy.selectOperator("LIKE");
-    cy.clickOnSearchInput().type("smith{enter}");
+    cy.typeInSearchInput("smith{enter}");
 
     cy.filterBarShouldHaveText(
       'Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"'
@@ -79,7 +79,7 @@ describe("Filter Bar - Creation with the mouse", () => {
       'Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND'
     );
 
-    cy.clickOnSearchInput().type("adult{enter}");
+    cy.typeInSearchInput("adult{enter}");
 
     cy.filterBarShouldHaveText(
       'Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"'
@@ -88,7 +88,7 @@ describe("Filter Bar - Creation with the mouse", () => {
     // 10 + 11 -> search text with automatic AND
     cy.clickOnSearchInput();
 
-    cy.clickOnSearchInput().type("swim{enter}");
+    cy.typeInSearchInput("swim{enter}");
 
     cy.filterBarShouldHaveText(
       'Season=2 (10 episodes)ANDEpisode!=Rick Potion #9 (S1E6)ORCharacterLIKE"smith"ANDCrewIS NOT NULLAND"adult"AND"swim"'
@@ -144,7 +144,7 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.selectAttribute("Episode");
 
         cy.clickOnPartialAttribute();
-        cy.clickOnSearchInput().type("pilot{enter}");
+        cy.typeInSearchInput("pilot{enter}");
 
         cy.filterBarShouldHaveText('"pilot"');
       });
@@ -220,7 +220,7 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.suggestionsShouldBe(seasonsList);
 
         cy.clickOnPartialAttribute();
-        cy.clickOnSearchInput().type("spring{enter}");
+        cy.typeInSearchInput("spring{enter}");
 
         cy.filterBarShouldHaveText('"spring"');
       });

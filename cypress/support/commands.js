@@ -42,8 +42,22 @@ Cypress.Commands.add("clickOnSearchInput", () => {
   return cy.get(".filter-bar .suggestions input.search").click();
 });
 
-Cypress.Commands.add("typeInSearchInput", (text) => {
-  return cy.get(".filter-bar .suggestions input.search").type(text);
+Cypress.Commands.add("typeInSearchInput", (text, options = {}) => {
+  if (options.checkForLoading) {
+    cy.log(`📡 Intercepting "${apiHost}" requests`);
+    cy.intercept(`${apiHost}/**`).as("fetchData");
+  }
+
+  // eslint-disable-next-line cypress/no-assigning-return-values
+  const typeResult = cy.get(".filter-bar .suggestions input.search").type(text);
+
+  if (options.checkForLoading) {
+    cy.log("⏳ Waiting for request...");
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait("@fetchData").wait(postFetchDelay);
+  }
+
+  return typeResult;
 });
 
 Cypress.Commands.add("selectSuggestion", (label, options = {}) => {

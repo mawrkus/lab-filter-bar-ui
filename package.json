@@ -41,7 +41,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "cypress": "^9.6.0",
+    "cypress": "^9.6.1",
     "cypress-plugin-tab": "^1.0.5",
     "eslint-plugin-cypress": "^2.12.1"
   }

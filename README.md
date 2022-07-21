@@ -14,21 +14,24 @@ A filter bar UI component built with:
 - The Filter Bar receives the app state as props
 - The Filter Bar renders "dumb" UI components (Chiclet, ...)
 - Suggestions are fetched from HTTP clients → API (+ cancellable requests)
-- Clear contract on the data structure: suggestion item from the API → filter → component prop
+- Clear contract on the data structure: suggestion item from the API → filter object → component prop
 - Main states:
   - `idle` (waiting for user input),
   - `attribute suggestions` (loading and displaying)
   - `operator suggestions` (loading and displaying)
   - `value suggestions` (loading and displaying)
   - `logical operator suggestions` (loading and displaying)
-- Redirection proxy states:
+- Proxy states (handle redirection logic):
   - `edit filter suggestions` (when a filter is edited)
-  - `next suggestions` (check for partial filters every time a filter has been created, edited or deleted)
+  - `next suggestions` (check for partial filter every time a filter has been created, edited or deleted)
 
 ### State diagram
 
+#### Idle state
+
 ```mermaid
 stateDiagram-v2
+    direction LR
     [*]     --> idle
     idle    --> displayAttributeSuggestions: startInput (no filters)
     idle    --> displayLogicalOperatorSuggestions: startInput (last filter is complete and != logical operator)
@@ -39,20 +42,26 @@ stateDiagram-v2
     idle    --> proxyToNextSuggestions: editFilter (last filter in parens incomplete or logical operator)
     idle    --> proxyToNextSuggestions: removeFilter
     idle    --> idle: removeLastFilter
+```
 
-    displayAttributeSuggestions    --> attributesLoaded
+#### displayAttributeSuggestions state
+
+```mermaid
+stateDiagram-v2
+    [*]                         --> displayAttributeSuggestions
     state if_editing <<choice>>
-    attributesLoaded    --> if_editing
-    if_editing          --> setAttribute: not editing
-    if_editing          --> editAttribute: editing
+    displayAttributeSuggestions --> if_editing: attributesLoaded
+    if_editing                  --> setAttribute: not editing
+    if_editing                  --> editAttribute: editing
+    displayAttributeSuggestions --> idle: discardSuggestions
 
-    setAttribute        --> idle: discardSuggestions
-    setAttribute        --> displayAttributeSuggestions: selectItem (parens)
-    setAttribute        --> proxyToNextSuggestions: selectItem (!= parens)
-    setAttribute        --> displayOperatorSuggestions: selectItem (!= search text)
-    setAttribute        --> idle: removeLastFilter
-    editAttribute       --> idle: discardSuggestions
-    editAttribute       --> proxyToNextSuggestions: selectItem
+    setAttribute                --> idle: discardSuggestions
+    setAttribute                --> displayAttributeSuggestions: selectItem (parens)
+    setAttribute                --> proxyToNextSuggestions: selectItem (!= parens)
+    setAttribute                --> displayOperatorSuggestions: selectItem (!= search text)
+    setAttribute                --> idle: removeLastFilter
+    editAttribute               --> idle: discardSuggestions
+    editAttribute               --> proxyToNextSuggestions: selectItem
 ```
 
 ## 📗 Use cases

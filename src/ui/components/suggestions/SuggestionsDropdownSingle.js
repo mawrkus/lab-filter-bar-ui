@@ -1,6 +1,6 @@
-import { Dropdown } from 'semantic-ui-react';
-import { buildOptionValue, buildOptions } from './buildOptions';
-import { useHandleBackspaceKey } from '../../hooks';
+import { Dropdown } from "semantic-ui-react";
+import { buildOptionValue, buildOptions } from "./buildOptions";
+import { useHandleBackspaceKey } from "../../hooks";
 
 export const SuggestionsDropdownSingle = ({
   selectedItem,
@@ -23,8 +23,11 @@ export const SuggestionsDropdownSingle = ({
     const searchQuery = newValue.toLowerCase();
 
     // we don't receive the full item, only its value
-    const item = suggestions.find((item) => buildOptionValue(item) === newValue
-      || String(item.searchLabel || item.label).toLowerCase() === searchQuery);
+    const item = suggestions.find(
+      (item) =>
+        buildOptionValue(item) === newValue ||
+        String(item.searchLabel || item.label).toLowerCase() === searchQuery
+    );
 
     if (item) {
       onSelectItem(e, item);

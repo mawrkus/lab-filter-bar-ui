@@ -13,7 +13,7 @@ A filter bar UI component built with:
 - The app state is observable
 - The Filter Bar receives the app state as props
 - The Filter Bar renders "dumb" UI components (Chiclet, ...)
-- Suggestions are fetched from HTTP clients → API (+ cancellable requests)
+- Suggestions are fetched from an HTTP client → API (+ cancellable requests)
 - Clear contract on the data structure: suggestion item from the API → filter object → component prop
 - Main states:
   - `idle` (waiting for user input),
@@ -21,11 +21,13 @@ A filter bar UI component built with:
   - `operator suggestions` (loading and displaying)
   - `value suggestions` (loading and displaying)
   - `logical operator suggestions` (loading and displaying)
-- Proxy states (handle redirection logic):
+- Proxy states (handle logic when editing/next suggestion):
   - `edit filter suggestions` (when a filter is edited)
   - `next suggestions` (check for partial filter every time a filter has been created, edited or deleted)
 
-### State diagram
+### State diagrams
+
+Made with https://mermaid.js.org/
 
 #### Idle state
 
@@ -48,7 +50,8 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-    [*]                         --> displayAttributeSuggestions
+    displayAttributeSuggestions: displayAttributeSuggestions
+    note left of displayAttributeSuggestions: Starts loading attributes
     state if_editing <<choice>>
     displayAttributeSuggestions --> if_editing: attributesLoaded
     if_editing                  --> setAttribute: not editing
@@ -57,12 +60,39 @@ stateDiagram-v2
 
     setAttribute                --> idle: discardSuggestions
     setAttribute                --> displayAttributeSuggestions: selectItem (parens)
-    setAttribute                --> proxyToNextSuggestions: selectItem (!= parens)
+    setAttribute                --> proxyToNextSuggestions: selectItem (search text)
     setAttribute                --> displayOperatorSuggestions: selectItem (!= search text)
     setAttribute                --> idle: removeLastFilter
     editAttribute               --> idle: discardSuggestions
     editAttribute               --> proxyToNextSuggestions: selectItem
 ```
+
+#### displayOperatorSuggestions state
+
+```mermaid
+stateDiagram-v2
+    displayOperatorSuggestions: displayOperatorSuggestions
+    note left of displayOperatorSuggestions: Starts loading operators
+    state if_editing <<choice>>
+    displayOperatorSuggestions  --> if_editing: operatorsLoaded
+    if_editing                  --> setOperator: not editing
+    if_editing                  --> editPartialOperator: editing partial
+    if_editing                  --> editOperator: editing complete
+    displayOperatorSuggestions  --> idle: discardSuggestions
+
+    setOperator                --> idle: discardSuggestions
+    setOperator                --> displayOperatorSuggestions: selectItem (parens)
+    setOperator                --> proxyToNextSuggestions: selectItem (search text)
+    setOperator                --> displayOperatorSuggestions: selectItem (!= search text)
+    setOperator                --> idle: removeLastFilter
+    editOperator               --> idle: discardSuggestions
+    editOperator               --> proxyToNextSuggestions: selectItem
+    editPartialOperator        --> proxyToNextSuggestions: selectItem
+```
+
+#### displayValueSuggestions state
+
+...
 
 ## 📗 Use cases
 
@@ -102,7 +132,7 @@ Using the mouse or keyboard:
 
 - ...
 
-## 🙈 Quirks
+## 🙈 Quirks/Issues
 
 ### Invalid state transitions
 

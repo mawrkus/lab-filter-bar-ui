@@ -7,7 +7,7 @@ import {
   charactersList,
   crewList,
 } from "../../fixtures/api";
-import { ValueService } from "../../../src/state/suggestion-services/ValueService";
+import { TvMazeApiClient } from "../../../src/infrastructure/http/TvMazeApiClient";
 
 describe("Filter Bar - Creation with the mouse", () => {
   beforeEach(() => cy.visit("/"));
@@ -227,7 +227,7 @@ describe("Filter Bar - Creation with the mouse", () => {
 
     describe("if there is an error while fetching the suggestions", () => {
       it("should display a fetch error that disappear when closing the suggestions", () => {
-        cy.intercept(`${ValueService.apiHost}/**`, { statusCode: 500 }).as(
+        cy.intercept(`${TvMazeApiClient.apiHost}/**`, { statusCode: 500 }).as(
           "fetchData"
         );
 
@@ -250,7 +250,7 @@ describe("Filter Bar - Creation with the mouse", () => {
       });
 
       it("should allow the user to enter a free search text", () => {
-        cy.intercept(`${ValueService.apiHost}/**`, { statusCode: 500 });
+        cy.intercept(`${TvMazeApiClient.apiHost}/**`, { statusCode: 500 });
 
         cy.typeInSearchInput("Season{enter}").typeInSearchInput("={enter}", {
           checkForLoading: false,

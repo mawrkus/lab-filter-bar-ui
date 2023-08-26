@@ -15,8 +15,9 @@ export class HttpClient {
     return response;
   }
 
-  cancel() {
+  abort() {
     if (this._abortController) {
+      // TODO: https://simonplend.com/provide-context-with-abortsignal-reason/
       this._abortController.abort();
     }
   }

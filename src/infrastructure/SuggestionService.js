@@ -27,11 +27,12 @@ export class SuggestionService {
     return this._logicalOperatorService.load({ addParens });
   }
 
-  cancelLoad() {
-    this._valueService.cancelLoad();
+  abortLoad() {
+    this._valueService.abortLoad();
   }
 
   isCancelError(error) {
+    // TODO: https://simonplend.com/provide-context-with-abortsignal-reason/
     return error instanceof DOMException && error.name === "AbortError";
   }
 }

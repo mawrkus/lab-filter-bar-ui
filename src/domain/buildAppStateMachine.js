@@ -1,6 +1,6 @@
 import { StateMachine, transitionLogger } from "./lib/state-machine";
 import { AppStateMachineContext } from "./AppStateMachineContext";
-import { buildSuggestionService } from "./suggestion-services";
+import { buildSuggestionService } from "../infrastructure";
 
 import * as states from "./states";
 

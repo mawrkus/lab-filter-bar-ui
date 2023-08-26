@@ -5,7 +5,7 @@ import { ChicletAttributeOperator } from "./ChicletAttributeOperator";
 import { ChicletAttributeOperatorValue } from "./ChicletAttributeOperatorValue";
 import { ChicletLogicalOperator } from "./ChicletLogicalOperator";
 import { ChicletSearchText } from "./ChicletSearchText";
-import { ParensGroup } from "./ParensGroup";
+import { ParensGroup } from "../ParensGroup";
 import { PartialChiclet } from "./PartialChiclet";
 
 const ChicletComponent = ({ filter, onClick, onRemove }) => {
@@ -60,7 +60,10 @@ export const Chiclet = memo(ChicletComponent, (prevProps, nextProps) => {
   // removing a partial operator with backspace and selecting a new one
   // this happens because 2 successive setProps() are batched in useStateMachine()
   // resulting in a single render with the same prev/next props here
-  if (nextProps.filter.type === "partial" || nextProps.filter.type === "parens") {
+  if (
+    nextProps.filter.type === "partial" ||
+    nextProps.filter.type === "parens"
+  ) {
     return false;
   }
 

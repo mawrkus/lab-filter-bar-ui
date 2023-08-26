@@ -1,12 +1,12 @@
 import { memo, useCallback } from "react";
 
-import { Chiclet } from "./Chiclet";
-import { SuggestionsDropdown } from "./suggestions/SuggestionsDropdown";
+import { Chiclet } from "./components/chiclets/Chiclet";
+import { SuggestionsDropdown } from "./components/suggestions/SuggestionsDropdown";
 import {
   useKeyboardActions,
   useDropdownPosition,
   useStateMachine,
-} from "../hooks";
+} from "./hooks";
 
 const FilterBarComponent = ({ stateMachine }) => {
   const [props] = useStateMachine(stateMachine);

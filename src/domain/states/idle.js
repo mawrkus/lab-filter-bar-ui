@@ -1,7 +1,7 @@
 export const idle = {
   actions: {
     onEntry(event, ctx, toolkit) {
-      toolkit.suggestionService.cancelLoad();
+      toolkit.suggestionService.abortLoad();
 
       // reset:
       //   - suggestions (loading = false) and error,

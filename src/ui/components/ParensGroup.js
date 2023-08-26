@@ -1,5 +1,5 @@
 import { Label } from "semantic-ui-react";
-import { Chiclet } from "./Chiclet";
+import { Chiclet } from "./chiclets/Chiclet";
 
 export const ParensGroup = ({ filter, onClick, onRemove }) => {
   return (

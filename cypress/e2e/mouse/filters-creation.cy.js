@@ -7,7 +7,7 @@ import {
   charactersList,
   crewList,
 } from "../../fixtures/api";
-import { ValueService } from "../../../src/state/suggestion-services/ValueService";
+import { TvMazeApiClient } from "../../../src/infrastructure/http/TvMazeApiClient";
 
 describe("Filter Bar - Creation with the mouse", () => {
   beforeEach(() => cy.visit("/"));
@@ -231,7 +231,7 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.clickOnSearchInput();
         cy.suggestionsShouldBe(attributesList);
 
-        cy.intercept(`${ValueService.apiHost}/**`, { statusCode: 500 }).as(
+        cy.intercept(`${TvMazeApiClient.apiHost}/**`, { statusCode: 500 }).as(
           "fetchData"
         );
 
@@ -256,7 +256,7 @@ describe("Filter Bar - Creation with the mouse", () => {
         cy.clickOnSearchInput();
         cy.suggestionsShouldBe(attributesList);
 
-        cy.intercept(`${ValueService.apiHost}/**`, { statusCode: 500 });
+        cy.intercept(`${TvMazeApiClient.apiHost}/**`, { statusCode: 500 });
 
         cy.selectAttribute("Season");
         cy.selectOperator("=");

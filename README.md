@@ -167,6 +167,7 @@ Warning: Can't perform a React state update on an unmounted component. This is a
 After this:
 
 - Change the "IN" operator for the "IS NULL" operator
+- The filters are properly updated but the chiclet is not re-rendered
 
 ### Editing IN/NOT IN values with a partial filter present
 

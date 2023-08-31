@@ -3,7 +3,7 @@ import "./App.css";
 import { useMemo, useState } from "react";
 import { Form, Header } from "semantic-ui-react";
 
-import { FilterBar } from "./FilterBar";
+import { FilterBar } from "./components/FilterBar";
 import { buildAppStateMachine } from "../domain";
 import { useFiltersFromUrl } from "./hooks";
 import { AppMessage } from "./AppMessage";

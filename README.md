@@ -1,6 +1,6 @@
 # 🧪 Lab project: a Filter Bar UI component
 
-A filter bar UI component built with:
+An experiment to build a filter bar UI component with:
 
 - [React + hooks](https://reactjs.org/)
 - [Semantic UI](https://react.semantic-ui.com/)

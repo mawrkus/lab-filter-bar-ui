@@ -7,6 +7,8 @@ An experiment to build a filter bar UI component with:
 - [TVmaze API](https://www.tvmaze.com/api)
 - A custom state machine implementation inspired by [XState](https://xstate.js.org/)
 
+The code is not 100% production-ready (it's an experiment) but I believe that, as it is, it gives a pretty good idea on how to build this type of complex UI component.
+
 ## ⛩️ Architecture: core concepts
 
 - State machine with domain context (the app state)
@@ -95,6 +97,8 @@ stateDiagram-v2
 ...
 
 ## 📗 Use cases
+
+Launch and check the [end-to-end](cypress/e2e) tests: `npm run e2e:dev`
 
 ### Creation
 

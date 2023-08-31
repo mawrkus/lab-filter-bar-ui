@@ -25,3 +25,4 @@ yarn-error.log*
 TODO.md
 cypress/screenshots
 cypress/videos
+*.mov

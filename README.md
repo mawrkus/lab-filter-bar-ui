@@ -136,7 +136,7 @@ Using the mouse or keyboard:
 
 ### Invalid state transitions
 
-Choosing "Crew" then the "IN" operator:
+Choosing "Season" then the "IN" operator:
 
 - sends a `selectItem` event with type = "multiple-value"
 - transitions from `setOperator` → `displayValueSuggestions`
@@ -152,16 +152,21 @@ Why? Because the `startInput` event comes from:
 - which calls the `onOpen` prop
 - which sends the `startInput` event
 
-State machine FTW! :D
-
 ### Dropdown component warnings
 
-Not sure it still happens but:
+- Choose "Season" then the "IN" operator
+- Select 1 and 4
+- Remove 1
+- Close the dropdown
 
 ```text
 Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
     at Dropdown (http://localhost:3000/static/js/bundle.js:52590:29)
 ```
+
+After this:
+
+- Change the "IN" operator for the "IS NULL" operator
 
 ### Editing IN/NOT IN values with a partial filter present
 

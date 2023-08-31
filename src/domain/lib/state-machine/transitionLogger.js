@@ -20,6 +20,6 @@ export const transitionLogger = (transition, ctx) => {
   }
 
   Object.entries(ctx.get()).forEach(([key, value]) => {
-    console.log("    🔎 %s=%o", key, JSON.stringify(value));
+    console.log("    🔎 %s=%o", key, value ? JSON.stringify(value) : value);
   });
 };

@@ -20,7 +20,7 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - name: Install and Build 🔧 
+      - name: Install and Build 🔧
         run: |
           yarn install
           yarn build
@@ -28,4 +28,4 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build 
+          folder: build

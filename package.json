@@ -2,6 +2,7 @@
   "name": "lab-filter-bar-ui",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mawrkus.github.io/lab-filter-bar-ui",
   "scripts": {
     "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",

@@ -9,7 +9,7 @@ An experiment to build a filter bar UI component with:
 
 The code is not 100% production-ready (it's an experiment) but I believe that, as it is, it gives a pretty good idea on how to build this type of complex UI component.
 
-<img src="./docs/filter-bar-ui.gif" />
+[Live demo](https://mawrkus.github.io/lab-filter-bar-ui/)
 
 ## ⛩️ Architecture: core concepts
 
